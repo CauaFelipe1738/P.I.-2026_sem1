@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+<img width="1600" height="667" alt="readmeimagepi" src="https://github.com/user-attachments/assets/39ac2b99-853e-4b0b-97d7-b63e71b1316f" />
+
+
+## Descrição Resumida
+
+A plataforma tem como objetivo transformar treinamentos corporativos obrigatórios em experiências mais interativas, dinâmicas e engajadoras por meio da gamificação. Voltada para empresas de base tecnológica, a solução oferece quizzes inspirados em plataformas como Duolingo e Khan Academy, abordando temas como segurança da informação, compliance, governança, processos internos e boas práticas técnicas.
+
+O sistema conta com autenticação de usuários, diferenciação entre funcionários e gerentes, acompanhamento de desempenho em tempo real, ranking, níveis e feedback contínuo. Além disso, permite a centralização e atualização simplificada dos conteúdos, garantindo escalabilidade, padronização dos treinamentos e maior retenção de conhecimento pelos colaboradores.
+
+
+# Requisitos
+colocar
+=======
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -56,3 +70,4 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+>>>>>>> 61dd2db (Projeto Laravel)
