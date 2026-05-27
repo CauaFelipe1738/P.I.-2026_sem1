@@ -15,169 +15,145 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Copiando estrutura do banco de dados para treinamento_gamificado
-CREATE DATABASE IF NOT EXISTS `treinamento_gamificado` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `treinamento_gamificado`;
+-- Copiando estrutura do banco de dados para corpware
+CREATE DATABASE IF NOT EXISTS `corpware` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `corpware`;
 
--- Copiando estrutura para tabela treinamento_gamificado.area
+-- Copiando estrutura para tabela corpware.area
 CREATE TABLE IF NOT EXISTS `area` (
-  `id_area` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `nome_area` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `id_area` int NOT NULL AUTO_INCREMENT,
+  `nome_area` varchar(30) NOT NULL,
   PRIMARY KEY (`id_area`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela treinamento_gamificado.area: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.area: ~0 rows (aproximadamente)
+INSERT INTO `area` (`id_area`, `nome_area`) VALUES
+	(1, 'alguma');
 
--- Copiando estrutura para tabela treinamento_gamificado.cache
-CREATE TABLE IF NOT EXISTS `cache` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` bigint NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `cache_expiration_index` (`expiration`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Copiando estrutura para tabela corpware.funcionario
+CREATE TABLE IF NOT EXISTS `funcionario` (
+  `id_funcionario` int NOT NULL AUTO_INCREMENT,
+  `idf_ranking` int DEFAULT NULL,
+  `nome_funcionario` varchar(40) NOT NULL,
+  `senha` varchar(40) NOT NULL,
+  `admin` tinyint(1) NOT NULL,
+  `pontos` int NOT NULL,
+  PRIMARY KEY (`id_funcionario`),
+  KEY `idf_ranking` (`idf_ranking`),
+  CONSTRAINT `funcionario_ibfk_1` FOREIGN KEY (`idf_ranking`) REFERENCES `ranking` (`id_ranking`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela treinamento_gamificado.cache: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.funcionario: ~0 rows (aproximadamente)
+INSERT INTO `funcionario` (`id_funcionario`, `idf_ranking`, `nome_funcionario`, `senha`, `admin`, `pontos`) VALUES
+	(1, 1, 'john', 'johns', 1, 0);
 
--- Copiando estrutura para tabela treinamento_gamificado.cache_locks
-CREATE TABLE IF NOT EXISTS `cache_locks` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expiration` bigint NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `cache_locks_expiration_index` (`expiration`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.cache_locks: ~0 rows (aproximadamente)
-
--- Copiando estrutura para tabela treinamento_gamificado.failed_jobs
-CREATE TABLE IF NOT EXISTS `failed_jobs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.failed_jobs: ~0 rows (aproximadamente)
-
--- Copiando estrutura para tabela treinamento_gamificado.jobs
-CREATE TABLE IF NOT EXISTS `jobs` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attempts` smallint unsigned NOT NULL,
-  `reserved_at` int unsigned DEFAULT NULL,
-  `available_at` int unsigned NOT NULL,
-  `created_at` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `jobs_queue_index` (`queue`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.jobs: ~0 rows (aproximadamente)
-
--- Copiando estrutura para tabela treinamento_gamificado.job_batches
-CREATE TABLE IF NOT EXISTS `job_batches` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `total_jobs` int NOT NULL,
-  `pending_jobs` int NOT NULL,
-  `failed_jobs` int NOT NULL,
-  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `options` mediumtext COLLATE utf8mb4_unicode_ci,
-  `cancelled_at` int DEFAULT NULL,
-  `created_at` int NOT NULL,
-  `finished_at` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.job_batches: ~0 rows (aproximadamente)
-
--- Copiando estrutura para tabela treinamento_gamificado.migrations
-CREATE TABLE IF NOT EXISTS `migrations` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.migrations: ~4 rows (aproximadamente)
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-	(1, '0001_01_01_000000_create_users_table', 1),
-	(2, '0001_01_01_000001_create_cache_table', 1),
-	(3, '0001_01_01_000002_create_jobs_table', 1),
-	(4, '2026_05_25_231546_create_areas_table', 1);
-
--- Copiando estrutura para tabela treinamento_gamificado.password_reset_tokens
-CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.password_reset_tokens: ~0 rows (aproximadamente)
-
--- Copiando estrutura para tabela treinamento_gamificado.rankings
-CREATE TABLE IF NOT EXISTS `rankings` (
-  `id_ranking` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `qtd_pessoas` int NOT NULL,
-  `titulo` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sobre` text COLLATE utf8mb4_unicode_ci,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id_ranking`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.rankings: ~1 rows (aproximadamente)
-INSERT INTO `rankings` (`id_ranking`, `qtd_pessoas`, `titulo`, `sobre`, `created_at`, `updated_at`) VALUES
-	(1, 10, 'teste', 'testeSobre', NULL, NULL);
-
--- Copiando estrutura para tabela treinamento_gamificado.sessions
-CREATE TABLE IF NOT EXISTS `sessions` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text COLLATE utf8mb4_unicode_ci,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_activity` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `sessions_user_id_index` (`user_id`),
-  KEY `sessions_last_activity_index` (`last_activity`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Copiando dados para a tabela treinamento_gamificado.sessions: ~1 rows (aproximadamente)
-INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-	('Vo4QgKeLxA8YLFz6TYy28gKTU7mVOn7QeJyDXwYI', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiJScU5GdTV3UUlBMGFZQjVhbEZWeWlmN0tLV2t0WHA2QVZVM2N1UUFtIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL3dlYnNpdGUtcGhwLnRlc3QiLCJyb3V0ZSI6bnVsbH0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=', 1779844135);
-
--- Copiando estrutura para tabela treinamento_gamificado.teste
-CREATE TABLE IF NOT EXISTS `teste` (
-  `altos_testes` int unsigned DEFAULT NULL
+-- Copiando estrutura para tabela corpware.funcionario_lista
+CREATE TABLE IF NOT EXISTS `funcionario_lista` (
+  `idf_funcionario` int NOT NULL,
+  `idf_lista` int NOT NULL,
+  `respondido` tinyint(1) NOT NULL,
+  `acertos` int NOT NULL,
+  PRIMARY KEY (`idf_funcionario`,`idf_lista`),
+  KEY `idf_lista` (`idf_lista`),
+  CONSTRAINT `funcionario_lista_ibfk_1` FOREIGN KEY (`idf_funcionario`) REFERENCES `funcionario` (`id_funcionario`),
+  CONSTRAINT `funcionario_lista_ibfk_2` FOREIGN KEY (`idf_lista`) REFERENCES `lista` (`id_lista`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela treinamento_gamificado.teste: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.funcionario_lista: ~0 rows (aproximadamente)
+INSERT INTO `funcionario_lista` (`idf_funcionario`, `idf_lista`, `respondido`, `acertos`) VALUES
+	(1, 1, 1, 9);
 
--- Copiando estrutura para tabela treinamento_gamificado.users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Copiando estrutura para tabela corpware.funcionario_pergunta_lista
+CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
+  `idf_funcionario` int NOT NULL,
+  `idf_pergunta_lista` int NOT NULL,
+  `idf_resposta` int NOT NULL,
+  KEY `idf_funcionario` (`idf_funcionario`),
+  KEY `idf_pergunta_lista` (`idf_pergunta_lista`),
+  KEY `idf_resposta` (`idf_resposta`),
+  CONSTRAINT `funcionario_pergunta_lista_ibfk_1` FOREIGN KEY (`idf_funcionario`) REFERENCES `funcionario` (`id_funcionario`),
+  CONSTRAINT `funcionario_pergunta_lista_ibfk_2` FOREIGN KEY (`idf_pergunta_lista`) REFERENCES `pergunta_lista` (`id_pergunta_lista`),
+  CONSTRAINT `funcionario_pergunta_lista_ibfk_3` FOREIGN KEY (`idf_resposta`) REFERENCES `resposta` (`id_resposta`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela treinamento_gamificado.users: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.funcionario_pergunta_lista: ~0 rows (aproximadamente)
+INSERT INTO `funcionario_pergunta_lista` (`idf_funcionario`, `idf_pergunta_lista`, `idf_resposta`) VALUES
+	(1, 1, 1);
+
+-- Copiando estrutura para tabela corpware.lista
+CREATE TABLE IF NOT EXISTS `lista` (
+  `id_lista` int NOT NULL AUTO_INCREMENT,
+  `inicio` date NOT NULL,
+  `fim` date NOT NULL,
+  PRIMARY KEY (`id_lista`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela corpware.lista: ~0 rows (aproximadamente)
+INSERT INTO `lista` (`id_lista`, `inicio`, `fim`) VALUES
+	(1, '2026-04-30', '2026-05-05');
+
+-- Copiando estrutura para tabela corpware.pergunta
+CREATE TABLE IF NOT EXISTS `pergunta` (
+  `id_pergunta` int NOT NULL AUTO_INCREMENT,
+  `idf_area` int NOT NULL,
+  `pergunta` text NOT NULL,
+  `valor` int NOT NULL,
+  `image` text,
+  PRIMARY KEY (`id_pergunta`),
+  KEY `idf_area` (`idf_area`),
+  CONSTRAINT `pergunta_ibfk_1` FOREIGN KEY (`idf_area`) REFERENCES `area` (`id_area`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela corpware.pergunta: ~0 rows (aproximadamente)
+INSERT INTO `pergunta` (`id_pergunta`, `idf_area`, `pergunta`, `valor`, `image`) VALUES
+	(1, 1, 'alguma pergunta', 10, NULL);
+
+-- Copiando estrutura para tabela corpware.pergunta_lista
+CREATE TABLE IF NOT EXISTS `pergunta_lista` (
+  `id_pergunta_lista` int NOT NULL AUTO_INCREMENT,
+  `idf_pergunta` int NOT NULL,
+  `idf_lista` int NOT NULL,
+  PRIMARY KEY (`id_pergunta_lista`),
+  KEY `idf_pergunta` (`idf_pergunta`),
+  KEY `idf_lista` (`idf_lista`),
+  CONSTRAINT `pergunta_lista_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`),
+  CONSTRAINT `pergunta_lista_ibfk_2` FOREIGN KEY (`idf_lista`) REFERENCES `lista` (`id_lista`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela corpware.pergunta_lista: ~0 rows (aproximadamente)
+INSERT INTO `pergunta_lista` (`id_pergunta_lista`, `idf_pergunta`, `idf_lista`) VALUES
+	(1, 1, 1);
+
+-- Copiando estrutura para tabela corpware.ranking
+CREATE TABLE IF NOT EXISTS `ranking` (
+  `id_ranking` int NOT NULL AUTO_INCREMENT,
+  `qtd_pessoas` int NOT NULL,
+  `titulo` varchar(30) NOT NULL,
+  `sobre` text,
+  PRIMARY KEY (`id_ranking`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela corpware.ranking: ~0 rows (aproximadamente)
+INSERT INTO `ranking` (`id_ranking`, `qtd_pessoas`, `titulo`, `sobre`) VALUES
+	(1, 10, 'top da galaxia', 'mtfodau');
+
+-- Copiando estrutura para tabela corpware.resposta
+CREATE TABLE IF NOT EXISTS `resposta` (
+  `id_resposta` int NOT NULL AUTO_INCREMENT,
+  `idf_pergunta` int NOT NULL,
+  `resposta` varchar(300) NOT NULL,
+  `solucao` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id_resposta`),
+  KEY `idf_pergunta` (`idf_pergunta`),
+  CONSTRAINT `resposta_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela corpware.resposta: ~4 rows (aproximadamente)
+INSERT INTO `resposta` (`id_resposta`, `idf_pergunta`, `resposta`, `solucao`) VALUES
+	(1, 1, 'resposta muito correta', 1),
+	(2, 1, 'resposta mei correta', 0),
+	(3, 1, 'resposta tola', 0),
+	(4, 1, 'resposta de idoso', 0);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
