@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('funcionario_pergunta_listas', function (Blueprint $table) {
-            $table->foreignId('idf_funcionario')->constrained('funcionario', 'id_funcionario');
-            $table->foreignId('idf_pergunta_lista')->constrained('pergunta_lista', 'id_pergunta_lista');
-            $table->foreignId('idf_resposta')->constrained('resposta', 'id_resposta');
+        Schema::create('funcionario_pergunta_lista', function (Blueprint $table) {
+            $table->foreignId('idf_funcionario')->constrained('funcionario', 'id_funcionario')->onDelete('cascade');
+            $table->foreignId('idf_pergunta_lista')->constrained('pergunta_lista', 'id_pergunta_lista')->onDelete('cascade');
+            $table->foreignId('idf_resposta')->constrained('resposta', 'id_resposta')->onDelete('cascade');
             $table->timestamps();
         });
     }

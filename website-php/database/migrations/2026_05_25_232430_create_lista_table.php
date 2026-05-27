@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('respostas', function (Blueprint $table) {
-            $table->id('id_resposta');
-            $table->foreignId('idf_pergunta')->constrained('pergunta', 'id_pergunta');
-            $table->string('resposta', 300);
-            $table->boolean('solucao');
+        Schema::create('lista', function (Blueprint $table) {
+            $table->id('id_lista');
+            $table->date('inicio');
+            $table->date('fim');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('respostas');
+        Schema::dropIfExists('listas');
     }
 };

@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('listas', function (Blueprint $table) {
-            $table->id('id_lista');
-            $table->date('inicio');
-            $table->date('fim');
+        Schema::create('resposta', function (Blueprint $table) {
+            $table->id('id_resposta');
+            $table->foreignId('idf_pergunta')->constrained('pergunta', 'id_pergunta')->onDelete('cascade');
+            $table->string('resposta', 300);
+            $table->boolean('solucao');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('listas');
+        Schema::dropIfExists('respostas');
     }
 };

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('funcionarios', function (Blueprint $table) {
+        Schema::create('funcionario', function (Blueprint $table) {
             $table->id('id_funcionario');
             $table->foreignId('idf_ranking')->nullable()->constrained('rankings', 'id_ranking');
             $table->string('nome_funcionario', 40);
