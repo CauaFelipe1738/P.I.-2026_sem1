@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('funcionarios', function (Blueprint $table) {
             $table->id('id_funcionario');
-            $table->foreignId('idf_ranking')->nullable()->constrained('ranking', 'id_ranking');
+            $table->foreignId('idf_ranking')->nullable()->constrained('rankings', 'id_ranking');
             $table->string('nome_funcionario', 40);
             $table->string('senha', 40);
             $table->boolean('admin');
