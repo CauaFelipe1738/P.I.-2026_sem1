@@ -51,12 +51,12 @@ O sistema conta com autenticação de usuários, diferenciação entre funcioná
 ## Tabela de Conteúdos
 
 - [📖 Descrição detalhada](#-descrição-detalhada)
-- [Requisitos](#requisitos)
-- [Tecnologias usadas](#tecnologias-usadas)
+- [⚙️ Requisitos](#requisitos)
+- [🛠 Tecnologias usadas](#-tecnologias-usadas)
 - [🚀 Funcionalidades](#-funcionalidades)
 
 
-## Requisitos
+## ⚙️ Requisitos
 
 Antes de começar, você precisará ter instalado em sua máquina:
 
@@ -86,7 +86,7 @@ Configure o banco de dados e as variáveis de ambiente conforme o arquivo `.env`
 
 Inicie o servidor utilizando o Laragon e acesse a aplicação pelo navegador.
 
-## Tecnologias usadas:
+## 🛠 Tecnologias usadas
 <table>
   <tr>
     <tr>
