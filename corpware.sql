@@ -93,13 +93,13 @@ CREATE TABLE IF NOT EXISTS `pergunta_lista` (
   `idf_pergunta` int NOT NULL,
   `idf_lista` int NOT NULL,
   PRIMARY KEY (`id_pergunta_lista`),
-  KEY `idf_pergunta` (`idf_pergunta`),
+  UNIQUE KEY `idfs_pergunta_lista` (`idf_pergunta`,`idf_lista`),
   KEY `idf_lista` (`idf_lista`),
   CONSTRAINT `pergunta_lista_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`),
   CONSTRAINT `pergunta_lista_ibfk_2` FOREIGN KEY (`idf_lista`) REFERENCES `lista` (`id_lista`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.pergunta_lista: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.pergunta_lista: ~1 rows (aproximadamente)
 INSERT INTO `pergunta_lista` (`id_pergunta_lista`, `idf_pergunta`, `idf_lista`) VALUES
 	(1, 1, 1);
 
