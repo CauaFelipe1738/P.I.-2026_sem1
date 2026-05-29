@@ -15,6 +15,9 @@ return new class extends Migration
             $table->foreignId('idf_funcionario')->constrained('funcionario', 'id_funcionario')->onDelete('cascade');
             $table->foreignId('idf_pergunta_lista')->constrained('pergunta_lista', 'id_pergunta_lista')->onDelete('cascade');
             $table->foreignId('idf_resposta')->constrained('resposta', 'id_resposta')->onDelete('cascade');
+
+            $table->primary(['idf_funcionario', 'idf_pergunta_lista']);
+
             $table->timestamps();
         });
     }

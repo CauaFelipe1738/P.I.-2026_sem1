@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ranking extends Model
 {
+    // Definição de tabela e chave primária
     protected $table = 'ranking';
     protected $primaryKey = 'id_ranking';
 
-    public function funcionarios()
-    {
-        return $this->hasMany(Funcionario::class, 'idf_ranking', 'id_ranking');
-    }
+    // Definição de campos preenchíveis por código
+    protected $fillable = [
+        'qtd_pessoas',
+        'titulo',
+        'sobre',
+    ];
 }
