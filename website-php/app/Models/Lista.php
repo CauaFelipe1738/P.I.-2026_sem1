@@ -6,8 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lista extends Model
 {
+    // Definição de tabela e chave primária
     protected $table = 'lista';
     protected $primaryKey = 'id_lista';
+
+    // Definição de campos preenchíveis por código
+    protected $fillable = [
+        'inicio',
+        'fim',
+    ];
 
     // Relação N para N com Perguntas
     public function perguntas()

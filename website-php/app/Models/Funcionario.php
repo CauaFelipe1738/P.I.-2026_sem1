@@ -6,8 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Funcionario extends Model
 {
+    // Definição de tabela e chave primária
     protected $table = 'funcionario';
     protected $primaryKey = 'id_funcionario';
+
+    // Definição de campos preenchíveis por código
+    protected $fillable = [
+        'nome_funcionario',
+        'senha',
+        'admin',
+        'pontos',
+    ];
 
     public function listas()
     {
