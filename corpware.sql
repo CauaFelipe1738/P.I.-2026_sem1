@@ -33,42 +33,23 @@ INSERT INTO `area` (`id_area`, `nome_area`) VALUES
 -- Copiando estrutura para tabela corpware.funcionario
 CREATE TABLE IF NOT EXISTS `funcionario` (
   `id_funcionario` int NOT NULL AUTO_INCREMENT,
-  `idf_ranking` int DEFAULT NULL,
   `nome_funcionario` varchar(40) NOT NULL,
   `senha` varchar(40) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `pontos` int NOT NULL,
-  PRIMARY KEY (`id_funcionario`),
-  KEY `idf_ranking` (`idf_ranking`),
-  CONSTRAINT `funcionario_ibfk_1` FOREIGN KEY (`idf_ranking`) REFERENCES `ranking` (`id_ranking`)
+  PRIMARY KEY (`id_funcionario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Copiando dados para a tabela corpware.funcionario: ~0 rows (aproximadamente)
-INSERT INTO `funcionario` (`id_funcionario`, `idf_ranking`, `nome_funcionario`, `senha`, `admin`, `pontos`) VALUES
-	(1, 1, 'john', 'johns', 1, 0);
-
--- Copiando estrutura para tabela corpware.funcionario_lista
-CREATE TABLE IF NOT EXISTS `funcionario_lista` (
-  `idf_funcionario` int NOT NULL,
-  `idf_lista` int NOT NULL,
-  `respondido` tinyint(1) NOT NULL,
-  `acertos` int NOT NULL,
-  PRIMARY KEY (`idf_funcionario`,`idf_lista`),
-  KEY `idf_lista` (`idf_lista`),
-  CONSTRAINT `funcionario_lista_ibfk_1` FOREIGN KEY (`idf_funcionario`) REFERENCES `funcionario` (`id_funcionario`),
-  CONSTRAINT `funcionario_lista_ibfk_2` FOREIGN KEY (`idf_lista`) REFERENCES `lista` (`id_lista`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- Copiando dados para a tabela corpware.funcionario_lista: ~0 rows (aproximadamente)
-INSERT INTO `funcionario_lista` (`idf_funcionario`, `idf_lista`, `respondido`, `acertos`) VALUES
-	(1, 1, 1, 9);
+INSERT INTO `funcionario` (`id_funcionario`, `nome_funcionario`, `senha`, `admin`, `pontos`) VALUES
+	(1, 'john', 'johns', 1, 0);
 
 -- Copiando estrutura para tabela corpware.funcionario_pergunta_lista
 CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
   `idf_funcionario` int NOT NULL,
   `idf_pergunta_lista` int NOT NULL,
   `idf_resposta` int NOT NULL,
-  KEY `idf_funcionario` (`idf_funcionario`),
+  PRIMARY KEY (`idf_funcionario`,`idf_pergunta_lista`),
   KEY `idf_pergunta_lista` (`idf_pergunta_lista`),
   KEY `idf_resposta` (`idf_resposta`),
   CONSTRAINT `funcionario_pergunta_lista_ibfk_1` FOREIGN KEY (`idf_funcionario`) REFERENCES `funcionario` (`id_funcionario`),
@@ -77,8 +58,6 @@ CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Copiando dados para a tabela corpware.funcionario_pergunta_lista: ~0 rows (aproximadamente)
-INSERT INTO `funcionario_pergunta_lista` (`idf_funcionario`, `idf_pergunta_lista`, `idf_resposta`) VALUES
-	(1, 1, 1);
 
 -- Copiando estrutura para tabela corpware.lista
 CREATE TABLE IF NOT EXISTS `lista` (
