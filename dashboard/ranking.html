@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJETO INTEGRADOR</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/lateral.css">
+    <link rel="stylesheet" href="../css/ranking.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+    <main>
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="brand">
+                    <h1>CorpWare</h1>
+                </div>
+
+                <aside>
+                    <ul class="menu">
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li class="active"><a href="ranking.html">Ranking</a></li>
+                        <li><a href="config.html">Configuração</a></li>
+                        <li><a href="admin.html">Administrador</a></li>
+                    </ul>
+                </aside>
+            </aside>
+
+            <!-- header/top bar -->
+
+            <main class="content">
+                <header class="topbar">
+                    <div class="profile">
+                        <div class="profile-meta">
+                            <strong>Nome do usuario</strong>
+                            <p>DESENVOLVEDOR SÊNIOR</p>
+                        </div>
+                        <div class="profile-auth">
+                            <div class="avatar">Nu</div>
+                        </div>
+                    </div>
+                </header>
+
+                    <div class="hero">
+                        <div>
+                            <h2>Ranking por Colaborador</h2>
+                            <p class="subtitle">Visualize pontuação, ritmo de conclusão e engajamento nos módulos
+                                obrigatórios.</p>
+                        </div>
+                        <div class="stats">
+                            <article>
+                                <span>MAIOR PONTUAÇÃO</span>
+                                <strong>18,9k</strong>
+                            </article>
+                            <article>
+                                <span>SUA POSIÇÃO</span>
+                                <strong>#08</strong>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="list">
+                        <article class="list-row">
+                            <span>#01</span><strong>Ana Costa</strong><em>Compliance e Governança</em><b>18,9k XP</b>
+                        </article>
+                        <article class="list-row">
+                            <span>#02</span><strong>Pedro Lima</strong><em>Segurança da Informação</em><b>17,2k XP</b>
+                        </article>
+                        <article class="list-row me">
+                            <span>#03</span><strong>Alex Chen</strong><em>Boas Práticas Técnicas</em><b>12,4k XP</b>
+                        </article>
+                        <article class="list-row">
+                            <span>#04</span><strong>Marina Alves</strong><em>Processos Internos</em><b>11,8k XP</b>
+                        </article>
+                    </div>
+            </main>
+            <script src="./ranking.js"></script>
+
+</body>
+
+</html>
