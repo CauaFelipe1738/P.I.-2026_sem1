@@ -110,6 +110,245 @@
   color: #37e6ff;
 }
 
+
+.quick-actions,
+.recent-users {
+    margin: 14px 35px 0;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 20px;
+}
+
+.quick-actions h3,
+.recent-heading h3,
+th {
+    color: #a9bcf2;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.quick-actions h3 {
+    grid-column: 1 / -1;
+    margin: 0 0 -3px 14px;
+}
+
+.action-card {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr) 24px;
+    align-items: center;
+    gap: 20px;
+    min-height: 110px;
+    padding: 24px 22px;
+    border: 1px solid rgba(116, 141, 179, 0.22);
+    border-radius: 8px;
+    color: #ffffff;
+    text-align: left;
+    background: rgba(15, 22, 35, 0.92);
+    cursor: pointer;
+}
+
+.action-card.full {
+    grid-column: 1 / -1;
+}
+
+.action-card:hover {
+    border-color: rgba(40, 239, 255, 0.45);
+}
+
+.action-icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+}
+
+.action-icon svg {
+    width: 34px;
+    height: 34px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.edit-user {
+    color: #d765ff;
+    background: linear-gradient(145deg, rgba(110, 55, 170, 0.72), rgba(50, 34, 94, 0.86));
+}
+
+.create-user {
+    color: #28efff;
+    background: linear-gradient(145deg, rgba(29, 115, 128, 0.72), rgba(18, 70, 82, 0.86));
+}
+
+.questionnaire {
+    color: #86f43e;
+    background: linear-gradient(145deg, rgba(67, 130, 57, 0.72), rgba(30, 76, 47, 0.86));
+}
+
+.action-copy strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 17px;
+}
+
+.action-copy small {
+    display: block;
+    max-width: 560px;
+    color: #d9e3ff;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.action-arrow {
+    justify-self: end;
+    color: #c5d4f4;
+    font-size: 36px;
+    line-height: 1;
+}
+
+.recent-users {
+    overflow: hidden;
+    border: 1px solid rgba(116, 141, 179, 0.22);
+    border-radius: 8px;
+    background: rgba(15, 22, 35, 0.92);
+}
+
+.recent-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 20px 8px;
+}
+
+.recent-heading h3 {
+    margin: 0;
+}
+
+.recent-heading button {
+    border: 0;
+    color: #28efff;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: transparent;
+    cursor: pointer;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px 20px;
+    border-top: 1px solid rgba(116, 141, 179, 0.15);
+    text-align: left;
+}
+
+td {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.user-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.user-avatar.purple {
+    background: linear-gradient(145deg, #bd65ed, #703bb4);
+}
+
+.user-avatar.cyan {
+    background: linear-gradient(145deg, #26d5df, #168092);
+}
+
+.user-avatar.blue {
+    background: linear-gradient(145deg, #3a9cf3, #216aa9);
+}
+
+.user-avatar.yellow {
+    background: linear-gradient(145deg, #e9c528, #ac8509);
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.status.active {
+    color: #9bff45;
+    background: rgba(58, 118, 42, 0.45);
+}
+
+.status.inactive {
+    color: #ffffff;
+    background: rgba(90, 99, 122, 0.42);
+}
+
+.table-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.table-actions button {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    color: #e4ecff;
+    font-size: 16px;
+    line-height: 1;
+    background: transparent;
+    cursor: pointer;
+}
+
+.table-actions button:hover {
+    color: #28efff;
+}
+
+.footer {
+    padding: 28px 20px 24px;
+    color: #a7b6d8;
+    font-size: 14px;
+    text-align: center;
+}
+
 @media (max-width: 900px) {
   .admin-heading {
     flex-direction: column;
