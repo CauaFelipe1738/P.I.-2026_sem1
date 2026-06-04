@@ -37,12 +37,14 @@ CREATE TABLE IF NOT EXISTS `funcionario` (
   `senha` varchar(40) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `pontos` int unsigned NOT NULL,
-  PRIMARY KEY (`id_funcionario`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id_funcionario`),
+  UNIQUE KEY `nome_funcionario` (`nome_funcionario`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.funcionario: ~1 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.funcionario: ~2 rows (aproximadamente)
 INSERT INTO `funcionario` (`id_funcionario`, `nome_funcionario`, `senha`, `admin`, `pontos`) VALUES
-	(1, 'john', 'johns', 1, 10);
+	(1, 'john', 'johns', 1, 10),
+	(3, 'john2', 'algo', 0, 10);
 
 -- Copiando estrutura para tabela corpware.funcionario_pergunta_lista
 CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
@@ -68,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `lista` (
   CONSTRAINT `fim_depois` CHECK ((`fim` > `inicio`))
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.lista: ~2 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.lista: ~0 rows (aproximadamente)
 INSERT INTO `lista` (`id_lista`, `inicio`, `fim`) VALUES
 	(1, '2026-04-30', '2026-05-05'),
 	(2, '2026-06-03', '2026-06-30');
@@ -115,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `ranking` (
   UNIQUE KEY `qtd_pessoas` (`qtd_pessoas`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.ranking: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.ranking: ~0 rows (aproximadamente)
 INSERT INTO `ranking` (`id_ranking`, `qtd_pessoas`, `titulo`, `sobre`) VALUES
 	(1, 20, 'top da galaxia', 'mtfodau'),
 	(5, 10, 'teste', NULL),
