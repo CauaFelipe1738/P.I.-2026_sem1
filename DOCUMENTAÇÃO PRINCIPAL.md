@@ -115,3 +115,31 @@ _Fluxo Principal_
   Usuário pode tentar novamente
 
 Pós-condições: O perfil do usuário é atualizado
+
+# Tecnologia da Informação e da Conectividade
+
+## Descrição da Comunicação do Sistema
+
+
+## Topologia de Rede
+
+## Protocolos Utilizados
+
+## Conceitos de Endereçamento
+
+## Segurança Básica
+ 
+## Escalabilidade
+
+## Diagrama de Rede
+
+## Clareza de Pesquisa
+
+# Banco de dados
+
+*complete aqui*
+
+# Linguagem de programação
+
+*fluxograma*
+
