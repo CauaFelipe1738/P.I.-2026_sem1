@@ -11,6 +11,13 @@
 
 > Status: Developing ⚠️
 
+## Tabela de Conteúdos
+
+- [📖 Descrição detalhada](#-descrição-detalhada)
+- [🚀 Funcionalidades](#-funcionalidades)
+- [🛠 Tecnologias usadas](#-tecnologias-usadas)
+- [⚙️ Requisitos](#requisitos)
+
 ## 📖 Descrição detalhada
 A plataforma CorpWare tem como objetivo transformar treinamentos corporativos obrigatórios em experiências mais interativas, dinâmicas e engajadoras por meio da gamificação. Voltada para empresas de base tecnológica, a solução oferece quizzes inspirados em plataformas como Duolingo e Khan Academy, abordando temas como segurança da informação, compliance, governança, processos internos e boas práticas técnicas.
 
@@ -40,14 +47,31 @@ O sistema conta com autenticação de usuários, diferenciação entre funcioná
 - Ambiente seguro e alinhado à cultura tecnológica corporativa.
 - Estrutura escalável para expansão de usuários, equipes e conteúdos.
 - Experiência focada em engajamento e aprendizagem contínua.
-
-## Tabela de Conteúdos
-
-- [📖 Descrição detalhada](#-descrição-detalhada)
-- [⚙️ Requisitos](#requisitos)
-- [🛠 Tecnologias usadas](#-tecnologias-usadas)
-- [🚀 Funcionalidades](#-funcionalidades)
-
+- 
+## 🛠 Tecnologias usadas
+<table>
+  <tr>
+    <tr>
+      <td>MySQL
+      <td>PHP</td>
+      <td>Laravel</td>
+      <td>Laragon</td>
+      <td>Composer</td>
+      <td>HTML</td>
+      <td>CSS</td>
+      <td>Java Script</td>
+      </td>
+    </tr>
+  <td>9.3.0</td>
+  <td>8.5</td>
+  <td>13.0</td>
+  <td>8.6.1</td>
+  <td>2.9.8</td>
+    <td>5</td>
+    <td>3</td>
+    <td>ES2025</td>
+  </tr>
+</table>
 
 ## ⚙️ Requisitos
 
@@ -79,28 +103,5 @@ Configure o banco de dados e as variáveis de ambiente conforme o arquivo `.env`
 
 Inicie o servidor utilizando o Laragon e acesse a aplicação pelo navegador.
 
-## 🛠 Tecnologias usadas
-<table>
-  <tr>
-    <tr>
-      <td>MySQL
-      <td>PHP</td>
-      <td>Laravel</td>
-      <td>Laragon</td>
-      <td>Composer</td>
-      <td>HTML</td>
-      <td>CSS</td>
-      <td>Java Script</td>
-      </td>
-    </tr>
-  <td>9.3.0</td>
-  <td>8.5</td>
-  <td>13.0</td>
-  <td>8.6.1</td>
-  <td>2.9.8</td>
-    <td>5</td>
-    <td>3</td>
-    <td>ES2025</td>
-  </tr>
-</table>
+
 
