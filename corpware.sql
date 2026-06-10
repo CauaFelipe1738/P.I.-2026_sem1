@@ -30,21 +30,31 @@ CREATE TABLE IF NOT EXISTS `area` (
 INSERT INTO `area` (`id_area`, `nome_area`) VALUES
 	(1, 'alguma');
 
+-- Copiando estrutura para procedure corpware.fetch_listas
+DELIMITER //
+CREATE PROCEDURE `fetch_listas`(IN x INT, IN y date)
+BEGIN
+select lista.*, count(idf_funcionario) as respostas, count(id_pergunta_lista) as perguntas from lista
+left join pergunta_lista on pergunta_lista.idf_lista = lista.id_lista
+left join (select * from funcionario_pergunta_lista where idf_funcionario = x) fpl on fpl.idf_pergunta_lista = pergunta_lista.id_pergunta_lista
+group by id_lista
+having inicio <= y and fim > y or respostas > 0;
+END//
+DELIMITER ;
+
 -- Copiando estrutura para tabela corpware.funcionario
 CREATE TABLE IF NOT EXISTS `funcionario` (
   `id_funcionario` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `nome_funcionario` varchar(40) NOT NULL,
   `senha` varchar(40) NOT NULL,
   `admin` tinyint(1) NOT NULL,
-  `pontos` int unsigned NOT NULL,
+  `pontos` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_funcionario`),
-  UNIQUE KEY `nome_funcionario` (`nome_funcionario`)
+  UNIQUE KEY `nome_funcionario` (`username`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.funcionario: ~2 rows (aproximadamente)
-INSERT INTO `funcionario` (`id_funcionario`, `nome_funcionario`, `senha`, `admin`, `pontos`) VALUES
-	(1, 'john', 'johns', 1, 10),
-	(3, 'john2', 'algo', 0, 10);
+-- Copiando dados para a tabela corpware.funcionario: ~1 rows (aproximadamente)
 
 -- Copiando estrutura para tabela corpware.funcionario_pergunta_lista
 CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
@@ -54,9 +64,9 @@ CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
   PRIMARY KEY (`idf_funcionario`,`idf_pergunta_lista`),
   KEY `idf_pergunta_lista` (`idf_pergunta_lista`),
   KEY `idf_resposta` (`idf_resposta`),
-  CONSTRAINT `funcionario_pergunta_lista_ibfk_1` FOREIGN KEY (`idf_funcionario`) REFERENCES `funcionario` (`id_funcionario`),
-  CONSTRAINT `funcionario_pergunta_lista_ibfk_2` FOREIGN KEY (`idf_pergunta_lista`) REFERENCES `pergunta_lista` (`id_pergunta_lista`),
-  CONSTRAINT `funcionario_pergunta_lista_ibfk_3` FOREIGN KEY (`idf_resposta`) REFERENCES `resposta` (`id_resposta`)
+  CONSTRAINT `funcionario_pergunta_lista_ibfk_1` FOREIGN KEY (`idf_funcionario`) REFERENCES `funcionario` (`id_funcionario`) ON DELETE CASCADE,
+  CONSTRAINT `funcionario_pergunta_lista_ibfk_2` FOREIGN KEY (`idf_pergunta_lista`) REFERENCES `pergunta_lista` (`id_pergunta_lista`) ON DELETE CASCADE,
+  CONSTRAINT `funcionario_pergunta_lista_ibfk_3` FOREIGN KEY (`idf_resposta`) REFERENCES `resposta` (`id_resposta`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Copiando dados para a tabela corpware.funcionario_pergunta_lista: ~0 rows (aproximadamente)
@@ -70,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `lista` (
   CONSTRAINT `fim_depois` CHECK ((`fim` > `inicio`))
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.lista: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.lista: ~1 rows (aproximadamente)
 INSERT INTO `lista` (`id_lista`, `inicio`, `fim`) VALUES
 	(1, '2026-04-30', '2026-05-05'),
 	(2, '2026-06-03', '2026-06-30');
@@ -87,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `pergunta` (
   CONSTRAINT `pergunta_ibfk_1` FOREIGN KEY (`idf_area`) REFERENCES `area` (`id_area`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.pergunta: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.pergunta: ~1 rows (aproximadamente)
 INSERT INTO `pergunta` (`id_pergunta`, `idf_area`, `pergunta`, `valor`, `image`) VALUES
 	(1, 1, 'alguma pergunta', 10, NULL);
 
@@ -98,14 +108,33 @@ CREATE TABLE IF NOT EXISTS `pergunta_lista` (
   `idf_lista` int NOT NULL,
   PRIMARY KEY (`id_pergunta_lista`),
   UNIQUE KEY `idfs_pergunta_lista` (`idf_pergunta`,`idf_lista`),
-  KEY `idf_lista` (`idf_lista`),
-  CONSTRAINT `pergunta_lista_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`),
-  CONSTRAINT `pergunta_lista_ibfk_2` FOREIGN KEY (`idf_lista`) REFERENCES `lista` (`id_lista`)
+  KEY `pergunta_lista_ibfk_2` (`idf_lista`),
+  CONSTRAINT `pergunta_lista_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`) ON DELETE CASCADE,
+  CONSTRAINT `pergunta_lista_ibfk_2` FOREIGN KEY (`idf_lista`) REFERENCES `lista` (`id_lista`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Copiando dados para a tabela corpware.pergunta_lista: ~1 rows (aproximadamente)
-INSERT INTO `pergunta_lista` (`id_pergunta_lista`, `idf_pergunta`, `idf_lista`) VALUES
-	(1, 1, 1);
+
+-- Copiando estrutura para procedure corpware.quest_info
+DELIMITER //
+CREATE PROCEDURE `quest_info`(IN x INT, in y int)
+BEGIN
+select * from lista where id_lista = x;
+
+select id_pergunta, pergunta, valor, image, nome_area from pergunta
+inner join area on pergunta.idf_area = area.id_area
+inner join pergunta_lista on pergunta.id_pergunta = pergunta_lista.idf_pergunta
+where pergunta_lista.idf_lista = x;
+
+select resposta.* from resposta
+inner join pergunta_lista on resposta.idf_pergunta = pergunta_lista.idf_pergunta
+where pergunta_lista.idf_lista = x;
+
+select pergunta_lista.idf_pergunta,idf_resposta from funcionario_pergunta_lista
+inner join pergunta_lista on pergunta_lista.id_pergunta_lista = funcionario_pergunta_lista.idf_pergunta_lista
+where pergunta_lista.idf_lista = x and idf_funcionario = y;
+END//
+DELIMITER ;
 
 -- Copiando estrutura para tabela corpware.ranking
 CREATE TABLE IF NOT EXISTS `ranking` (
@@ -117,11 +146,29 @@ CREATE TABLE IF NOT EXISTS `ranking` (
   UNIQUE KEY `qtd_pessoas` (`qtd_pessoas`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.ranking: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.ranking: ~3 rows (aproximadamente)
 INSERT INTO `ranking` (`id_ranking`, `qtd_pessoas`, `titulo`, `sobre`) VALUES
 	(1, 20, 'top da galaxia', 'mtfodau'),
 	(5, 10, 'teste', NULL),
 	(8, 11, 'teste', NULL);
+
+-- Copiando estrutura para procedure corpware.responder
+DELIMITER //
+CREATE PROCEDURE `responder`(IN x INT, in y int, in z int)
+BEGIN
+DECLARE recompensa INT;
+
+select (valor * solucao) into recompensa from resposta
+inner join pergunta on resposta.idf_pergunta = pergunta.id_pergunta
+where id_resposta = z;
+
+INSERT INTO funcionario_pergunta_lista (idf_funcionario,idf_pergunta_lista,idf_resposta) VALUE (x,y,z);
+
+if recompensa > 0 then
+update funcionario set pontos = pontos + recompensa where id_funcionario = x;
+end if;
+END//
+DELIMITER ;
 
 -- Copiando estrutura para tabela corpware.resposta
 CREATE TABLE IF NOT EXISTS `resposta` (
@@ -130,16 +177,11 @@ CREATE TABLE IF NOT EXISTS `resposta` (
   `resposta` varchar(300) NOT NULL,
   `solucao` tinyint(1) NOT NULL,
   PRIMARY KEY (`id_resposta`),
-  KEY `idf_pergunta` (`idf_pergunta`),
-  CONSTRAINT `resposta_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`)
+  KEY `resposta_ibfk_1` (`idf_pergunta`),
+  CONSTRAINT `resposta_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Copiando dados para a tabela corpware.resposta: ~4 rows (aproximadamente)
-INSERT INTO `resposta` (`id_resposta`, `idf_pergunta`, `resposta`, `solucao`) VALUES
-	(1, 1, 'resposta muito correta', 1),
-	(2, 1, 'resposta mei correta', 0),
-	(3, 1, 'resposta tola', 0),
-	(4, 1, 'resposta de idoso', 0);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
