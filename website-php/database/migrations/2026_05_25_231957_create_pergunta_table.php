@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pergunta', function (Blueprint $table) {
             $table->id('id_pergunta');
-            $table->foreignId('idf_area')->constrained('area', 'id_area')->onDelete('cascade');
+            $table->foreignId('idf_area')->constrained('area', 'id_area');
             $table->text('pergunta');
             $table->integer('valor');
             $table->text('image')->nullable();
