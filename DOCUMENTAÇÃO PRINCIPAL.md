@@ -11,6 +11,7 @@
 - O sistema lista os melhores funcionários pela pontuação no site. <br>
 - Os administradores gerenciam os clientes, podendo manipular atributos e excluir usuários.
 - Os administradores fazem a personalização do site, criando listas, questionários, e recompensas de ranking.
+- 
 
 ## Requisitos Não-Funcionais
 - Os questionários são separados por área; <br>
@@ -84,20 +85,20 @@ Descrição: Os atores vêem sua condição dentro do sistema, como pontuação,
 Pré-requisitos: O usuário deve estar autenticado no sistema
 
 _Fluxo principal_
-1. Acessar a página principal, o dashboard do sistema.
+1. Acessar a página principal, o dashboard do sistema, lá estão todas as informações acessíveis.
 
 ### *Personalização do site*
 
 Atores: Administradores
 Descrição: Aplicar mudanças como criação de novas perguntas, recompensas associados a pontuação, novas listas de perguntas, etc.
-Pré-requisitos: Usuário deve ter autenticação de administrador
+Pré-requisitos: Usuário deve ter autenticação de administrador.
 
 _Fluxo Principal_
 1. Acessar a página principal, o dashboard
 2. Escolher uma das opções de personalização
 3.  Submeter as informações corretas para personalização
 3.a - <b>Informações incorretas</b>
-  O processo é abordado
+  O processo é abortado
   O sistema joga uma mensagem de erro
   O usuário pode tentar novamente
 
@@ -107,7 +108,10 @@ Descrição: O usuário vê a posição relativa dos usuários num ranking globa
 Pré-requisitos: O usuário deve estar autenticado
 
 _Fluxo Principal_
-1. Acessar a página principal, o dashboard
+1. Acessar a página principal, o dashboard, onde está as informações de ranking.
+2. Ver a listagem.
+2.a - *Sem acesso à Internet*
+ A listagem não está disponível.
 
 # Tecnologia da Informação e da Conectividade
 
