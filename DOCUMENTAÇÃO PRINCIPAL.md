@@ -1,15 +1,16 @@
 # Engenharia de software
 
 ## Requisitos Funcionais
-- Login/registro de usuário, diferenciando funcionário e gerentes; <br>
-- Um funcionário não pode se auto-definir como gerente, registro de gerente deve ser feito por outro gerente; <br>
-- Plataforma deve ter quiz- baseado em Duolingo e Khan Academy- interativo, sobre temas  como segurança da informação, compliance, processos internos, governança e boas práticas técnicas; <br>
-- A plataforma deve mostrar pontuação e mostrar feedback <br>
-- O gerente deve poder monitorar o desempenho dos usuários <br>
+- Login/registro de usuário, diferenciando funcionário e gerentes. <br>
+- O cadastro de usuário é realizado pelos administradores, que também definem se o cadastro é para um usuário comum, ou um administrador. <br>
+- Plataforma deve ter quiz- baseado em Duolingo e Khan Academy- interativo, sobre temas  como segurança da informação, compliance, processos internos, governança e boas práticas técnicas. <br>
+- Ao responder um questionário, o usuário recebe uma pontuação. <br>
+- O gerente deve poder monitorar o desempenho dos usuários. <br>
 - Padronização e controle dos treinamentos obrigatórios, centralizando conteúdos e permitindo fácil atualização. <br>
-- Mudança de configuração: usuários realizam alterações de senha, etc. <br>
 - As perguntas do questionário são objetivas e têm resposta única. <br>
 - O sistema lista os melhores funcionários pela pontuação no site. <br>
+- Os administradores gerenciam os clientes, podendo manipular atributos e excluir usuários.
+- Os administradores fazem a personalização do site, criando listas, questionários, e recompensas de ranking.
 
 ## Requisitos Não-Funcionais
 - Os questionários são separados por área; <br>
@@ -88,7 +89,7 @@ _Fluxo principal_
 ### *Personalização do site*
 
 Atores: Administradores
-Descrição: Aplicar mudanças como criação de novas perguntas, recompensas associados a pontuação, etc.
+Descrição: Aplicar mudanças como criação de novas perguntas, recompensas associados a pontuação, novas listas de perguntas, etc.
 Pré-requisitos: Usuário deve ter autenticação de administrador
 
 _Fluxo Principal_
@@ -100,21 +101,13 @@ _Fluxo Principal_
   O sistema joga uma mensagem de erro
   O usuário pode tentar novamente
 
-### *Mudança de configuração*
-
+### *Acessar Ranking*
 Atores: Usuários
-Descrição: Configurações relacionadas ao perfil como nome, autenticação, login, etc
-Pré-requisitos: O usuário deve estar logado
+Descrição: O usuário vê a posição relativa dos usuários num ranking global.
+Pré-requisitos: O usuário deve estar autenticado
 
 _Fluxo Principal_
-1. O usuário acessa a página de configurações
-2. O usuário escolhe uma informação do perfil para alterar
-3. O usuário insere novas informações
-3.a - <b>Dados inválido</b>
-  Sistema exibe mensagem de erro
-  Usuário pode tentar novamente
-
-Pós-condições: O perfil do usuário é atualizado
+1. Acessar a página principal, o dashboard
 
 # Tecnologia da Informação e da Conectividade
 
