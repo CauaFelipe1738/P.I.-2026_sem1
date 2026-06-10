@@ -22,6 +22,9 @@
 - Ambiente seguro e aderente à cultura tecnológica da empresa, reforçando valores de inovação e aprendizagem contínua <br>
 - Elementos visuais dinâmicos <br>
 
+## Diagrama de Casos de Uso
+<img width="1498" height="1501" alt="Casos de uso - PIsem1" src="https://github.com/user-attachments/assets/0f695fb6-c16b-472a-a4b8-f9383de29b43" />
+
 ## Especialização de casos de uso
 ### *Realizar login*
 
