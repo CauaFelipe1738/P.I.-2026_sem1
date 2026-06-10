@@ -1,11 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Criar Pergunta</title>
+    <link rel="stylesheet" href="../../css/pergunta.css">
 </head>
+
 <body>
-    
+    <main class="question-page">
+
+        <header class="page-header">
+            <div>
+                <h1>Criar Pergunta</h1>
+                <p>Adicione uma nova pergunta ao seu questionário.</p>
+            </div>
+
+            <div class="header-actions">
+                <a class="button button-secondary" href="../admin.html" id="cancel-question">Cancelar</a>
+                <button class="button button-primary" type="button" id="save-question">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                        <path d="M17 21v-8H7v8"></path>
+                        <path d="M7 3v5h8"></path>
+                    </svg>
+                    Salvar Pergunta
+                </button>
+            </div>
+        </header>
+
+        <form class="question-form">
+            <section class="panel question-details" aria-labelledby="question-title">
+                <label class="field question-field">
+                    <span id="question-title">Pergunta</span>
+                    <span class="textarea-wrap">
+                        <textarea maxlength="255" id="question-text"></textarea>
+                        <small>0/255</small>
+                    </span>
+                </label>
+
+                <label class="field theme-field">
+                    <span>Tema da pergunta</span>
+                    <input type="text" maxlength="80" aria-label="Tema da pergunta" id="question-theme">
+                </label>
+
+                <div class="two-columns">
+                    <label class="field">
+                        <span>Adicionar imagem</span>
+                        <span class="image-control">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <path d="M17 8 12 3 7 8"></path>
+                                <path d="M12 3v12"></path>
+                            </svg>
+                            <input type="file" accept="image/*" aria-label="Adicionar imagem" id="question-image">
+                            <small id="image-file-name">Nenhuma imagem selecionada</small>
+                        </span>
+                    </label>
+
+                    <label class="field">
+                        <span>Pontuação</span>
+                        <span class="score-control">
+                            <input type="number" value="" min="0" aria-label="Pontuação" id="question-score">
+                            <small>pontos</small>
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="panel answers-panel" aria-labelledby="answers-title">
+                <div class="section-heading">
+                    <h2 id="answers-title">Respostas</h2>
+                    <p>Adicione as alternativas e marque a correta.</p>
+                </div>
+
+                <div class="answer-list">
+
+                </div>
+
+                <button class="add-answer" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M12 5v14"></path>
+                        <path d="M5 12h14"></path>
+                    </svg>
+                    Adicionar Resposta
+                </button>
+            </section>
+        </form>
+    </main>
+    <script src="./pergunta.js"></script>
 </body>
+
 </html>
