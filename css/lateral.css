@@ -74,6 +74,19 @@
 .content {
     padding: 18px 20px 24px;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content::after {
+    content: "CorpWare - Plataforma de treinamento corporativo | 2026";
+    margin-top: auto;
+    padding-top: 22px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    border-top: 1px solid rgba(56, 210, 248, 0.18);
 }
 
 .topbar {
@@ -131,6 +144,10 @@
         padding: 16px;
     }
 
+    .content::after {
+        margin-top: 36px;
+    }
+
     .topbar {
         display: flex;
         justify-content: flex-end;
@@ -155,6 +172,11 @@
 
     .content {
         padding: 12px;
+    }
+
+    .content::after {
+        font-size: 12px;
+        line-height: 1.4;
     }
 
     .profile {

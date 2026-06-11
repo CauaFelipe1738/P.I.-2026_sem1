@@ -129,12 +129,14 @@ svg {
 
 .content-grid {
     display: grid;
-    grid-template-columns: minmax(0, 2.35fr) minmax(360px, 1fr);
+    grid-template-columns: minmax(0, 980px);
+    justify-content: center;
     gap: 20px;
 }
 
 .main-column {
     display: grid;
+    width: 100%;
     gap: 18px;
 }
 
