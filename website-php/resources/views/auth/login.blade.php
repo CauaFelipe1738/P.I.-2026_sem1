@@ -1,47 +1,52 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto Gameficação</title>
+  <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <div class="left-content">
+        <p class="kicker">PROTOTIPO GAMIFICAÇÃO</p>
+        <h1>DESBLOQUEIE<br><span>SEU<br>POTENCIAL</span></h1>
+        <p class="description">
+          Acesse a fronteira do conhecimento corporativo através de nossa interface de alta performance. Nível 42 aguarda sua ignição.
+        </p>
+      </div>
+    </div>
+    <div class="right">
+      <div class="login-box">
+        <h2>AUTENTICAÇÃO</h2>
+        <p class="subtitle">Insira suas credenciais para acessar a central.</p>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+        @if($errors->any())
+            <div style="color: #ff4d4d; margin-bottom: 15px; font-size: 14px; background: rgba(255, 77, 77, 0.1); padding: 10px; border-radius: 4px;">
+                {{ $errors->first() }}
+            </div>
+        @endif
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <form action="{{ route('login') }}" method="POST">
+          @csrf
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+          <label for="username">LOGIN</label>
+          <div class="field">
+            <input id="username" name="username" type="text" placeholder="Seu usuário" value="{{ old('username') }}" required>
+          </div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+          <div class="password-head">
+            <label for="senha">CHAVE DE ACESSO</label>
+            </div>
+          <div class="field">
+            <input id="senha" name="senha" type="password" placeholder="••••••••••••" required>
+          </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+          <button type="submit" class="btn" style="width: 100%; border: none; cursor: pointer; display: block; text-align: center;">ACESSAR SISTEMA →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
