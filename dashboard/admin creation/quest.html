@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto Gameficação</title>
+  <link rel="stylesheet" href="../css/quest.css">
+</head>
+<body>
+    <div class="shell">
+    <header class="topbar">
+      <div class="brand-row">
+        <a class="icon-button close" aria-label="Fechar" href="./dashboard.html">
+          <span></span>
+          <span></span>
+        </a>
+        <div class="brand">CorpWare</div>
+      </div>
+
+      <div class="module-progress" aria-label="Progresso do módulo">
+        <div class="progress-meta">
+          <span>7 / 10 QUESTÕES</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+
+    </header>
+
+    <main class="challenge">
+      <section class="question-panel" aria-labelledby="question-title">
+        <h1 id="question-title">Qual protocolo de criptografia é considerado o padrão ouro para comunicações seguras ponta-a-ponta em redes descentralizadas?</h1>
+
+        <div class="answers" role="radiogroup" aria-label="Alternativas">
+          <button class="answer" type="button" role="radio" aria-checked="false" data-option="A">
+            <span class="answer-letter">A</span>
+            <span class="answer-text">Protocolo SSL/TLS 1.2 Legado</span>
+            <span class="choice-ring"></span>
+          </button>
+          <button class="answer is-selected" type="button" role="radio" aria-checked="true" data-option="B">
+            <span class="answer-letter">B</span>
+            <span class="answer-text">Algoritmo de Signal (Double Ratchet)</span>
+            <span class="choice-ring"></span>
+          </button>
+          <button class="answer" type="button" role="radio" aria-checked="false" data-option="C">
+            <span class="answer-letter">C</span>
+            <span class="answer-text">Arquitetura de Túnel SSH Nível 3</span>
+            <span class="choice-ring"></span>
+          </button>
+          <button class="answer" type="button" role="radio" aria-checked="false" data-option="D">
+            <span class="answer-letter">D</span>
+            <span class="answer-text">Cifragem de Fluxo RC4 Modificada</span>
+            <span class="choice-ring"></span>
+          </button>
+        </div>
+
+        <div class="action-row">
+          <button class="confirm-button" type="button">CONFIRMAR RESPOSTA</button>
+        </div>
+      </section>
+
+      <aside class="result-card" aria-label="Resultado da resposta">
+        <div id="completion-banner" class="completion-banner" hidden>PARABÉNS</div>
+
+        <div class="result-head">
+          <div class="success-mark">✓</div>
+          <div>
+            <h2 id="completion-title">RESULTADO FINAL</h2>
+            <p id="completion-subtitle" class="quote">Responda as perguntas para ver quantos pulos, acertos e erros você teve.</p>
+          </div>
+        </div>
+
+        <div class="score-list" id="completion-summary">
+          <div>
+            <span>Questões puladas</span>
+            <strong id="skipped-count">0</strong>
+          </div>
+          <div>
+            <span>Questões acertadas</span>
+            <strong id="correct-count">0</strong>
+          </div>
+          <div>
+            <span>Questões erradas</span>
+            <strong id="incorrect-count">0</strong>
+          </div>
+        </div>
+        </div>
+      </aside>
+    </main>
+
+  </div>
+  <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="quest.js"></script>
+  <script src="./barra.js"></script>
+</body>
+</html>
