@@ -27,7 +27,6 @@
       </aside>
     </aside>
 
-
     <!-- header/top bar -->
 
     <main class="content">
@@ -43,15 +42,15 @@
         </div>
       </header>
 
-      <!--aba lateral codigo de cada parte -->
-
-      <!--parte dashboard -->
+      <!-- parte dashboard -->
       <div class="hero">
         <div>
           <h2>Dashboard</h2>
-          <p class="subtitle">Acompanhe o progresso dos treinamentos obrigatórios, as pendências por área e a evolução
-            da equipe.</p>
+          <p class="subtitle">
+            Acompanhe o progresso dos treinamentos obrigatórios, as pendências por área e a evolução da equipe.
+          </p>
         </div>
+
         <div class="stats">
           <article>
             <span>Pontos obtidos</span>
@@ -61,29 +60,90 @@
       </div>
 
       <div class="linha-separadora"></div>
+
       <h1 class="quest-title">QUEST</h1>
 
       <div class="section-grid" id="treinamentosGrid">
-        <article class="panel">
-          <p class="questao">Exercicio #1</p>
-          <h3>Segurança da Informação</h3>
-          <p>Boas práticas de proteção, acesso e confidencialidade.</p>
-          <a href="./questionario.html">
-            <button class="btn-iniciar">INICIAR AGORA</button></a>
-        </article>
 
-        <article class="panel">
-          <p class="questao">Exercicio #2</p>
-          <h3>Segurança da Informação</h3>
-          <p>Boas práticas de proteção, acesso e confidencialidade.</p>
-          <a href="./questionario.html">
-            <button class="btn-iniciar">INICIAR AGORA</button></a>
-        </article>
+        <!-- Card 1 -->
+       <article class="panel">
+
+  <span
+    id="status-seguranca"
+    class="status status-nao-iniciado">
+    NÃO INICIADO
+  </span>
+
+  <p class="questao">Exercicio #1</p>
+
+  <h3>Segurança da Informação</h3>
+
+  <p>
+    Boas práticas de proteção, acesso e confidencialidade.
+  </p>
+
+  <a href="./questionario.html">
+    <button
+      id="botao-seguranca"
+      class="btn-iniciar">
+      INICIAR AGORA
+    </button>
+  </a>
+
+  <div class="container-barra">
+    <div
+      id="barra-seguranca"
+      class="barra-progresso"
+      style="width: 0%;">
+    </div>
+  </div>
+
+</article>
+
+        
+        <!-- Card 2 -->
+<article class="panel">
+
+  <span
+    id="status-compliance"
+    class="status status-nao-iniciado">
+    NÃO INICIADO
+  </span>
+
+  <p class="questao">Exercicio #2</p>
+
+  <h3>Compliance</h3>
+
+  <p>
+    Ética, conduta e conformidade regulatória.
+  </p>
+
+  <a href="./compliance.html">
+    <button
+      id="botao-compliance"
+      class="btn-iniciar">
+      INICIAR AGORA
+    </button>
+  </a>
+
+  <div class="container-barra">
+    <div
+      id="barra-compliance"
+      class="barra-progresso"
+      style="width: 0%;">
+    </div>
+  </div>
+
+</article>
+
       </div>
+
+    </main>
   </div>
-  </main>
-  </div>
-  <script src="./dashboard.js"></script>
+
+  <script src="./dashboardd.js"></script>
+
+
 </body>
 
 </html>
