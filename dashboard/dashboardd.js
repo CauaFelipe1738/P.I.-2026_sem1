@@ -15,6 +15,7 @@ function atualizarCardTreinamento(treinamentoId, sufixoElemento) {
   const status = document.getElementById(`status-${sufixoElemento}`);
   const barra = document.getElementById(`barra-${sufixoElemento}`);
   const botao = document.getElementById(`botao-${sufixoElemento}`);
+  const link = botao?.closest("a");
 
   if (!status || !barra || !botao) {
     console.error("Nao encontrei os elementos do card.", sufixoElemento);
@@ -26,6 +27,7 @@ function atualizarCardTreinamento(treinamentoId, sufixoElemento) {
     status.className = "status status-nao-iniciado";
     barra.style.width = "0%";
     botao.textContent = "INICIAR AGORA";
+    if (link) link.href = sufixoElemento === "compliance" ? "./compliance.html" : "./questionario.html";
     return;
   }
 
@@ -37,10 +39,12 @@ function atualizarCardTreinamento(treinamentoId, sufixoElemento) {
     status.textContent = "CONCLUIDO";
     status.className = "status status-concluido";
     botao.textContent = "REVISAR";
+    if (link) link.href = sufixoElemento === "compliance" ? "./compliance.html?review=1" : "./questionario.html?review=1";
   } else {
     status.textContent = "EM ANDAMENTO";
     status.className = "status status-andamento";
     botao.textContent = "CONTINUAR";
+    if (link) link.href = sufixoElemento === "compliance" ? "./compliance.html" : "./questionario.html";
   }
 }
 
