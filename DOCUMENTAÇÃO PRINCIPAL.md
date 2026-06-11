@@ -11,10 +11,9 @@
 - O sistema lista os melhores funcionários pela pontuação no site. <br>
 - Os administradores gerenciam os clientes, podendo manipular atributos e excluir usuários.
 - Os administradores fazem a personalização do site, criando listas, questionários, e recompensas de ranking.
-- 
+- Os questionários são separados por área.
 
 ## Requisitos Não-Funcionais
-- Os questionários são separados por área; <br>
 - Ambiente seguro <br>
 - Baixa complexidade <br>
 - Escalabilidade: deve existir a possibilidade de alterar/adicionar usuários, equipes, etc. <br>
