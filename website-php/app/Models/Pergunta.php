@@ -22,4 +22,9 @@ class Pergunta extends Model
     {
         return $this->belongsTo(Area::class, 'idf_area', 'id_area');
     }
+
+    public function respostas()
+    {
+        return $this->hasMany(Resposta::class, 'idf_pergunta', 'id_pergunta');
+    }
 }

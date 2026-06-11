@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Funcionario extends Model
 {
@@ -13,10 +14,23 @@ class Funcionario extends Model
     // Definição de campos preenchíveis por código
     protected $fillable = [
         'nome_funcionario',
+        'username',
         'senha',
         'admin',
         'pontos',
     ];
+
+    // Esconde a senha e o token quando o model for convertido para array/JSON
+    protected $hidden = [
+        'senha',
+        'remember_token',
+    ];
+
+    // Definição de nome da coluna de senha: "senha"
+    public function getAuthPassword()
+    {
+        return $this->senha;
+    }
 
     public function listas()
     {

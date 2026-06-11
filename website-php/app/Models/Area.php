@@ -14,4 +14,9 @@ class Area extends Model
     protected $fillable = [
         'nome_area',
     ];
+
+    public function perguntas()
+    {
+        return $this->hasMany(Pergunta::class, 'idf_area', 'id_area');
+    }
 }
