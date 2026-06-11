@@ -1,230 +1,245 @@
+const API_BASE_URL = window.API_BASE_URL || "";
+const QUESTIONS_ENDPOINTS = [
+    `${API_BASE_URL}/api/perguntas`,
+    `${API_BASE_URL}/api/pergunta`,
+    `${API_BASE_URL}/api/questions`
+];
+const CREATED_QUESTION_KEY = "perguntaCriada";
+const QUESTIONS_STORAGE_KEY = "perguntasAdmin";
+const UPDATE_QUESTION_PAGE = "./update_pergunta.html";
 
-        const form = document.querySelector(".question-form");
-        const questionText = document.querySelector("#question-text");
-        const themeInput = document.querySelector("#question-theme");
-        const answerList = document.querySelector(".answer-list");
-        const addAnswerButton = document.querySelector(".add-answer");
-        const saveButton = document.querySelector("#save-question");
-        const scoreInput = document.querySelector("#question-score");
-        const imageInput = document.querySelector("#question-image");
-        const imageFileName = document.querySelector("#image-file-name");
+const tableBody = document.querySelector("#questions-table-body");
+const searchInput = document.querySelector('.search-field input[type="search"]');
+const footerText = document.querySelector(".table-footer span");
 
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let toastTimer;
+let questions = [];
+let apiEndpoint = "";
 
-        function showToast(message, type = "success") {
-            let toast = document.querySelector(".page-toast");
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
-            if (!toast) {
-                toast = document.createElement("div");
-                toast.className = "page-toast";
-                document.body.appendChild(toast);
+function normalizeQuestion(question, index, source = "api") {
+    const text = question.pergunta || question.question || question.texto || question.text || "Sem pergunta";
+    const area = question.nome_area || question.area || question.theme || question.tema || question.idf_area || "Sem area";
+    const value = question.valor ?? question.score ?? question.pontuacao ?? 0;
+
+    return {
+        id: question.id_pergunta || question.id || `local-${index}`,
+        text,
+        area,
+        value,
+        image: question.image || question.imagem || "",
+        answers: question.answers || question.respostas || [],
+        source
+    };
+}
+
+function getStoredQuestions() {
+    const savedQuestions = JSON.parse(localStorage.getItem(QUESTIONS_STORAGE_KEY) || "[]");
+    const lastCreated = JSON.parse(localStorage.getItem(CREATED_QUESTION_KEY) || "null");
+    const list = Array.isArray(savedQuestions) ? savedQuestions : [];
+
+    if (lastCreated && !list.length) {
+        list.push(lastCreated);
+    }
+
+    return list.map((question, index) => normalizeQuestion(question, index, "local"));
+}
+
+function saveStoredQuestions(nextQuestions) {
+    const localQuestions = nextQuestions
+        .filter((question) => question.source === "local")
+        .map((question) => ({
+            id: question.id,
+            question: question.text,
+            theme: question.area,
+            score: question.value,
+            image: question.image,
+            answers: question.answers
+        }));
+
+    localStorage.setItem(QUESTIONS_STORAGE_KEY, JSON.stringify(localQuestions));
+
+    if (!localQuestions.length) {
+        localStorage.removeItem(CREATED_QUESTION_KEY);
+    }
+}
+
+function getEditIcon() {
+    return `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="m16 4 4 4L8 20H4v-4L16 4Z"></path>
+            <path d="m14 6 4 4"></path>
+        </svg>
+    `;
+}
+
+function getDeleteIcon() {
+    return `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M3 6h18"></path>
+            <path d="M8 6V4h8v2"></path>
+            <path d="M19 6 18 20H6L5 6"></path>
+            <path d="M10 11v5"></path>
+            <path d="M14 11v5"></path>
+        </svg>
+    `;
+}
+
+function updateFooter(total, showing) {
+    footerText.textContent = total
+        ? `Mostrando ${showing} de ${total} perguntas`
+        : "Nenhuma pergunta encontrada";
+}
+
+function renderQuestions() {
+    const search = searchInput.value.trim().toLowerCase();
+    const filteredQuestions = questions.filter((question) => {
+        const searchable = `${question.id} ${question.text} ${question.area} ${question.value}`.toLowerCase();
+        return searchable.includes(search);
+    });
+
+    if (!filteredQuestions.length) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="4">Nenhuma pergunta encontrada.</td>
+            </tr>
+        `;
+        updateFooter(questions.length, 0);
+        return;
+    }
+
+    tableBody.innerHTML = filteredQuestions.map((question) => `
+        <tr data-question-id="${escapeHtml(question.id)}">
+            <td>
+                <div class="user-cell">
+                    ${escapeHtml(question.text)}
+                </div>
+            </td>
+            <td>${escapeHtml(question.area)}</td>
+            <td><span class="badge admin">${escapeHtml(question.value)}</span></td>
+            <td>
+                <div class="actions">
+                    <button class="icon-button edit-question" type="button" aria-label="Editar pergunta ${escapeHtml(question.id)}">
+                        ${getEditIcon()}
+                    </button>
+                    <button class="icon-button delete-question" type="button" aria-label="Excluir pergunta ${escapeHtml(question.id)}">
+                        ${getDeleteIcon()}
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join("");
+
+    updateFooter(questions.length, filteredQuestions.length);
+}
+
+async function requestJson(url, options = {}) {
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            "Accept": "application/json",
+            ...options.headers
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Erro ${response.status}`);
+    }
+
+    return response.status === 204 ? null : response.json();
+}
+
+async function loadQuestionsFromApi() {
+    for (const endpoint of QUESTIONS_ENDPOINTS) {
+        try {
+            const data = await requestJson(endpoint);
+            const list = Array.isArray(data) ? data : data.perguntas || data.questions || [];
+
+            if (Array.isArray(list)) {
+                apiEndpoint = endpoint;
+                return list.map((question, index) => normalizeQuestion(question, index, "api"));
             }
-
-            toast.textContent = message;
-            toast.classList.toggle("is-error", type === "error");
-            toast.classList.add("is-visible");
-
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => {
-                toast.classList.remove("is-visible");
-            }, 2600);
+        } catch (error) {
+            console.warn(`Nao foi possivel carregar ${endpoint}:`, error.message);
         }
+    }
 
-        function updateCounter(textarea) {
-            const counter = textarea.closest(".textarea-wrap").querySelector("small");
-            counter.textContent = `${textarea.value.length}/${textarea.maxLength}`;
-        }
+    return [];
+}
 
-        function refreshAnswerLetters() {
-            const options = answerList.querySelectorAll(".answer-option");
+async function loadQuestions() {
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="4">Carregando perguntas...</td>
+        </tr>
+    `;
 
-            options.forEach((option, index) => {
-                const letter = letters[index] || index + 1;
-                const radio = option.querySelector('input[type="radio"]');
-                const deleteButton = option.querySelector(".delete-answer");
+    const apiQuestions = await loadQuestionsFromApi();
+    const storedQuestions = getStoredQuestions();
 
-                option.querySelector(".answer-letter").textContent = letter;
-                radio.setAttribute("aria-label", `Marcar alternativa ${letter} como correta`);
-                deleteButton.setAttribute("aria-label", `Excluir alternativa ${letter}`);
-            });
-        }
+    questions = apiQuestions.length ? apiQuestions : storedQuestions;
+    renderQuestions();
+}
 
-        function setCorrectAnswer(selectedRadio) {
-            answerList.querySelectorAll(".answer-option").forEach((option) => {
-                const radio = option.querySelector('input[type="radio"]');
-                const oldBadge = option.querySelector(".correct-badge");
-                const isCorrect = radio === selectedRadio;
+function editQuestion(question) {
+    sessionStorage.setItem("perguntaEditando", JSON.stringify(question));
+    window.location.href = `${UPDATE_QUESTION_PAGE}?id=${encodeURIComponent(question.id)}&source=${encodeURIComponent(question.source)}`;
+}
 
-                option.classList.toggle("correct", isCorrect);
+async function deleteQuestion(question) {
+    if (!confirm(`Deseja excluir a pergunta ${question.id}?`)) {
+        return;
+    }
 
-                if (oldBadge) {
-                    oldBadge.remove();
-                }
-
-                if (isCorrect) {
-                    const badge = document.createElement("span");
-                    badge.className = "correct-badge";
-                    badge.textContent = "Resposta correta";
-                    option.insertBefore(badge, option.querySelector(".delete-answer"));
-                }
-            });
-        }
-
-        function makeAnswerEditable(answerText) {
-            answerText.contentEditable = "true";
-            answerText.setAttribute("role", "textbox");
-            answerText.setAttribute("aria-label", "Texto da alternativa");
-            answerText.addEventListener("keydown", (event) => {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    answerText.blur();
-                }
-            });
-        }
-
-        function createAnswer(text = "Nova resposta") {
-            const option = document.createElement("div");
-            option.className = "answer-option";
-            option.innerHTML = `
-                <span class="answer-letter"></span>
-                <input type="radio" name="correct-answer">
-                <span class="answer-text">${text}</span>
-                <button class="delete-answer" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                        <path d="M3 6h18"></path>
-                        <path d="M8 6V4h8v2"></path>
-                        <path d="M19 6 18 20H6L5 6"></path>
-                        <path d="M10 11v5"></path>
-                        <path d="M14 11v5"></path>
-                    </svg>
-                </button>
-            `;
-
-            makeAnswerEditable(option.querySelector(".answer-text"));
-            answerList.appendChild(option);
-            refreshAnswerLetters();
-            option.querySelector(".answer-text").focus();
-        }
-
-        function getQuestionData() {
-            const answers = [...answerList.querySelectorAll(".answer-option")].map((option, index) => ({
-                letter: letters[index] || String(index + 1),
-                text: option.querySelector(".answer-text").textContent.trim(),
-                correct: option.querySelector('input[type="radio"]').checked
-            }));
-
-            return {
-                question: questionText.value.trim(),
-                theme: themeInput.value.trim(),
-                image: imageInput.files[0] ? imageInput.files[0].name : "",
-                score: Number(scoreInput.value),
-                answers
-            };
-        }
-
-        function validateQuestion(data) {
-            form.querySelectorAll(".is-invalid").forEach((item) => item.classList.remove("is-invalid"));
-
-            if (!data.question) {
-                questionText.classList.add("is-invalid");
-                return "Digite o texto da pergunta.";
-            }
-
-            if (!data.theme) {
-                themeInput.classList.add("is-invalid");
-                return "Digite o tema da pergunta.";
-            }
-
-            if (!Number.isFinite(data.score) || data.score < 0) {
-                scoreInput.classList.add("is-invalid");
-                return "Informe uma pontuação válida.";
-            }
-
-            if (data.answers.length < 2) {
-                return "Adicione pelo menos duas respostas.";
-            }
-
-            const emptyAnswer = data.answers.findIndex((answer) => !answer.text);
-
-            if (emptyAnswer !== -1) {
-                answerList.querySelectorAll(".answer-text")[emptyAnswer].classList.add("is-invalid");
-                return "Preencha todas as alternativas.";
-            }
-
-            if (!data.answers.some((answer) => answer.correct)) {
-                return "Marque uma resposta correta.";
-            }
-
-            return "";
-        }
-
-        [questionText].forEach((textarea) => {
-            updateCounter(textarea);
-            textarea.addEventListener("input", () => updateCounter(textarea));
+    if (question.source === "api" && apiEndpoint) {
+        await requestJson(`${apiEndpoint}/${encodeURIComponent(question.id)}`, {
+            method: "DELETE"
         });
+    }
 
-        imageInput.addEventListener("change", () => {
-            imageFileName.textContent = imageInput.files[0]
-                ? imageInput.files[0].name
-                : "Nenhuma imagem selecionada";
-        });
+    questions = questions.filter((item) => item.id !== question.id);
+    saveStoredQuestions(questions);
+    renderQuestions();
+}
 
-        answerList.querySelectorAll(".answer-text").forEach(makeAnswerEditable);
-        refreshAnswerLetters();
+searchInput.addEventListener("input", renderQuestions);
 
-        answerList.addEventListener("change", (event) => {
-            if (event.target.matches('input[type="radio"]')) {
-                setCorrectAnswer(event.target);
-            }
-        });
+tableBody.addEventListener("click", async (event) => {
+    const editButton = event.target.closest(".edit-question");
+    const deleteButton = event.target.closest(".delete-question");
 
-        answerList.addEventListener("click", (event) => {
-            const deleteButton = event.target.closest(".delete-answer");
+    if (!editButton && !deleteButton) {
+        return;
+    }
 
-            if (!deleteButton) {
-                return;
-            }
+    const row = event.target.closest("tr");
+    const question = questions.find((item) => String(item.id) === row.dataset.questionId);
 
-            const options = answerList.querySelectorAll(".answer-option");
+    if (!question) {
+        return;
+    }
 
-            if (options.length <= 2) {
-                showToast("A pergunta precisa ter pelo menos duas respostas.", "error");
-                return;
-            }
+    if (editButton) {
+        editQuestion(question);
+        return;
+    }
 
-            const option = deleteButton.closest(".answer-option");
-            const wasCorrect = option.querySelector('input[type="radio"]').checked;
-            option.remove();
+    deleteButton.disabled = true;
 
-            if (wasCorrect) {
-                const firstRadio = answerList.querySelector('input[type="radio"]');
-                firstRadio.checked = true;
-                setCorrectAnswer(firstRadio);
-            }
+    try {
+        await deleteQuestion(question);
+    } catch (error) {
+        alert("Nao foi possivel excluir a pergunta. Verifique se a API esta funcionando.");
+        deleteButton.disabled = false;
+        console.error(error);
+    }
+});
 
-            refreshAnswerLetters();
-            showToast("Resposta removida.");
-        });
-
-        addAnswerButton.addEventListener("click", () => {
-            if (answerList.querySelectorAll(".answer-option").length >= letters.length) {
-                showToast("Limite de alternativas atingido.", "error");
-                return;
-            }
-
-            createAnswer();
-        });
-
-        saveButton.addEventListener("click", () => {
-            const data = getQuestionData();
-            const error = validateQuestion(data);
-
-            if (error) {
-                showToast(error, "error");
-                return;
-            }
-
-            localStorage.setItem("perguntaCriada", JSON.stringify(data));
-            showToast("Pergunta salva com sucesso.");
-        });
+loadQuestions();

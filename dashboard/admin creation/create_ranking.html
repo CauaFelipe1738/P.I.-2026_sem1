@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Novo Ranking</title>
+    <link rel="stylesheet" href="../../css/create_user.css">
+    <link rel="stylesheet" href="../../css/create_ranking.css">
+    <link rel="stylesheet" href="../../css/base.css">
+</head>
+
+<body>
+    <main class="create-user-page ranking-page">
+        <header class="page-header">
+            <div class="page-title">
+                <h1>Criar Novo Ranking</h1>
+                <p>Defina o titulo, a quantidade de participantes e a descricao que vao aparecer na listagem.</p>
+            </div>
+
+            <a class="back-button" href="./ranking.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path d="M19 12H5"></path>
+                    <path d="m12 19-7-7 7-7"></path>
+                </svg>
+                Voltar para rankings
+            </a>
+        </header>
+
+        <form class="create-user-form" id="ranking-form">
+            <section class="form-grid ranking-form-grid">
+                <div class="form-card personal-card ranking-details-card">
+                    <div class="card-heading">
+                        <span class="heading-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M6 20V10"></path>
+                                <path d="M12 20V4"></path>
+                                <path d="M18 20v-7"></path>
+                                <path d="M4 20h16"></path>
+                            </svg>
+                        </span>
+                        <div>
+                            <h2>Dados do Ranking</h2>
+                            <p>Esses campos usam os mesmos nomes da tabela ranking no banco.</p>
+                        </div>
+                    </div>
+
+                    <label class="field ranking-title-field">
+                        <span>Titulo</span>
+                        <input type="text" name="titulo" placeholder="Ex: Top desempenho" maxlength="30">
+                    </label>
+
+                    <label class="field ranking-number-field">
+                        <span>Quantidade de pessoas</span>
+                        <input type="number" name="qtd_pessoas" placeholder="Ex: 10" min="0">
+                    </label>
+
+                    <label class="field ranking-about-field">
+                        <span>Sobre</span>
+                        <textarea name="sobre" placeholder="Descricao do ranking"></textarea>
+                    </label>
+                </div>
+
+                <aside class="form-card ranking-preview-card" aria-label="Previa do ranking">
+                    <div class="ranking-preview-top">
+                        <span class="heading-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M8 21h8"></path>
+                                <path d="M12 17v4"></path>
+                                <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path>
+                                <path d="M5 5H3v2a4 4 0 0 0 4 4"></path>
+                                <path d="M19 5h2v2a4 4 0 0 1-4 4"></path>
+                            </svg>
+                        </span>
+                        <span class="preview-label">Previa</span>
+                    </div>
+
+                    <div class="ranking-preview-title" id="ranking-preview-title">Top desempenho</div>
+                    <p class="ranking-preview-description" id="ranking-preview-description">
+                        Descricao do ranking
+                    </p>
+
+                    <div class="ranking-preview-metrics">
+                        <div>
+                            <span id="ranking-preview-count">10</span>
+                            <small>participantes</small>
+                        </div>
+                        <div>
+                            <span>#1</span>
+                            <small>posicao inicial</small>
+                        </div>
+                    </div>
+
+                    <div class="ranking-preview-list" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </aside>
+
+                <aside class="form-card info-card ranking-info-card">
+                    <span class="heading-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </span>
+
+                    <h2>Campos salvos</h2>
+                    <p><strong>titulo</strong> identifica o ranking na tela administrativa.</p>
+                    <p><strong>qtd_pessoas</strong> define quantos colaboradores entram na disputa.</p>
+                    <p><strong>sobre</strong> guarda a descricao vinculada ao ranking.</p>
+                </aside>
+            </section>
+
+            <footer class="form-actions">
+                <a class="cancel-button" href="./ranking.html">Cancelar</a>
+                <button class="save-button" type="submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                        <path d="M17 21v-8H7v8"></path>
+                        <path d="M7 3v5h8"></path>
+                    </svg>
+                    Salvar Ranking
+                </button>
+            </footer>
+        </form>
+    </main>
+
+    <script>
+        const API_BASE_URL = window.API_BASE_URL || "";
+        const RANKING_ENDPOINTS = [
+            `${API_BASE_URL}/api/rankings`,
+            `${API_BASE_URL}/api/ranking`,
+            `${API_BASE_URL}/api/rank`
+        ];
+        const STORAGE_KEY = "rankingsAdmin";
+        const form = document.querySelector("#ranking-form");
+        const titleInput = form.querySelector('input[name="titulo"]');
+        const countInput = form.querySelector('input[name="qtd_pessoas"]');
+        const aboutInput = form.querySelector('textarea[name="sobre"]');
+        const previewTitle = document.querySelector("#ranking-preview-title");
+        const previewCount = document.querySelector("#ranking-preview-count");
+        const previewDescription = document.querySelector("#ranking-preview-description");
+
+        async function requestJson(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    ...options.headers
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erro ${response.status}`);
+            }
+
+            return response.status === 204 ? null : response.json();
+        }
+
+        async function saveRankingToApi(data) {
+            for (const endpoint of RANKING_ENDPOINTS) {
+                try {
+                    return await requestJson(endpoint, {
+                        method: "POST",
+                        body: JSON.stringify(data)
+                    });
+                } catch (error) {
+                    console.warn(`Nao foi possivel salvar em ${endpoint}:`, error.message);
+                }
+            }
+
+            throw new Error("API indisponivel");
+        }
+
+        function saveRankingLocally(data) {
+            const rankings = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            rankings.push({
+                ...data,
+                id_ranking: Date.now()
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(rankings));
+        }
+
+        function updatePreview() {
+            previewTitle.textContent = titleInput.value.trim() || "Top desempenho";
+            previewCount.textContent = countInput.value || "10";
+            previewDescription.textContent = aboutInput.value.trim() || "Descricao do ranking";
+        }
+
+        [titleInput, countInput, aboutInput].forEach((input) => {
+            input.addEventListener("input", updatePreview);
+        });
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const titulo = String(formData.get("titulo") || "").trim();
+            const qtdPessoas = Number(formData.get("qtd_pessoas"));
+            const sobre = String(formData.get("sobre") || "").trim();
+
+            if (!titulo) {
+                alert("Digite o titulo do ranking.");
+                return;
+            }
+
+            if (!Number.isInteger(qtdPessoas) || qtdPessoas < 0) {
+                alert("Digite uma quantidade de pessoas valida.");
+                return;
+            }
+
+            const data = {
+                titulo,
+                qtd_pessoas: qtdPessoas,
+                sobre
+            };
+
+            try {
+                await saveRankingToApi(data);
+            } catch (error) {
+                saveRankingLocally(data);
+            }
+
+            window.location.href = "./ranking.html";
+        });
+    </script>
+</body>
+
+</html>

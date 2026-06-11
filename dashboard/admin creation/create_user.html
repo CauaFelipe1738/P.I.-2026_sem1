@@ -123,6 +123,59 @@
             </footer>
         </form>
     </main>
+
+    <script>
+        const form = document.querySelector(".create-user-form");
+        const passwordInput = document.querySelector('input[name="senha"]');
+        const passwordToggle = document.querySelector(".password-control button");
+        const storageKey = "usuariosAdmin";
+
+        function getInitials(name) {
+            return name
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part) => part[0].toUpperCase())
+                .join("");
+        }
+
+        passwordToggle.addEventListener("click", () => {
+            passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+        });
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const name = String(formData.get("nome") || "").trim();
+            const password = String(formData.get("senha") || "");
+            const accessValue = String(formData.get("tipo_acesso") || "usuario");
+
+            if (!name) {
+                alert("Digite o nome do usuário.");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("A senha deve ter no mínimo 6 caracteres.");
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem(storageKey)) || [];
+            const access = accessValue === "administrador" ? "Administrador" : "Usuário";
+
+            users.push({
+                name,
+                role: "Sem cargo definido",
+                access,
+                avatar: getInitials(name),
+                color: access === "Administrador" ? "am" : "cs"
+            });
+
+            localStorage.setItem(storageKey, JSON.stringify(users));
+            window.location.href = "./user.html";
+        });
+    </script>
 </body>
 
 </html>

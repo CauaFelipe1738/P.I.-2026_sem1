@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Usuários</title>
+    <title>Editar Questionarios</title>
     <link rel="stylesheet" href="../../css/user.css">
     <link rel="stylesheet" href="../../css/base.css">
 </head>
@@ -20,15 +20,15 @@
                 Voltar para Admin
             </a>
             <div class="page-title">
-                <h1>Editar Perguntas</h1>
-                <p>Gerencie e edite informações de perguntas existentes.</p>
+                <h1>Editar Questionarios</h1>
+                <p>Gerencie as datas de inicio e fim dos questionarios existentes.</p>
             </div>
-            <a class="create-button" type="button" href="create_pergunta.html">
+            <a class="create-button" type="button" href="create_quest.html">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                     <path d="M12 5v14"></path>
                     <path d="M5 12h14"></path>
                 </svg>
-                Criar Nova Pergunta
+                Criar Novo Questionario
             </a>
         </header>
 
@@ -38,7 +38,7 @@
                     <circle cx="11" cy="11" r="7"></circle>
                     <path d="m20 20-3.5-3.5"></path>
                 </svg>
-                <input type="search" placeholder="Buscar por pergunta..." aria-label="Buscar por pergunta">
+                <input type="search" placeholder="Buscar por id ou data..." aria-label="Buscar por id ou data">
             </label>
         </section>
 
@@ -46,17 +46,17 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Area</th>
-                        <th>Valor</th>
+                        <th>ID</th>
+                        <th>Data de Inicio</th>
+                        <th>Data de fim</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody id="questions-table-body"></tbody>
+                <tbody id="questionnaires-table-body"></tbody>
             </table>
 
             <footer class="table-footer">
-                <span>Mostrando 1 a 6 de 6 perguntas</span>
+                <span>Mostrando 0 de 0 questionarios</span>
                 <nav class="pagination" aria-label="Paginação">
                     <button class="page-arrow" type="button" aria-label="Página anterior">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
@@ -73,7 +73,7 @@
             </footer>
         </section>
     </main>
-    <script src="./pergunta.js"></script>
+    <script src="./questionario.js"></script>
 </body>
 
 </html>
