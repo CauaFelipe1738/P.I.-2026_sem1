@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_funcionario');
             $table->string('nome_funcionario', 40);
             $table->string('username', 40)->unique();
-            $table->string('senha', 40);
+            $table->string('senha', 60);
             $table->boolean('admin');
             $table->integer('pontos');
             $table->timestamps();
