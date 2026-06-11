@@ -5,6 +5,7 @@ const RANKING_ENDPOINTS = [
     `${API_BASE_URL}/api/rank`
 ];
 const STORAGE_KEY = "rankingsAdmin";
+const UPDATE_RANKING_PAGE = "./uptade_ranking.html";
 
 const tableBody = document.querySelector("#rankings-table-body");
 const searchInput = document.querySelector('.search-field input[type="search"]');
@@ -190,46 +191,9 @@ async function updateRankingOnApi(ranking) {
     }
 }
 
-async function editRanking(ranking) {
-    const titulo = prompt("Titulo do ranking:", ranking.titulo);
-
-    if (titulo === null) {
-        return;
-    }
-
-    const qtdPessoasValue = prompt("Quantidade de pessoas:", String(ranking.qtdPessoas));
-
-    if (qtdPessoasValue === null) {
-        return;
-    }
-
-    const qtdPessoas = Number(qtdPessoasValue);
-
-    if (!titulo.trim()) {
-        alert("Digite o titulo do ranking.");
-        return;
-    }
-
-    if (!Number.isInteger(qtdPessoas) || qtdPessoas < 0) {
-        alert("Digite uma quantidade de pessoas valida.");
-        return;
-    }
-
-    const sobre = prompt("Sobre o ranking:", ranking.sobre) ?? ranking.sobre;
-    const editedRanking = {
-        ...ranking,
-        titulo: titulo.trim(),
-        qtdPessoas,
-        sobre: sobre.trim()
-    };
-
-    if (ranking.source === "api" && apiEndpoint) {
-        await updateRankingOnApi(editedRanking);
-    }
-
-    rankings = rankings.map((item) => String(item.id) === String(ranking.id) ? editedRanking : item);
-    saveStoredRankings(rankings);
-    renderRankings();
+function editRanking(ranking) {
+    sessionStorage.setItem("rankingEditando", JSON.stringify(ranking));
+    window.location.href = `${UPDATE_RANKING_PAGE}?id=${encodeURIComponent(ranking.id)}&source=${encodeURIComponent(ranking.source)}`;
 }
 
 async function deleteRanking(ranking) {

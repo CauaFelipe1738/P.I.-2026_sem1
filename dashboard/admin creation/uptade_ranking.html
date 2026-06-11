@@ -4,97 +4,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Novo Usuário</title>
+    <title>Criar Novo Ranking</title>
     <link rel="stylesheet" href="../../css/create_user.css">
-    <link rel="stylesheet" href="../../css/base.css"> 
+    <link rel="stylesheet" href="../../css/create_ranking.css">
+    <link rel="stylesheet" href="../../css/base.css">
 </head>
 
 <body>
-    <main class="create-user-page">
+    <main class="create-user-page ranking-page">
         <header class="page-header">
             <div class="page-title">
-                <h1>Criar Novo Usuário</h1>
-                <p>Preencha os dados abaixo para adicionar um novo usuário à plataforma.</p>
+                <h1>Criar Novo Ranking</h1>
+                <p>Defina o titulo, a quantidade de participantes e a descricao que vao aparecer na listagem.</p>
             </div>
 
-            <a class="back-button" href="./user.html">
+            <a class="back-button" href="./ranking.html">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                     <path d="M19 12H5"></path>
                     <path d="m12 19-7-7 7-7"></path>
                 </svg>
-                Voltar para usuários
+                Voltar para rankings
             </a>
         </header>
 
-        <form class="create-user-form">
-            <section class="form-grid">
-                <div class="form-card personal-card">
+        <form class="create-user-form" id="ranking-form">
+            <section class="form-grid ranking-form-grid">
+                <div class="form-card personal-card ranking-details-card">
                     <div class="card-heading">
                         <span class="heading-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
+                                <path d="M6 20V10"></path>
+                                <path d="M12 20V4"></path>
+                                <path d="M18 20v-7"></path>
+                                <path d="M4 20h16"></path>
                             </svg>
                         </span>
-                        <h2>Informações Pessoais</h2>
+                        <div>
+                            <h2>Dados do Ranking</h2>
+                            <p>Esses campos usam os mesmos nomes da tabela ranking no banco.</p>
+                        </div>
                     </div>
 
-                    <label class="field">
-                        <span>Nome completo</span>
-                        <input type="text" name="nome" placeholder="Digite o nome completo">
+                    <label class="field ranking-title-field">
+                        <span>Titulo</span>
+                        <input type="text" name="titulo" placeholder="Ex: Top desempenho" maxlength="30">
                     </label>
 
-                    <label class="field password-field">
-                        <span>Senha</span>
-                        <span class="password-control">
-                            <input type="password" name="senha" placeholder="Digite a senha" minlength="6">
-                            <button type="button" aria-label="Mostrar senha">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </button>
-                        </span>
-                        <small>Mínimo de 6 caracteres.</small>
+                    <label class="field ranking-number-field">
+                        <span>Quantidade de pessoas</span>
+                        <input type="number" name="qtd_pessoas" placeholder="Ex: 10" min="0">
+                    </label>
+
+                    <label class="field ranking-about-field">
+                        <span>Sobre</span>
+                        <textarea name="sobre" placeholder="Descricao do ranking"></textarea>
                     </label>
                 </div>
 
-                <div class="form-card access-card">
-                    <div class="card-heading">
+                <aside class="form-card ranking-preview-card" aria-label="Previa do ranking">
+                    <div class="ranking-preview-top">
                         <span class="heading-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
-                                <path d="M12 8v4"></path>
-                                <path d="M12 16h.01"></path>
+                                <path d="M8 21h8"></path>
+                                <path d="M12 17v4"></path>
+                                <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path>
+                                <path d="M5 5H3v2a4 4 0 0 0 4 4"></path>
+                                <path d="M19 5h2v2a4 4 0 0 1-4 4"></path>
                             </svg>
                         </span>
-                        <h2>Acesso e Permissões</h2>
+                        <span class="preview-label">Previa</span>
                     </div>
 
-                    <fieldset class="access-options">
-                        <legend>Tipo de acesso</legend>
+                    <div class="ranking-preview-title" id="ranking-preview-title">Top desempenho</div>
+                    <p class="ranking-preview-description" id="ranking-preview-description">
+                        Descricao do ranking
+                    </p>
 
-                        <label class="radio-option">
-                            <input type="radio" name="tipo_acesso" value="administrador" checked>
-                            <span class="radio-mark"></span>
-                            <span class="radio-copy">
-                                <strong>Administrador</strong>
-                                <small>Acesso total à plataforma e todas as permissões.</small>
-                            </span>
-                        </label>
+                    <div class="ranking-preview-metrics">
+                        <div>
+                            <span id="ranking-preview-count">10</span>
+                            <small>participantes</small>
+                        </div>
+                        <div>
+                            <span>#1</span>
+                            <small>posicao inicial</small>
+                        </div>
+                    </div>
 
-                        <label class="radio-option">
-                            <input type="radio" name="tipo_acesso" value="usuario">
-                            <span class="radio-mark"></span>
-                            <span class="radio-copy">
-                                <strong>Usuário</strong>
-                                <small>Acesso limitado conforme permissões definidas.</small>
-                            </span>
-                        </label>
-                    </fieldset>
-                </div>
+                    <div class="ranking-preview-list" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </aside>
 
-                <aside class="form-card info-card">
+                <aside class="form-card info-card ranking-info-card">
                     <span class="heading-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <circle cx="12" cy="12" r="10"></circle>
@@ -103,77 +107,125 @@
                         </svg>
                     </span>
 
-                    <h2>Sobre os tipos de acesso</h2>
-                    <p>Administradores podem gerenciar usuários, criar questionários e visualizar relatórios completos.</p>
-                    <p>Usuários têm acesso limitado às funcionalidades permitidas para sua função.</p>
+                    <h2>Campos salvos</h2>
+                    <p><strong>titulo</strong> identifica o ranking na tela administrativa.</p>
+                    <p><strong>qtd_pessoas</strong> define quantos colaboradores entram na disputa.</p>
+                    <p><strong>sobre</strong> guarda a descricao vinculada ao ranking.</p>
                 </aside>
             </section>
 
             <footer class="form-actions">
-                <a class="cancel-button" href="./user.html">Cancelar</a>
+                <a class="cancel-button" href="./ranking.html">Cancelar</a>
                 <button class="save-button" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M19 8v6"></path>
-                        <path d="M22 11h-6"></path>
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                        <path d="M17 21v-8H7v8"></path>
+                        <path d="M7 3v5h8"></path>
                     </svg>
-                    Salvar Usuário
+                    Salvar Ranking
                 </button>
             </footer>
         </form>
     </main>
 
     <script>
-        const form = document.querySelector(".create-user-form");
-        const passwordInput = document.querySelector('input[name="senha"]');
-        const passwordToggle = document.querySelector(".password-control button");
-        const storageKey = "usuariosAdmin";
+        const API_BASE_URL = window.API_BASE_URL || "";
+        const RANKING_ENDPOINTS = [
+            `${API_BASE_URL}/api/rankings`,
+            `${API_BASE_URL}/api/ranking`,
+            `${API_BASE_URL}/api/rank`
+        ];
+        const STORAGE_KEY = "rankingsAdmin";
+        const form = document.querySelector("#ranking-form");
+        const titleInput = form.querySelector('input[name="titulo"]');
+        const countInput = form.querySelector('input[name="qtd_pessoas"]');
+        const aboutInput = form.querySelector('textarea[name="sobre"]');
+        const previewTitle = document.querySelector("#ranking-preview-title");
+        const previewCount = document.querySelector("#ranking-preview-count");
+        const previewDescription = document.querySelector("#ranking-preview-description");
 
-        function getInitials(name) {
-            return name
-                .split(" ")
-                .filter(Boolean)
-                .slice(0, 2)
-                .map((part) => part[0].toUpperCase())
-                .join("");
+        async function requestJson(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    ...options.headers
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erro ${response.status}`);
+            }
+
+            return response.status === 204 ? null : response.json();
         }
 
-        passwordToggle.addEventListener("click", () => {
-            passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+        async function saveRankingToApi(data) {
+            for (const endpoint of RANKING_ENDPOINTS) {
+                try {
+                    return await requestJson(endpoint, {
+                        method: "POST",
+                        body: JSON.stringify(data)
+                    });
+                } catch (error) {
+                    console.warn(`Nao foi possivel salvar em ${endpoint}:`, error.message);
+                }
+            }
+
+            throw new Error("API indisponivel");
+        }
+
+        function saveRankingLocally(data) {
+            const rankings = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            rankings.push({
+                ...data,
+                id_ranking: Date.now()
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(rankings));
+        }
+
+        function updatePreview() {
+            previewTitle.textContent = titleInput.value.trim() || "Top desempenho";
+            previewCount.textContent = countInput.value || "10";
+            previewDescription.textContent = aboutInput.value.trim() || "Descricao do ranking";
+        }
+
+        [titleInput, countInput, aboutInput].forEach((input) => {
+            input.addEventListener("input", updatePreview);
         });
 
-        form.addEventListener("submit", (event) => {
+        form.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const formData = new FormData(form);
-            const name = String(formData.get("nome") || "").trim();
-            const password = String(formData.get("senha") || "");
-            const accessValue = String(formData.get("tipo_acesso") || "usuario");
+            const titulo = String(formData.get("titulo") || "").trim();
+            const qtdPessoas = Number(formData.get("qtd_pessoas"));
+            const sobre = String(formData.get("sobre") || "").trim();
 
-            if (!name) {
-                alert("Digite o nome do usuário.");
+            if (!titulo) {
+                alert("Digite o titulo do ranking.");
                 return;
             }
 
-            if (password.length < 6) {
-                alert("A senha deve ter no mínimo 6 caracteres.");
+            if (!Number.isInteger(qtdPessoas) || qtdPessoas < 0) {
+                alert("Digite uma quantidade de pessoas valida.");
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem(storageKey)) || [];
-            const access = accessValue === "administrador" ? "Administrador" : "Usuário";
+            const data = {
+                titulo,
+                qtd_pessoas: qtdPessoas,
+                sobre
+            };
 
-            users.push({
-                name,
-                role: "Sem cargo definido",
-                access,
-                avatar: getInitials(name),
-                color: access === "Administrador" ? "am" : "cs"
-            });
+            try {
+                await saveRankingToApi(data);
+            } catch (error) {
+                saveRankingLocally(data);
+            }
 
-            localStorage.setItem(storageKey, JSON.stringify(users));
-            window.location.href = "./user.html";
+            window.location.href = "./ranking.html";
         });
     </script>
 </body>

@@ -44,6 +44,11 @@
                         <input type="text" name="nome" placeholder="Digite o nome completo">
                     </label>
 
+                    <label class="field">
+                        <span>Username</span>
+                        <input type="text" name="username" placeholder="Digite o username">
+                    </label>
+
                     <label class="field password-field">
                         <span>Senha</span>
                         <span class="password-control">
@@ -148,11 +153,17 @@
 
             const formData = new FormData(form);
             const name = String(formData.get("nome") || "").trim();
+            const username = String(formData.get("username") || "").trim();
             const password = String(formData.get("senha") || "");
             const accessValue = String(formData.get("tipo_acesso") || "usuario");
 
             if (!name) {
                 alert("Digite o nome do usuário.");
+                return;
+            }
+
+            if (!username) {
+                alert("Digite o username do usuário.");
                 return;
             }
 
@@ -166,6 +177,7 @@
 
             users.push({
                 name,
+                username,
                 role: "Sem cargo definido",
                 access,
                 avatar: getInitials(name),
