@@ -82,7 +82,7 @@ select {
     font-size: clamp(30px, 2.1vw, 34px);
     line-height: 1.05;
     letter-spacing: 0;
-    font-weight: 800;
+    font-weight: 800;   
 }
 
 .page-title p {
