@@ -184,3 +184,32 @@
         gap: 6px;
     }
 }
+
+.stats article {
+    background:
+        radial-gradient(circle at 80% 0%, rgba(56, 210, 248, 0.14), transparent 42%),
+        #121b30;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
+}
+
+.panel {
+    background:
+        radial-gradient(circle at 82% 0%, rgba(56, 210, 248, 0.12), transparent 36%),
+        linear-gradient(145deg, #14213d, #0d172b);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.panel:hover {
+    transform: translateY(-4px);
+    border-color: rgba(56, 210, 248, 0.42);
+    box-shadow: 0 26px 58px rgba(0, 0, 0, 0.3);
+}
+
+.btn-iniciar {
+    transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-iniciar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(56, 210, 248, 0.16);
+}

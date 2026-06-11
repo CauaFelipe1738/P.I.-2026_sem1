@@ -51,3 +51,31 @@ body.light-theme {
     line-height: 1.4;
   }
 }
+
+::selection {
+  color: #03111f;
+  background: #62e5ff;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease,
+    filter 180ms ease,
+    transform 180ms ease;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

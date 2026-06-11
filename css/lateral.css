@@ -5,16 +5,22 @@
 }
 
 .menu li {
-    padding: 12px 14px;
+    padding: 0;
     border-radius: 10px;
     border: 1px solid transparent;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .menu li a {
     color: white;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 14px;
+    border-radius: inherit;
 }
 
 .menu li a:visited,
@@ -166,8 +172,12 @@
     }
 
     .menu li {
-        padding: 10px 12px;
         font-size: 14px;
+    }
+
+    .menu li a {
+        min-height: 42px;
+        padding: 10px 12px;
     }
 
     .content {
@@ -188,4 +198,32 @@
     .profile-meta p {
         overflow-wrap: anywhere;
     }
+}
+
+.sidebar {
+    box-shadow: 18px 0 60px rgba(0, 0, 0, 0.22);
+}
+
+.brand h1 {
+    color: #ffffff;
+    text-shadow: 0 0 22px rgba(56, 210, 248, 0.28);
+}
+
+.menu li {
+    transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.menu li:hover {
+    background: rgba(56, 210, 248, 0.08);
+    border-color: rgba(56, 210, 248, 0.2);
+    transform: none;
+}
+
+.menu li.active {
+    background: linear-gradient(135deg, rgba(56, 210, 248, 0.18), rgba(124, 92, 255, 0.12));
+    box-shadow: inset 3px 0 0 var(--accent), 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.avatar {
+    box-shadow: 0 10px 24px rgba(56, 210, 248, 0.12);
 }
