@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Funcionario;
 use App\Models\Ranking;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,21 @@ class RankingController extends Controller
      */
     public function index()
     {
-        //
+        // Pega todos os funcionários, ordenados pela maior pontuação (desc)
+        $funcionarios = Funcionario::orderBy('pontos', 'desc')->get();
+
+        // Pega o usuário logado atualmente
+        $usuarioLogado = auth()->user();
+
+        // Encontra a posição do usuário logado na coleção (soma 1 porque o array no índice 0)
+        $posicaoLogado = $funcionarios->search(function ($user) use ($usuarioLogado) {
+            return $user->id_funcionario === $usuarioLogado->id_funcionario;
+        }) + 1;
+
+        // Pega o primeiro da lista para o card de "Maior Pontuação"
+        $maiorPontuacao = $funcionarios->first()->pontos ?? 0;
+
+        return view('ranking', compact('funcionarios', 'posicaoLogado', 'maiorPontuacao'));
     }
 
     /**

@@ -16,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class,
         ]);
+
+        // Solução temporária que ignora o CSRF nestas URLs para usar como API
+        $middleware->preventRequestForgery(except: [
+            'login',
+            'admin/*'
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

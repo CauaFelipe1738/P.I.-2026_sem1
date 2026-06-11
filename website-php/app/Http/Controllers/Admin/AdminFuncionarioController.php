@@ -59,9 +59,21 @@ class AdminFuncionarioController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Funcionario $funcionario)
+    public function show(Request $request, $id)
     {
-        //
+        // Busca o funcionário pelo ID. Se não achar, dá erro 404 automaticamente.
+        $funcionario = Funcionario::findOrFail($id);
+
+        // 1. Se a API (Postman/JS) estiver pedindo os dados em JSON
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $funcionario
+            ]);
+        }
+
+        // Se for o navegador, abre a tela de detalhes do usuário
+        return view('admin.funcionarios.show', compact('funcionario'));
     }
 
     /**
@@ -80,10 +92,10 @@ class AdminFuncionarioController extends Controller
         $funcionario = Funcionario::findOrFail($id);
 
         $request->validate([
-            'nome_funcionario' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:funcionario,username,' . $funcionario->id_funcionario . ',id_funcionario',
-            'admin' => 'required|boolean',
-            'pontos' => 'required|integer'
+            'nome_funcionario' => 'sometimes|string|max:255',
+            'username' => 'sometimes|string|max:255|unique:funcionario,username,' . $funcionario->id_funcionario . ',id_funcionario',
+            'admin' => 'sometimes|boolean',
+            'pontos' => 'sometimes|integer'
         ]);
 
         $dados = $request->only(['nome_funcionario', 'username', 'admin', 'pontos']);
