@@ -83,3 +83,35 @@
     border-radius: 14px;
     padding: 14px;
 }
+
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column;
+    }
+
+    .list-row {
+        grid-template-columns: 56px minmax(0, 1fr);
+    }
+
+    .list-row > *:nth-child(n + 3) {
+        grid-column: 2;
+    }
+}
+
+@media (max-width: 520px) {
+    .filters {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .panel,
+    .card {
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    .panel h3,
+    .card h3 {
+        font-size: 24px;
+    }
+}

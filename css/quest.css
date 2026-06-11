@@ -271,37 +271,6 @@ h1 {
   color: #0d1019;
 }
 
-.answer.is-review-correct {
-  background: rgba(31, 56, 38, 0.94);
-}
-
-.answer[aria-disabled="true"] {
-  cursor: default;
-}
-
-.answer[aria-disabled="true"]:hover {
-  transform: none;
-}
-
-.answer.is-review-correct .choice-ring {
-  width: auto;
-  height: auto;
-  min-width: 5.8rem;
-  padding: 0.4rem 0.55rem;
-  border: 1px solid rgba(73, 242, 51, 0.7);
-  border-radius: 999px;
-  background: rgba(73, 242, 51, 0.14);
-  color: var(--green-soft);
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0;
-  text-align: center;
-}
-
-.answer.is-review-correct .choice-ring::after {
-  content: "CORRETA";
-}
-
 .answer.is-incorrect {
   border-color: #ff6d7a;
   box-shadow: 0 0 0 1px rgba(255, 109, 122, 0.35), 0 0 1.25rem rgba(255, 109, 122, 0.18);
@@ -364,21 +333,6 @@ h1 {
   border: 1px solid rgba(202, 255, 193, 0.25);
   border-radius: 0.95rem;
   background: linear-gradient(180deg, rgba(23, 27, 37, 0.94), rgba(15, 18, 27, 0.98));
-}
-
-.result-card.is-complete {
-  border-color: rgba(73, 242, 51, 0.58);
-  background:
-    linear-gradient(180deg, rgba(28, 43, 35, 0.98), rgba(13, 16, 25, 0.98));
-  box-shadow: 0 0 0 1px rgba(73, 242, 51, 0.14), 0 1.25rem 2.5rem rgba(0, 0, 0, 0.24);
-}
-
-.result-card.is-complete .result-head h2 {
-  font-size: 1.3rem;
-}
-
-.result-card.is-complete .score-list strong {
-  font-size: 1.28rem;
 }
 
 .result-head {

@@ -350,3 +350,40 @@
     background: rgba(56, 210, 248, 0.17);
     color: #62e4ff;
 }
+
+@media (max-width: 760px) {
+    .tabs,
+    .chips,
+    .stats {
+        flex-wrap: wrap;
+    }
+
+    .stats article {
+        flex: 1 1 150px;
+    }
+
+    .topbar input {
+        width: 100%;
+    }
+
+    .save-button {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 520px) {
+    .profile {
+        align-items: flex-start;
+    }
+
+    .external-buttons,
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .chip,
+    .tab {
+        min-height: 38px;
+    }
+}

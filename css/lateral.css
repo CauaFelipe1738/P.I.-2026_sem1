@@ -73,11 +73,12 @@
 
 .content {
     padding: 18px 20px 24px;
+    min-width: 0;
 }
 
 .topbar {
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
     gap: 14px;
 }
@@ -95,4 +96,74 @@
 
 .page.active {
   display: block;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding: 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .brand h1 {
+        font-size: 22px;
+    }
+
+    .menu {
+        grid-auto-flow: column;
+        grid-auto-columns: max-content;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .menu li {
+        white-space: nowrap;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .hero {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    .sidebar {
+        gap: 14px;
+        padding: 14px 12px;
+    }
+
+    .menu li {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .content {
+        padding: 12px;
+    }
+
+    .profile {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .profile-meta strong,
+    .profile-meta p {
+        overflow-wrap: anywhere;
+    }
 }

@@ -128,10 +128,9 @@ svg {
 }
 
 .content-grid {
+    display: grid;
     grid-template-columns: minmax(0, 2.35fr) minmax(360px, 1fr);
     gap: 20px;
-    display: flex;
-    justify-content: center;
 }
 
 .main-column {
@@ -570,5 +569,64 @@ svg {
         grid-column: 3 / -1;
         justify-self: start;
         white-space: normal;
+    }
+}
+
+@media (max-width: 520px) {
+    .quest-page {
+        padding: 20px 12px;
+    }
+
+    .page-title h1 {
+        font-size: 28px;
+    }
+
+    .page-title p,
+    .bank-title p,
+    .setting-row p {
+        font-size: 15px;
+    }
+
+    .info-panel,
+    .dates-panel,
+    .questions-panel,
+    .bank-panel,
+    .settings-panel {
+        padding: 22px 14px;
+    }
+
+    .section-title {
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .question-item {
+        grid-template-columns: 34px minmax(0, 1fr) 40px 40px;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .drag-handle {
+        display: none;
+    }
+
+    .question-number {
+        width: 34px;
+        height: 34px;
+    }
+
+    .question-item p {
+        grid-column: 2 / -1;
+    }
+
+    .icon-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .setting-row {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 24px 0;
     }
 }

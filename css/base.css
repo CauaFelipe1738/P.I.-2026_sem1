@@ -20,6 +20,7 @@ body {
   color: var(--text);
   transition: background 220ms ease, color 220ms ease;
   caret-color: transparent;
+  overflow-x: hidden;
 }
 
 body.light-theme {

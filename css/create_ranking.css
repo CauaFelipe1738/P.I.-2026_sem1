@@ -201,7 +201,28 @@
         align-items: stretch;
     }
 
+    .ranking-preview-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
     .ranking-preview-metrics {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .ranking-preview-card,
+    .ranking-info-card {
+        padding: 22px 14px;
+    }
+
+    .ranking-preview-title {
+        font-size: 28px;
+        overflow-wrap: anywhere;
+    }
+
+    .ranking-preview-description {
+        font-size: 15px;
     }
 }

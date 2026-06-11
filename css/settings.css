@@ -286,3 +286,55 @@
     gap: 36px;
 }
 
+@media (max-width: 980px) {
+    .settings-board {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-editor {
+        grid-template-columns: 132px 1fr;
+    }
+
+    .field-wide {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .settings-card {
+        padding: 22px 16px;
+    }
+
+    .settings-card-header,
+    .settings-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .profile-editor {
+        grid-template-columns: 1fr;
+    }
+
+    .avatar-editor {
+        justify-self: center;
+    }
+
+    .settings-option-block {
+        padding-right: 0;
+    }
+
+    .mode-switch {
+        position: static;
+        width: max-content;
+        margin-top: 12px;
+    }
+
+    .security-action {
+        gap: 14px;
+    }
+
+    .save-button {
+        width: 100%;
+        min-width: 0;
+    }
+}

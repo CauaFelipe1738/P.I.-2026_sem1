@@ -717,8 +717,9 @@ input {
     }
 
     .answer-option {
-        grid-template-columns: 48px 36px minmax(0, 1fr) 38px;
-        column-gap: 2px;
+        grid-template-columns: 42px minmax(0, 1fr) 38px;
+        gap: 8px;
+        padding: 10px;
     }
 
     .answer-letter {
@@ -730,10 +731,18 @@ input {
     .answer-option input[type="radio"] {
         width: 22px;
         height: 22px;
+        grid-column: 1;
+        grid-row: 2;
     }
 
     .answer-text {
+        grid-column: 2 / -1;
         padding: 0 12px;
+    }
+
+    .delete-answer {
+        grid-column: 3;
+        grid-row: 1;
     }
 
     .delete-answer svg {
@@ -742,7 +751,22 @@ input {
     }
 
     .correct-badge {
-        margin-left: 86px;
+        margin-left: 50px;
         font-size: 12px;
+    }
+
+    .tips-copy {
+        flex-direction: column;
+    }
+
+    textarea {
+        padding-right: 20px;
+    }
+
+    .textarea-wrap > small {
+        position: static;
+        display: block;
+        margin-top: 8px;
+        text-align: right;
     }
 }

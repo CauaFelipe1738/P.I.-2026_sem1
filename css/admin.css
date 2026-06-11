@@ -213,3 +213,64 @@ th {
     font-size: 36px;
     line-height: 1;
 }
+
+@media (max-width: 1050px) {
+    .admin-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .quick-actions,
+    .recent-users {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 760px) {
+    .admin-page {
+        padding: 0;
+    }
+
+    .admin-area {
+        padding: 22px 18px;
+    }
+
+    .admin-heading {
+        flex-direction: column;
+    }
+
+    .admin-heading h3 {
+        font-size: 26px;
+    }
+
+    .admin-metrics,
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .action-card {
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 14px;
+        padding: 18px;
+    }
+
+    .action-arrow {
+        display: none;
+    }
+
+    .action-copy strong,
+    .action-copy small {
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 420px) {
+    .action-card {
+        grid-template-columns: 1fr;
+    }
+
+    .action-icon {
+        width: 52px;
+        height: 52px;
+    }
+}
