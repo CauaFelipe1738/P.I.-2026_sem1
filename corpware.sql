@@ -52,9 +52,11 @@ CREATE TABLE IF NOT EXISTS `funcionario` (
   `pontos` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_funcionario`),
   UNIQUE KEY `nome_funcionario` (`username`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Copiando dados para a tabela corpware.funcionario: ~1 rows (aproximadamente)
+INSERT INTO `funcionario` (`id_funcionario`, `username`, `nome_funcionario`, `senha`, `admin`, `pontos`) VALUES
+	(4, 'cara', 'carabrabo', 'alguma', 1, 20);
 
 -- Copiando estrutura para tabela corpware.funcionario_pergunta_lista
 CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
@@ -69,7 +71,21 @@ CREATE TABLE IF NOT EXISTS `funcionario_pergunta_lista` (
   CONSTRAINT `funcionario_pergunta_lista_ibfk_3` FOREIGN KEY (`idf_resposta`) REFERENCES `resposta` (`id_resposta`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.funcionario_pergunta_lista: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.funcionario_pergunta_lista: ~1 rows (aproximadamente)
+INSERT INTO `funcionario_pergunta_lista` (`idf_funcionario`, `idf_pergunta_lista`, `idf_resposta`) VALUES
+	(4, 7, 5);
+
+-- Copiando estrutura para view corpware.funcio_ranque
+-- Criando tabela temporária para evitar erros de dependência de VIEW
+CREATE TABLE `funcio_ranque` (
+	`id_funcionario` INT NOT NULL,
+	`username` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`nome_funcionario` VARCHAR(1) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`admin` TINYINT(1) NOT NULL,
+	`pontos` INT UNSIGNED NOT NULL,
+	`titulo` VARCHAR(1) NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`sobre` TEXT NULL COLLATE 'utf8mb4_0900_ai_ci'
+) ENGINE=MyISAM;
 
 -- Copiando estrutura para tabela corpware.lista
 CREATE TABLE IF NOT EXISTS `lista` (
@@ -111,9 +127,11 @@ CREATE TABLE IF NOT EXISTS `pergunta_lista` (
   KEY `pergunta_lista_ibfk_2` (`idf_lista`),
   CONSTRAINT `pergunta_lista_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`) ON DELETE CASCADE,
   CONSTRAINT `pergunta_lista_ibfk_2` FOREIGN KEY (`idf_lista`) REFERENCES `lista` (`id_lista`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.pergunta_lista: ~1 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.pergunta_lista: ~0 rows (aproximadamente)
+INSERT INTO `pergunta_lista` (`id_pergunta_lista`, `idf_pergunta`, `idf_lista`) VALUES
+	(7, 1, 1);
 
 -- Copiando estrutura para procedure corpware.quest_info
 DELIMITER //
@@ -158,9 +176,7 @@ CREATE PROCEDURE `responder`(IN x INT, in y int, in z int)
 BEGIN
 DECLARE recompensa INT;
 
-select (valor * solucao) into recompensa from resposta
-inner join pergunta on resposta.idf_pergunta = pergunta.id_pergunta
-where id_resposta = z;
+set recompensa = vrecompensa(z);
 
 INSERT INTO funcionario_pergunta_lista (idf_funcionario,idf_pergunta_lista,idf_resposta) VALUE (x,y,z);
 
@@ -179,9 +195,28 @@ CREATE TABLE IF NOT EXISTS `resposta` (
   PRIMARY KEY (`id_resposta`),
   KEY `resposta_ibfk_1` (`idf_pergunta`),
   CONSTRAINT `resposta_ibfk_1` FOREIGN KEY (`idf_pergunta`) REFERENCES `pergunta` (`id_pergunta`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Copiando dados para a tabela corpware.resposta: ~4 rows (aproximadamente)
+-- Copiando dados para a tabela corpware.resposta: ~0 rows (aproximadamente)
+INSERT INTO `resposta` (`id_resposta`, `idf_pergunta`, `resposta`, `solucao`) VALUES
+	(5, 1, 'é essa', 1);
+
+-- Copiando estrutura para função corpware.vrecompensa
+DELIMITER //
+CREATE FUNCTION `vrecompensa`(z int) RETURNS int
+    DETERMINISTIC
+BEGIN
+  DECLARE recompensa int;
+  select (valor * solucao) into recompensa from resposta
+  inner join pergunta on resposta.idf_pergunta = pergunta.id_pergunta
+  where id_resposta = z;
+  RETURN recompensa;
+END//
+DELIMITER ;
+
+-- Removendo tabela temporária e criando a estrutura VIEW final
+DROP TABLE IF EXISTS `funcio_ranque`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `funcio_ranque` AS select `funcionario`.`id_funcionario` AS `id_funcionario`,`funcionario`.`username` AS `username`,`funcionario`.`nome_funcionario` AS `nome_funcionario`,`funcionario`.`admin` AS `admin`,`funcionario`.`pontos` AS `pontos`,`ranking`.`titulo` AS `titulo`,`ranking`.`sobre` AS `sobre` from ((`funcionario` join (select `funcionario`.`id_funcionario` AS `id_funcionario`,min(`ranking`.`qtd_pessoas`) AS `minimo` from ((`funcionario` join (select `funcionario`.`id_funcionario` AS `id_funcionario`,row_number() OVER (ORDER BY `funcionario`.`pontos` desc )  AS `row_position` from `funcionario`) `positions` on((`positions`.`id_funcionario` = `funcionario`.`id_funcionario`))) left join `ranking` on((`positions`.`row_position` <= `ranking`.`qtd_pessoas`))) group by `funcionario`.`id_funcionario`) `asociacao` on((`asociacao`.`id_funcionario` = `funcionario`.`id_funcionario`))) left join `ranking` on((`ranking`.`qtd_pessoas` = `asociacao`.`minimo`)));
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
