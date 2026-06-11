@@ -28,9 +28,8 @@
                 </aside>
             </aside>
 
-            <!-- header/top bar -->
-
             <main class="content">
+
                 <header class="topbar">
                     <div class="profile">
                         <div class="profile-meta">
@@ -43,41 +42,98 @@
                     </div>
                 </header>
 
-                    <div class="hero">
-                        <div>
-                            <h2>Ranking por Colaborador</h2>
-                            <p class="subtitle">Visualize pontuação, ritmo de conclusão e engajamento nos módulos
-                                obrigatórios.</p>
-                        </div>
-                        <div class="stats">
-                            <article>
-                                <span>MAIOR PONTUAÇÃO</span>
-                                <strong>18,9k</strong>
-                            </article>
-                            <article>
-                                <span>SUA POSIÇÃO</span>
-                                <strong>#08</strong>
-                            </article>
-                        </div>
+                <div class="hero">
+                    <div>
+                        <h2>Ranking por Colaborador</h2>
+                        <p class="subtitle">
+                            Visualize pontuação, ritmo de conclusão e engajamento nos módulos obrigatórios.
+                        </p>
                     </div>
 
-                    <div class="list">
-                        <article class="list-row">
-                            <span>#01</span><strong>Ana Costa</strong><em>Compliance e Governança</em><b>18,9k XP</b>
+                    <div class="stats">
+                        <article>
+                            <span>MAIOR PONTUAÇÃO</span>
+                            <strong>18,9k</strong>
                         </article>
-                        <article class="list-row">
-                            <span>#02</span><strong>Pedro Lima</strong><em>Segurança da Informação</em><b>17,2k XP</b>
-                        </article>
-                        <article class="list-row me">
-                            <span>#03</span><strong>Alex Chen</strong><em>Boas Práticas Técnicas</em><b>12,4k XP</b>
-                        </article>
-                        <article class="list-row">
-                            <span>#04</span><strong>Marina Alves</strong><em>Processos Internos</em><b>11,8k XP</b>
+                        <article>
+                            <span>SUA POSIÇÃO</span>
+                            <strong>#08</strong>
                         </article>
                     </div>
+                </div>
+
+                <div class="list">
+
+                    <article class="list-row">
+                        <span>#01</span>
+                        <strong>Ana Costa</strong>
+                        <em data-tooltip="Ganhou esse título por atingir 18k XP e completar todos os módulos com alta performance">
+                            Poseidon Suprmo
+                        </em>
+                        <b>18k XP</b>
+                    </article>
+
+                    <article class="list-row">
+                        <span>#02</span>
+                        <strong>Pedro Lima</strong>
+                        <em data-tooltip="Título baseado em consistência e 15k XP acumulados">
+                            Principe dos Mares
+                        </em>
+                        <b>17k XP</b>
+                    </article>
+
+                    <article class="list-row me">
+                        <span>#03</span>
+                        <strong>Alex Chen</strong>
+                        <em data-tooltip="Reconhecimento por alta taxa de acerto e participação ativa nos módulos">
+                            Lutador mexicano
+                        </em>
+                        <b>12,4k XP</b>
+                    </article>
+
+                    <article class="list-row">
+                        <span>#04</span>
+                        <strong>Marina Alves</strong>
+                        <em data-tooltip="Evolução consistente em processos internos e treinamentos obrigatórios">
+                            Processos Internos
+                        </em>
+                        <b>11,8k XP</b>
+                    </article>
+
+                </div>
+
             </main>
-            <script src="./ranking.js"></script>
+        </div>
 
+        <script src="./ranking.js"></script>
+    </main>
 </body>
+<script>
+const titulos = document.querySelectorAll(".list-row em");
 
+// cria tooltip único (reutilizável)
+const tooltip = document.createElement("div");
+tooltip.classList.add("tooltip");
+document.body.appendChild(tooltip);
+
+titulos.forEach((item) => {
+    item.addEventListener("mouseenter", (e) => {
+        const texto = e.target.getAttribute("data-tooltip");
+
+        tooltip.textContent = texto;
+        tooltip.classList.add("active");
+    });
+
+    item.addEventListener("mousemove", (e) => {
+        tooltip.style.left = e.pageX + 15 + "px";
+        tooltip.style.top = e.pageY + 15 + "px";
+    });
+
+    item.addEventListener("mouseleave", () => {
+        tooltip.classList.remove("active");
+    });
+});
+</script>
 </html>
+
+
