@@ -10,6 +10,10 @@ const completionSubtitle = document.querySelector("#completion-subtitle");
 const skippedCountEl = document.querySelector("#skipped-count");
 const correctCountEl = document.querySelector("#correct-count");
 const incorrectCountEl = document.querySelector("#incorrect-count");
+const answersContainer = document.querySelector(".answers");
+const actionRow = document.querySelector(".action-row");
+const resultCard = document.querySelector(".result-card");
+const isReviewMode = new URLSearchParams(window.location.search).get("review") === "1";
 
 
 const questions = [
@@ -54,6 +58,7 @@ const TREINAMENTO_ID = "seguranca_info";
 
 let toastTimer;
 let isAdvancing = false;
+let isReviewing = false;
 
 function salvarProgresso() {
 
@@ -83,7 +88,7 @@ function showToast(message) {
 }
 
 function setSelected(answer) {
-  if (isAdvancing) return;
+  if (isAdvancing || isReviewing) return;
 
   answers.forEach((item) => {
     const isCurrent = item === answer;
@@ -94,12 +99,13 @@ function setSelected(answer) {
 
 function clearSelectedAnswer() {
   answers.forEach((answer) => {
-    answer.classList.remove("is-selected", "is-correct", "is-incorrect");
+    answer.classList.remove("is-selected", "is-correct", "is-incorrect", "is-review-correct");
     answer.setAttribute("aria-checked", "false");
+    answer.removeAttribute("aria-disabled");
   });
 }
 
-function loadQuestion(index) {
+function loadQuestion(index, reviewMode = false) {
   const question = questions[index];
   questionTitle.textContent = question.title;
 
@@ -111,8 +117,23 @@ function loadQuestion(index) {
   clearSelectedAnswer();
   progressStatus.textContent = `${index + 1} / ${questions.length} QUESTÕES`;
   progressFill.style.width = `${((index + 1) / questions.length) * 100}%`;
+  isReviewing = reviewMode;
   confirmButton.disabled = false;
   isAdvancing = false;
+
+  if (reviewMode) {
+    const correctAnswer = answers.find((answer) => answer.dataset.option === question.correctOption);
+
+    answers.forEach((answer) => {
+      answer.setAttribute("aria-disabled", "true");
+      answer.setAttribute("aria-checked", String(answer.dataset.option === question.correctOption));
+    });
+
+    correctAnswer?.classList.add("is-correct", "is-review-correct");
+    confirmButton.textContent = index === questions.length - 1 ? "VOLTAR AO DASHBOARD" : "PROXIMA QUESTAO";
+  } else {
+    confirmButton.textContent = "CONFIRMAR RESPOSTA";
+  }
 }
 
 function updateStatsUi() {
@@ -136,11 +157,22 @@ function showCompletionStats() {
   completionTitle.textContent = "Quiz finalizado";
   completionSubtitle.textContent = `Você acertou ${correctCount}, errou ${incorrectCount} e pulou ${skippedCount}.`;
   questionTitle.textContent = "Resultado final";
-  document.querySelector(".answers").hidden = true;
-  document.querySelector(".action-row").hidden = true;
+  answersContainer.hidden = true;
+  actionRow.hidden = true;
+  resultCard.classList.add("is-complete");
   progressStatus.textContent = `${questions.length} / ${questions.length} QUESTÕES`;
   progressFill.style.width = "100%";
   showToast("Quiz finalizado! Veja seu desempenho no painel.");
+}
+
+function loadReviewQuestion(index) {
+  answersContainer.hidden = false;
+  actionRow.hidden = false;
+  completionBanner.hidden = false;
+  completionTitle.textContent = "Revisao das respostas";
+  completionSubtitle.textContent = "A alternativa correta aparece marcada ao lado da opcao.";
+  resultCard.classList.add("is-complete");
+  loadQuestion(index, true);
 }
 
 function advanceQuestion() {
@@ -165,6 +197,17 @@ answers.forEach((answer) => {
 });
 
 confirmButton.addEventListener("click", () => {
+  if (isReviewing) {
+    if (currentQuestionIndex >= questions.length - 1) {
+      window.location.href = "./dashboard.html";
+      return;
+    }
+
+    currentQuestionIndex += 1;
+    loadReviewQuestion(currentQuestionIndex);
+    return;
+  }
+
   if (isAdvancing) return;
 
   const selected = document.querySelector(".answer.is-selected");
@@ -194,4 +237,9 @@ confirmButton.addEventListener("click", () => {
 });
 
 updateStatsUi();
-loadQuestion(currentQuestionIndex);
+if (isReviewMode) {
+  loadReviewQuestion(currentQuestionIndex);
+} else {
+  loadQuestion(currentQuestionIndex);
+}
+
