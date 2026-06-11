@@ -1,8 +1,6 @@
 const answers = Array.from(document.querySelectorAll(".answer"));
 const toast = document.querySelector("#toast");
-const timer = document.querySelector("#timer");
 const confirmButton = document.querySelector(".confirm-button");
-const skipButton = document.querySelector(".skip-button");
 const questionTitle = document.querySelector("#question-title");
 const progressStatus = document.querySelector(".progress-meta span");
 const progressFill = document.querySelector(".progress-fill");
@@ -12,6 +10,7 @@ const completionSubtitle = document.querySelector("#completion-subtitle");
 const skippedCountEl = document.querySelector("#skipped-count");
 const correctCountEl = document.querySelector("#correct-count");
 const incorrectCountEl = document.querySelector("#incorrect-count");
+
 
 const questions = [
   {
@@ -50,9 +49,29 @@ let currentQuestionIndex = 0;
 let skippedCount = 0;
 let correctCount = 0;
 let incorrectCount = 0;
-let secondsLeft = 1800;
+
+const TREINAMENTO_ID = "seguranca_info";
+
 let toastTimer;
 let isAdvancing = false;
+
+function salvarProgresso() {
+
+  const respondidas =
+    correctCount +
+    incorrectCount +
+    skippedCount;
+
+  localStorage.setItem(
+    TREINAMENTO_ID,
+    JSON.stringify({
+      respondidas,
+      total: questions.length,
+      concluido: respondidas === questions.length
+    })
+  );
+
+}
 
 function showToast(message) {
   toast.textContent = message;
@@ -71,12 +90,6 @@ function setSelected(answer) {
     item.classList.toggle("is-selected", isCurrent);
     item.setAttribute("aria-checked", String(isCurrent));
   });
-}
-
-function formatTime(totalSeconds) {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
 function clearSelectedAnswer() {
@@ -99,7 +112,6 @@ function loadQuestion(index) {
   progressStatus.textContent = `${index + 1} / ${questions.length} QUESTÕES`;
   progressFill.style.width = `${((index + 1) / questions.length) * 100}%`;
   confirmButton.disabled = false;
-  skipButton.disabled = false;
   isAdvancing = false;
 }
 
@@ -110,6 +122,15 @@ function updateStatsUi() {
 }
 
 function showCompletionStats() {
+
+  localStorage.setItem(
+  TREINAMENTO_ID,
+  JSON.stringify({
+    respondidas: questions.length,
+    total: questions.length,
+    concluido: true
+  })
+);
   isAdvancing = true;
   completionBanner.hidden = false;
   completionTitle.textContent = "Quiz finalizado";
@@ -136,23 +157,11 @@ function advanceQuestion() {
 function scheduleAdvance() {
   isAdvancing = true;
   confirmButton.disabled = true;
-  skipButton.disabled = true;
+
   setTimeout(advanceQuestion, 900);
 }
-
-timer.textContent = formatTime(secondsLeft);
-
 answers.forEach((answer) => {
   answer.addEventListener("click", () => setSelected(answer));
-});
-
-skipButton.addEventListener("click", () => {
-  if (isAdvancing) return;
-
-  skippedCount += 1;
-  updateStatsUi();
-  showToast("Questão pulada. Avançando para a próxima pergunta...");
-  scheduleAdvance();
 });
 
 confirmButton.addEventListener("click", () => {
@@ -169,10 +178,12 @@ confirmButton.addEventListener("click", () => {
 
   if (selected.dataset.option === correctOption) {
     correctCount += 1;
+    salvarProgresso();
     selected.classList.add("is-correct");
     showToast("Resposta correta! Avançando para a próxima pergunta...");
   } else {
     incorrectCount += 1;
+    salvarProgresso();
     selected.classList.add("is-incorrect");
     correctAnswer.classList.add("is-correct");
     showToast(`Resposta incorreta. A correta era ${correctOption}.`);
@@ -184,8 +195,3 @@ confirmButton.addEventListener("click", () => {
 
 updateStatsUi();
 loadQuestion(currentQuestionIndex);
-
-setInterval(() => {
-  secondsLeft = Math.max(0, secondsLeft - 1);
-  timer.textContent = formatTime(secondsLeft);
-}, 1000);
