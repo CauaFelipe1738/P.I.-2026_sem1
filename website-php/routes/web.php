@@ -14,6 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
     Route::get('/quiz/{id_lista}', [ListaController::class, 'show'])->name('quiz.show');
+    Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
 });
 
 // Rotas exclusivas para administradores

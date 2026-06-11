@@ -3,7 +3,7 @@
 @section('title', 'Dashboard - CorpWare')
 
 @section('styles')
-  <link rel="stylesheet" href="{{ asset('css/dashboard/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/pages/dashboard.css') }}">
 @endsection
 
 @section('content')
