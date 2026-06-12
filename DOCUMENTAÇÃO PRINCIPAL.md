@@ -118,21 +118,31 @@ _Fluxo Principal_
 # Tecnologia da Informação e da Conectividade
 
 ## Descrição da Comunicação do Sistema
-
+A plataforma possui um sistema de comunicação entre o Front-end, Back-end e o Banco de Dados. o sistema funciona baseado em arquitetura cliente-servidor: Os clientes fazem requisições para o servidor que dispõe do conteúdo da plataforma e armazena os dados. Os hosts devem estar na mesma rede que o servidor para realizar requisições.
+Neste caso, o front-end do site requisitado é guardado no navegador do cliente, e todas as informações do banco de dados são conversam com o Front-end pelo uso de APIs, que pegam a informação bruta, convertem para uma formatação que o front-end entenda e vice-versa. Cada requisição enviada para o servidor contém as especificação de uma ação que incluem visualização e alteração de dados do banco.
 
 ## Topologia de Rede
+Para uma implementação real da rede, propõe-se a topologia estrela, onde o switch serve como ponte para comunicação de todos os outros hosts.
 
 ## Protocolos Utilizados
-
-## Conceitos de Endereçamento
+Entre os principais protocolos que são utilizados para comunicação, destaca-se: 
+- DNS: que resolve o endereço IP do servidor da plataforma para um nome acessível e intuitivo;
+- DHCP: efetua endereçamento dinâmico de computadores, prevenindo erros de endereçamento e trabalho repetitivo;
+- HTTP: atua na camada de aplicação do modelo OSI, mostrando o conteúdo do site para o usuário e processando as ações que ele realiza para solicitar ao servidor.
+- TCP: atua na camada de transporte, fazendo a ponte entre um dado e outro enquanto garante que cada pacote seja enviado corretamente;
+- IP: atua na camada de rede, ele define uma separação lógica entre os dispositivos.
 
 ## Segurança Básica
- 
+O sistema de rede possui restrição de administradores para certas ações como alteração de dados, previnindo ações arriscadas que comprometem a integridade dos dados. Além disso, a plataforma é acessada somente pela rede interna do servidor (Intranet), que aplicado à ambientes reais, seria acessado somente pelo hosts dentro da rede de uma empresa.
+Os dados sensíveis são criptografados para manter a integridade dos dados.
+
 ## Escalabilidade
+Como o sistema atua numa arquitetura cliente-servidor, adicionar novos servidores seria uma solução para atender mais clientes, uma vez que iria diminuir a sobrecarga de requisições.
+Outra possibilidade- que não foi concebida nesta implementação- é de usuários acessarem a plataforma fora da rede local do servidor (Internet), que exigiria um servidor em uma rede pública para atender usuários exteriores.
 
 ## Diagrama de Rede
-
-## Clareza de Pesquisa
+<img width="797" height="405" alt="Captura de tela 2026-06-11 194344" src="https://github.com/user-attachments/assets/50838897-68ad-483d-8c94-0255629992e6" />
+Na figura acima, os computadores se comunicam dentro de uma rede interna, e acessam os serviços da plataforma. Dessa forma, o acesso é feito exclusivamente pelo usuários dentro da empresa.
 
 # Banco de dados
 
