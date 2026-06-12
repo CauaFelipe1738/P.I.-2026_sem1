@@ -1,4 +1,4 @@
-# Engenharia de software
+[fluxograma.drawio](https://github.com/user-attachments/files/28903084/fluxograma.drawio)# Engenharia de software
 
 ## Requisitos Funcionais
 - Login/registro de usuário, diferenciando funcionário e gerentes. <br>
@@ -150,5 +150,4 @@ Na figura acima, os computadores se comunicam dentro de uma rede interna, e aces
 
 # Linguagem de programação
 
-*fluxograma*
-
+<img width="1534" height="1291" alt="Diagrama sem nome drawio" src="https://github.com/user-attachments/assets/05a203c1-1a42-4cc0-b679-593f88fbd1b3" />
