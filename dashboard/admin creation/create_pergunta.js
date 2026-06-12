@@ -8,8 +8,17 @@
         const scoreInput = document.querySelector("#question-score");
         const imageInput = document.querySelector("#question-image");
         const imageFileName = document.querySelector("#image-file-name");
+        const themeModal = document.querySelector("#theme-modal");
+        const openThemeModalButton = document.querySelector("#open-theme-modal");
+        const closeThemeModalButton = document.querySelector("#close-theme-modal");
+        const cancelThemeModalButton = document.querySelector("#cancel-theme-modal");
+        const saveThemeButton = document.querySelector("#save-theme");
+        const newThemeInput = document.querySelector("#new-theme-name");
 
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const THEMES_STORAGE_KEY = "temasPergunta";
+        const defaultThemes = [
+        ];
         let toastTimer;
 
         function showToast(message, type = "success") {
@@ -36,7 +45,98 @@
             counter.textContent = `${textarea.value.length}/${textarea.maxLength}`;
         }
 
+        function normalizeThemeName(theme) {
+            return theme.trim().replace(/\s+/g, " ");
+        }
+
+        function getStoredThemes() {
+            try {
+                const storedThemes = JSON.parse(localStorage.getItem(THEMES_STORAGE_KEY)) || [];
+                return Array.isArray(storedThemes) ? storedThemes : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function getThemes() {
+            const themes = [...defaultThemes, ...getStoredThemes()].map(normalizeThemeName).filter(Boolean);
+            return [...new Set(themes)];
+        }
+
+        function renderThemeOptions(selectedTheme = "") {
+            if (!themeInput || themeInput.tagName !== "SELECT") {
+                return;
+            }
+
+            const themes = getThemes();
+            themeInput.innerHTML = '<option value="">Selecione um tema</option>';
+
+            themes.forEach((theme) => {
+                const option = document.createElement("option");
+                option.value = theme;
+                option.textContent = theme;
+                option.selected = theme === selectedTheme;
+                themeInput.appendChild(option);
+            });
+        }
+
+        function openThemeModal() {
+            if (!themeModal || !newThemeInput) {
+                return;
+            }
+
+            themeModal.classList.add("is-visible");
+            themeModal.setAttribute("aria-hidden", "false");
+            newThemeInput.value = "";
+            newThemeInput.classList.remove("is-invalid");
+            setTimeout(() => newThemeInput.focus(), 0);
+        }
+
+        function closeThemeModal() {
+            if (!themeModal) {
+                return;
+            }
+
+            themeModal.classList.remove("is-visible");
+            themeModal.setAttribute("aria-hidden", "true");
+        }
+
+        function saveNewTheme() {
+            if (!newThemeInput) {
+                return;
+            }
+
+            const themeName = normalizeThemeName(newThemeInput.value);
+            const existingTheme = getThemes().find((theme) => theme.toLowerCase() === themeName.toLowerCase());
+
+            newThemeInput.classList.remove("is-invalid");
+
+            if (!themeName) {
+                newThemeInput.classList.add("is-invalid");
+                showToast("Digite o nome do tema.", "error");
+                return;
+            }
+
+            if (existingTheme) {
+                renderThemeOptions(existingTheme);
+                closeThemeModal();
+                showToast("Tema selecionado.");
+                return;
+            }
+
+            const storedThemes = getStoredThemes();
+            storedThemes.push(themeName);
+            localStorage.setItem(THEMES_STORAGE_KEY, JSON.stringify(storedThemes));
+            renderThemeOptions(themeName);
+            closeThemeModal();
+            showToast("Tema criado com sucesso.");
+        }
+
         function refreshAnswerLetters() {
+            if (!answerList) {
+                return;
+            }
+
             const options = answerList.querySelectorAll(".answer-option");
 
             options.forEach((option, index) => {
@@ -51,6 +151,10 @@
         }
 
         function setCorrectAnswer(selectedRadio) {
+            if (!answerList) {
+                return;
+            }
+
             answerList.querySelectorAll(".answer-option").forEach((option) => {
                 const radio = option.querySelector('input[type="radio"]');
                 const oldBadge = option.querySelector(".correct-badge");
@@ -84,6 +188,10 @@
         }
 
         function createAnswer(text = "Nova resposta") {
+            if (!answerList) {
+                return;
+            }
+
             const option = document.createElement("div");
             option.className = "answer-option";
             option.innerHTML = `
@@ -108,11 +216,11 @@
         }
 
         function getQuestionData() {
-            const answers = [...answerList.querySelectorAll(".answer-option")].map((option, index) => ({
+            const answers = answerList ? [...answerList.querySelectorAll(".answer-option")].map((option, index) => ({
                 letter: letters[index] || String(index + 1),
                 text: option.querySelector(".answer-text").textContent.trim(),
                 correct: option.querySelector('input[type="radio"]').checked
-            }));
+            })) : [];
 
             return {
                 question: questionText.value.trim(),
@@ -148,7 +256,9 @@
             const emptyAnswer = data.answers.findIndex((answer) => !answer.text);
 
             if (emptyAnswer !== -1) {
-                answerList.querySelectorAll(".answer-text")[emptyAnswer].classList.add("is-invalid");
+                if (answerList) {
+                    answerList.querySelectorAll(".answer-text")[emptyAnswer].classList.add("is-invalid");
+                }
                 return "Preencha todas as alternativas.";
             }
 
@@ -164,57 +274,100 @@
             textarea.addEventListener("input", () => updateCounter(textarea));
         });
 
+        renderThemeOptions();
+
+        if (openThemeModalButton) {
+            openThemeModalButton.addEventListener("click", openThemeModal);
+        }
+
+        if (closeThemeModalButton) {
+            closeThemeModalButton.addEventListener("click", closeThemeModal);
+        }
+
+        if (cancelThemeModalButton) {
+            cancelThemeModalButton.addEventListener("click", closeThemeModal);
+        }
+
+        if (saveThemeButton) {
+            saveThemeButton.addEventListener("click", saveNewTheme);
+        }
+
+        if (themeModal) {
+            themeModal.addEventListener("click", (event) => {
+                if (event.target === themeModal) {
+                    closeThemeModal();
+                }
+            });
+        }
+
+        if (newThemeInput) {
+            newThemeInput.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    saveNewTheme();
+                }
+
+                if (event.key === "Escape") {
+                    closeThemeModal();
+                }
+            });
+        }
+
         imageInput.addEventListener("change", () => {
             imageFileName.textContent = imageInput.files[0]
                 ? imageInput.files[0].name
                 : "Nenhuma imagem selecionada";
         });
 
-        answerList.querySelectorAll(".answer-text").forEach(makeAnswerEditable);
-        refreshAnswerLetters();
-
-        answerList.addEventListener("change", (event) => {
-            if (event.target.matches('input[type="radio"]')) {
-                setCorrectAnswer(event.target);
-            }
-        });
-
-        answerList.addEventListener("click", (event) => {
-            const deleteButton = event.target.closest(".delete-answer");
-
-            if (!deleteButton) {
-                return;
-            }
-
-            const options = answerList.querySelectorAll(".answer-option");
-
-            if (options.length <= 2) {
-                showToast("A pergunta precisa ter pelo menos duas respostas.", "error");
-                return;
-            }
-
-            const option = deleteButton.closest(".answer-option");
-            const wasCorrect = option.querySelector('input[type="radio"]').checked;
-            option.remove();
-
-            if (wasCorrect) {
-                const firstRadio = answerList.querySelector('input[type="radio"]');
-                firstRadio.checked = true;
-                setCorrectAnswer(firstRadio);
-            }
-
+        if (answerList) {
+            answerList.querySelectorAll(".answer-text").forEach(makeAnswerEditable);
             refreshAnswerLetters();
-            showToast("Resposta removida.");
-        });
 
-        addAnswerButton.addEventListener("click", () => {
-            if (answerList.querySelectorAll(".answer-option").length >= letters.length) {
+            answerList.addEventListener("change", (event) => {
+                if (event.target.matches('input[type="radio"]')) {
+                    setCorrectAnswer(event.target);
+                }
+            });
+
+            answerList.addEventListener("click", (event) => {
+                const deleteButton = event.target.closest(".delete-answer");
+
+                if (!deleteButton) {
+                    return;
+                }
+
+                const options = answerList.querySelectorAll(".answer-option");
+
+                if (options.length <= 2) {
+                    showToast("A pergunta precisa ter pelo menos duas respostas.", "error");
+                    return;
+                }
+
+                const option = deleteButton.closest(".answer-option");
+                const wasCorrect = option.querySelector('input[type="radio"]').checked;
+                option.remove();
+
+                if (wasCorrect) {
+                    const firstRadio = answerList.querySelector('input[type="radio"]');
+                    firstRadio.checked = true;
+                    setCorrectAnswer(firstRadio);
+                }
+
+                refreshAnswerLetters();
+                showToast("Resposta removida.");
+            });
+        }
+
+        if (addAnswerButton) {
+            addAnswerButton.addEventListener("click", () => {
+                if (answerList.querySelectorAll(".answer-option").length >= letters.length) {
                 showToast("Limite de alternativas atingido.", "error");
                 return;
-            }
+                }
 
-            createAnswer();
-        });
+                createAnswer();
+            });
+        }
 
         saveButton.addEventListener("click", () => {
             const data = getQuestionData();
