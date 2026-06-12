@@ -36,8 +36,8 @@ class AdminListaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'inicio' => 'required|date',
-            'fim' => 'required|date|after_or_equal:inicio',
+            'inicio' => 'required|date|after_or_equal:today',
+            'fim' => 'required|date|after:inicio',
             'perguntas' => 'required|array', // Array de IDs das perguntas selecionadas
             'perguntas.*' => 'integer|exists:pergunta,id_pergunta' // Valida se cada ID realmente existe na tabela pergunta
         ]);
@@ -84,7 +84,7 @@ class AdminListaController extends Controller
 
         $request->validate([
             'inicio' => 'required|date',
-            'fim' => 'required|date|after_or_equal:inicio',
+            'fim' => 'required|date|after:inicio',
             'perguntas' => 'required|array',
             'perguntas.*' => 'integer|exists:pergunta,id_pergunta'
         ]);

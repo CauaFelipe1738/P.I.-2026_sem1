@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Funcionario extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasFactory;
 
     // Definição de tabela e chave primária
     protected $table = 'funcionario';

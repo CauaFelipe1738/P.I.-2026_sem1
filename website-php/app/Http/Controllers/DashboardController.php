@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Lista;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
@@ -9,8 +10,11 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Pega todas as listas cadastradas no banco de dados
-        $listas = Lista::all();
+        // Chama a procedure do banco de dados passando o ID do usuário logado e a data de hoje
+        $listas = DB::select('CALL fetch_listas(?, ?)', [
+            auth()->id(),
+            now()->format('Y-m-d')
+        ]);
 
         // Se a requisição pedir JSON
         if ($request->expectsJson()) {

@@ -32,28 +32,39 @@
     @forelse($listas as $lista)
       <article class="panel">
 
-        <span class="status status-nao-iniciado">
-          DISPONÍVEL
-        </span>
+        @if($lista->respostas >= $lista->perguntas && $lista->perguntas > 0)
+            <span class="status" style="background-color: #2ec4b6; color: white;">CONCLUÍDO</span>
+        @elseif($lista->respostas > 0)
+            <span class="status" style="background-color: #ff9f1c; color: white;">EM ANDAMENTO</span>
+        @else
+            <span class="status status-nao-iniciado">NÃO INICIADO</span>
+        @endif
 
         <p class="questao">Lista #{{ $lista->id_lista }}</p>
-
         <h3>Treinamento Obrigatório</h3>
         <p>
-          Disponível de: {{ \Carbon\Carbon::parse($lista->inicio)->format('d/m/Y') }} <br>
-          Até: {{ \Carbon\Carbon::parse($lista->fim)->format('d/m/Y') }}
+        Disponível de: {{ \Carbon\Carbon::parse($lista->inicio)->format('d/m/Y') }} <br>
+        Até: {{ \Carbon\Carbon::parse($lista->fim)->format('d/m/Y') }}
         </p>
 
-        <a href="{{ route('quiz.show', $lista->id_lista) }}">
-          <button class="btn-iniciar">
-            INICIAR AGORA
-          </button>
-        </a>
+        @if($lista->respostas >= $lista->perguntas && $lista->perguntas > 0)
+            <button class="btn-iniciar" style="background-color: #a3a3a3; cursor: not-allowed;" disabled>
+                CONCLUÍDO
+            </button>
+        @else
+            <a href="{{ route('quiz.show', $lista->id_lista) }}">
+            <button class="btn-iniciar">
+                {{ $lista->respostas > 0 ? 'CONTINUAR' : 'INICIAR AGORA' }}
+            </button>
+            </a>
+        @endif
 
         <div class="container-barra">
-          <div class="barra-progresso" style="width: 0%;"></div>
+        @php
+            $percentual = $lista->perguntas > 0 ? ($lista->respostas / $lista->perguntas) * 100 : 0;
+        @endphp
+        <div class="barra-progresso" style="width: {{ $percentual }}%;"></div>
         </div>
-
       </article>
     @empty
       <p style="color: var(--muted); grid-column: 1/-1;">Nenhum treinamento obrigatório disponível no momento.</p>

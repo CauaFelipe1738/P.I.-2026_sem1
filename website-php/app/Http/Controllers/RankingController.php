@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Funcionario;
 use App\Models\Ranking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RankingController extends Controller
 {
@@ -13,8 +14,8 @@ class RankingController extends Controller
      */
     public function index()
     {
-        // Pega todos os funcionários, ordenados pela maior pontuação (desc)
-        $funcionarios = Funcionario::orderBy('pontos', 'desc')->get();
+        // Pega todos os funcionários com uma view, ordenados pela maior pontuação (desc)
+        $funcionarios = DB::table('funcio_ranque')->orderBy('pontos', 'desc')->get();
 
         // Pega o usuário logado atualmente
         $usuarioLogado = auth()->user();

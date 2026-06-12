@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,6 +18,9 @@ return new class extends Migration
             $table->date('fim');
             $table->timestamps();
         });
+
+        // Adiciona constraint por SQL puro
+        DB::statement('ALTER TABLE lista ADD CONSTRAINT fim_depois CHECK (fim > inicio)');
     }
 
     /**
