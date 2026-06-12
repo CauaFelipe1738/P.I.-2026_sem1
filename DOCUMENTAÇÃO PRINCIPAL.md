@@ -119,7 +119,7 @@ _Fluxo Principal_
 
 ## Descrição da Comunicação do Sistema
 A plataforma possui um sistema de comunicação entre o Front-end, Back-end e o Banco de Dados. o sistema funciona baseado em arquitetura cliente-servidor: Os clientes fazem requisições para o servidor que dispõe do conteúdo da plataforma e armazena os dados. Os hosts devem estar na mesma rede que o servidor para realizar requisições.
-Neste caso, o front-end do site requisitado é guardado no navegador do cliente, e todas as informações do banco de dados são conversam com o Front-end pelo uso de APIs, que pegam a informação bruta, convertem para uma formatação que o front-end entenda e vice-versa. Cada requisição enviada para o servidor contém as especificação de uma ação que incluem visualização e alteração de dados do banco.
+Neste caso, o front-end do site requisitado é guardado no navegador do cliente, e todas as informações do banco de dados conversam com o Front-end pelo uso de APIs, que pegam a informação bruta, convertem para uma formatação que o front-end entenda e vice-versa. Cada requisição enviada para o servidor contém as especificação de uma ação que incluem visualização e alteração de dados do banco.
 
 ## Topologia de Rede
 Para uma implementação real da rede, propõe-se a topologia estrela, onde o switch serve como ponte para comunicação de todos os outros hosts.
