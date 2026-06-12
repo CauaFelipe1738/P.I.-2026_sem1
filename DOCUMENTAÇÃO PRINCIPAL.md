@@ -1,6 +1,4 @@
-<img width="1534" height="1291" alt="Diagrama sem nome drawio (1)" src="https://github.com/user-attachments/assets/69e1c640-66ad-446a-a900-a0790e046926" />
-<img width="1534" height="1291" alt="Diagrama sem nome drawio (1)" src="https://github.com/user-attachments/assets/8f3f400c-4e9d-496f-8d09-465dcedcfa92" />
-[fluxograma.drawio](https://github.com/user-attachments/files/28903084/fluxograma.drawio)# Engenharia de software
+# Engenharia de software
 
 ## Requisitos Funcionais
 - Login/registro de usuário, diferenciando funcionário e gerentes. <br>
