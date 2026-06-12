@@ -668,3 +668,61 @@ svg {
     box-shadow: 0 0 0 4px rgba(19, 169, 255, 0.11);
     background: rgba(7, 16, 29, 0.82);
 }
+
+.update-bank-panel {
+    position: relative;
+    overflow: visible;
+}
+
+.update-bank-panel .add-question-button {
+    min-width: 240px;
+}
+
+.update-bank-panel .question-bank-picker {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    width: min(620px, calc(100vw - 32px));
+    max-height: min(620px, calc(100vh - 32px));
+    transform: translate(-50%, -50%);
+    z-index: 50;
+}
+
+.bank-question-option {
+    grid-template-columns: 22px minmax(0, 1fr) max-content;
+}
+
+.bank-question-option small {
+    align-self: center;
+    padding: 5px 9px;
+    border-radius: 999px;
+    color: #97ffdc;
+    background: rgba(33, 206, 145, 0.12);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.bank-question-option.is-selected {
+    border-color: rgba(120, 230, 107, 0.28);
+    background: rgba(17, 45, 37, 0.72);
+    cursor: default;
+}
+
+.bank-question-option.is-selected input {
+    cursor: not-allowed;
+}
+
+.bank-question-option.is-selected span {
+    color: #c8d5e8;
+}
+
+.bank-question-option.is-selected small {
+    color: #bdeeb3;
+    background: rgba(120, 230, 107, 0.14);
+}
+
+.bank-question-option.is-empty {
+    grid-template-columns: 22px minmax(0, 1fr);
+}
