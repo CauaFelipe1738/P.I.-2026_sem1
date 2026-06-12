@@ -42,7 +42,10 @@
 
                 <label class="field theme-field">
                     <span>Tema da pergunta</span>
-                    <input type="text" maxlength="80" aria-label="Tema da pergunta" id="question-theme">
+                    <span class="theme-control">
+                        <select aria-label="Tema da pergunta" id="question-theme"></select>
+                        <button class="theme-create-button" type="button" id="open-theme-modal">Criar tema</button>
+                    </span>
                 </label>
 
                 <div class="two-columns">
@@ -70,6 +73,31 @@
             </section>
         </form>
     </main>
+
+    <div class="modal-overlay" id="theme-modal" aria-hidden="true">
+        <div class="theme-modal" role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
+            <div class="theme-modal-header">
+                <h2 id="theme-modal-title">Criar tema</h2>
+                <button class="modal-close" type="button" id="close-theme-modal" aria-label="Fechar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <label class="field">
+                <span>Nome do tema</span>
+                <input type="text" maxlength="80" aria-label="Nome do tema" id="new-theme-name">
+            </label>
+
+            <div class="modal-actions">
+                <button class="button button-secondary" type="button" id="cancel-theme-modal">Cancelar</button>
+                <button class="button button-primary" type="button" id="save-theme">Salvar tema</button>
+            </div>
+        </div>
+    </div>
+
     <script src="./create_pergunta.js"></script>
 </body>
 
