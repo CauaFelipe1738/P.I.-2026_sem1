@@ -12,8 +12,8 @@
     <main class="quest-page">
         <header class="page-header">
             <div class="page-title">
-                <h1>Criar Questionario</h1>
-                <p>Crie questionarios para avaliacoes e pesquisas.</p>
+                <h1>Editar Questionario</h1>
+                <p>Atualize o periodo e acrescente perguntas ao questionario.</p>
             </div>
 
             <div class="header-actions">
@@ -24,12 +24,15 @@
                         <path d="M17 21v-8H7v8"></path>
                         <path d="M7 3v5h8"></path>
                     </svg>
-                    Salvar Questionario
+                    Salvar Alteracoes
                 </button>
             </div>
         </header>
 
         <form class="content-grid" id="questionnaire-form">
+            <input type="hidden" name="titulo" value="Questionario editado">
+            <textarea name="descricao" hidden></textarea>
+
             <div class="main-column">
                 <section class="panel dates-panel" aria-labelledby="dates-title">
                     <div class="section-title">
@@ -71,7 +74,7 @@
                     <div class="question-list" id="selected-question-list"></div>
                 </section>
 
-                <section class="panel bank-panel" aria-labelledby="bank-title">
+                <section class="panel bank-panel update-bank-panel" aria-labelledby="bank-title">
                     <div class="section-title bank-title">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                             <ellipse cx="12" cy="5" rx="8" ry="3"></ellipse>
@@ -79,17 +82,19 @@
                             <path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path>
                         </svg>
                         <div>
-                            <h2 id="bank-title">Banco de Questoes</h2>
-                            <p>Use questoes existentes do banco para compor seu questionario.</p>
+                            <h2 id="bank-title">Adicionar perguntas</h2>
+                            <p>Escolha novas perguntas do banco. As perguntas ja selecionadas ficam protegidas.</p>
                         </div>
                     </div>
 
                     <div class="bank-actions">
-                        <button class="outline-button" type="button" id="add-question-from-bank">Selecionar do Banco</button>
+                        <button class="outline-button add-question-button" type="button" id="add-question-from-bank">
+                            Abrir banco de perguntas
+                        </button>
 
                         <div class="question-bank-picker" id="question-bank-picker" hidden>
                             <div class="bank-picker-header">
-                                <strong>Escolha as perguntas</strong>
+                                <strong>Adicionar ao questionario</strong>
                                 <button class="icon-button" type="button" id="close-question-bank" aria-label="Fechar banco de questoes">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                         <path d="M18 6 6 18"></path>
@@ -101,7 +106,7 @@
                             <div class="bank-question-list" id="bank-question-list"></div>
 
                             <div class="bank-picker-actions">
-                                <button class="outline-button" type="button" id="apply-question-bank">Adicionar Selecionadas</button>
+                                <button class="outline-button" type="button" id="apply-question-bank">Adicionar novas</button>
                             </div>
                         </div>
                     </div>
@@ -111,6 +116,69 @@
     </main>
 
     <script src="./create_quest.js"></script>
+    <script>
+        const questionnaireBeingEdited = JSON.parse(sessionStorage.getItem("questionarioEditando") || "null");
+
+        if (questionnaireBeingEdited) {
+            startDateInput.value = questionnaireBeingEdited.startDate || "";
+            endDateInput.value = questionnaireBeingEdited.endDate || "";
+        }
+
+        function renderAddOnlyQuestionBank() {
+            const availableQuestions = getAvailableQuestions();
+
+            if (!availableQuestions.length) {
+                bankQuestionList.innerHTML = `
+                    <label class="bank-question-option is-empty">
+                        <input type="checkbox" disabled>
+                        <span>Nenhuma pergunta disponivel no banco.</span>
+                    </label>
+                `;
+                return;
+            }
+
+            bankQuestionList.innerHTML = availableQuestions.map((question) => {
+                const alreadySelected = selectedQuestions.some((selectedQuestion) => String(selectedQuestion.id) === String(question.id));
+
+                return `
+                    <label class="bank-question-option ${alreadySelected ? "is-selected" : ""}">
+                        <input type="checkbox" value="${escapeHtml(question.id)}" ${alreadySelected ? "checked disabled" : ""}>
+                        <span>${escapeHtml(question.text)}</span>
+                        <small>${alreadySelected ? "Ja adicionada" : "Adicionar"}</small>
+                    </label>
+                `;
+            }).join("");
+        }
+
+        renderQuestionBank = renderAddOnlyQuestionBank;
+
+        function addOnlyQuestionBankSelection(event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            const availableQuestions = getAvailableQuestions();
+            const selectedIds = [...bankQuestionList.querySelectorAll('input[type="checkbox"]:checked:not(:disabled)')]
+                .map((input) => input.value);
+
+            const newQuestions = availableQuestions.filter((question) => {
+                const wasChosen = selectedIds.includes(String(question.id));
+                const alreadySelected = selectedQuestions.some((selectedQuestion) => String(selectedQuestion.id) === String(question.id));
+                return wasChosen && !alreadySelected;
+            });
+
+            if (!newQuestions.length) {
+                showMessage("Selecione pelo menos uma pergunta nova.", "error");
+                return;
+            }
+
+            selectedQuestions = [...selectedQuestions, ...newQuestions];
+            renderSelectedQuestions();
+            questionBankPicker.hidden = true;
+            showMessage("Perguntas adicionadas ao questionario.");
+        }
+
+        applyQuestionBankButton.addEventListener("click", addOnlyQuestionBankSelection, true);
+    </script>
 </body>
 
 </html>
