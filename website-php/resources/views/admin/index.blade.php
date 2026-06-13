@@ -32,7 +32,7 @@
         <section class="quick-actions" aria-label="Ações rápidas">
             <h3>Ações rápidas</h3>
 
-            <a class="action-card" href="#">
+            <a class="action-card" href="{{ route('admin.usuarios.index') }}">
                 <span class="action-icon create-user" aria-hidden="true">
                     <img src="{{ asset('img/admin/editar.png') }}" alt="" class="icon">
                 </span>
@@ -78,3 +78,4 @@
         </section>
     </div>
 @endsection
+

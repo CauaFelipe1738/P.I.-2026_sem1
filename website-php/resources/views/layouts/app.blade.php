@@ -27,7 +27,7 @@
             <a href="{{ route('ranking') }}">Ranking</a>
           </li>
           <li class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">
-            <a href="{{ route('admin.index') }}">Administrador</a>
+            <a href="{{ route('admin.dashboard') }}">Administrador</a>
           </li>
 
           <li style="margin-top: 20px;">
