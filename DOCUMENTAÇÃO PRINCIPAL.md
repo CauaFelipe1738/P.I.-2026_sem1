@@ -146,7 +146,529 @@ Na figura acima, os computadores se comunicam dentro de uma rede interna, e aces
 
 # Banco de dados
 
-*complete aqui*
+## Levantamento de dados
+Um *usuário* acessa o sistema pelo seu username e senha. Ali, ele pode responder uma *lista* que possui uma certa quantidade de *perguntas* de alguma *area* (tema) com uma certa quantidade de *respostas*. Cada pergunta, se respondida corretamente, dá como recompensa ao usuário um valor de pontos. Além disso, os usuários com maior pontuação são ordenados em um *ranking*, que oferece títulos àqueles com maior pontuação, propondo uma competição amigável. <br>
+Uma lista pode ter várias perguntas, e uma pergunta pode pertencer a várias listas; As listas com perguntas podem ser respondidas por vários usuários, e um usuário pode responder várias listas.
+
+## Diagrama de Entidade-Relacionamento
+<img width="1088" height="670" alt="der" src="https://github.com/user-attachments/assets/f9d2beb7-8d6f-4155-a37b-6ca95edb521b" />
+
+## Modelo Lógico
+<img width="833" height="724" alt="modelo-logico" src="https://github.com/user-attachments/assets/2dfb26b7-628b-4612-a6ee-21ab62a94493" />
+
+## Dicionário de Dados
+### Tabela de RANKING
+<table>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Tamanho</th>
+            <th>Domínio</th>
+            <th>Formato</th>
+            <th>Restrições</th>
+        </tr>
+        <tr>
+            <td>id_ranking</td>
+            <td>id do ranque</td>
+            <td>inteiro</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>não deve ser nulo</td>
+        </tr>
+        <tr>
+            <td>qtd_pessoas</td>
+            <td>até que posição do ranque geral para receber o ranque</td>
+            <td>inteiro</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>deve ser um inteiro positivo e único</td>
+        </tr>
+        <tr>
+            <td>titulo</td>
+            <td>titulo que o funcionario recebera caso esteja dentro do ranque</td>
+            <td>texto</td>
+            <td>30</td>
+            <td>-</td>
+            <td>-</td>
+            <td>não deve ser nulo</td>
+        </tr>
+        <tr>
+            <td>sobre</td>
+            <td>informações sobre o ranque, preferivelmente para colocar os benefícios de estar nele</td>
+            <td>texto</td>
+            <td>65,535</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+</table>
+
+### Tabela de FUNCIONÁRIOS
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Descrição</th>
+    <th>Tipo</th>
+    <th>Tamanho</th>
+    <th>Domínio</th>
+    <th>Formato</th>
+    <th>Restrições</th>
+  </tr>
+  <tr>
+    <td>id_funcionario</td>
+    <td>id do funcionario</td>
+    <td>inteiro</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>não deve ser nulo</td>
+  </tr>
+  <tr>
+    <td>username</td>
+    <td>nome de usuário para o funcionario logar</td>
+    <td>texto</td>
+    <td>40</td>
+    <td>-</td>
+    <td>-</td>
+    <td>não deve ser nulo e único</td>
+  </tr>
+  <tr>
+    <td>nome_funcionario</td>
+    <td>nome do funcionario</td>
+    <td>texto</td>
+    <td>40</td>
+    <td>-</td>
+    <td>-</td>
+    <td>não deve ser nulo</td>
+  </tr>
+  <tr>
+    <td>senha</td>
+    <td>senha utilizada para acesso o site</td>
+    <td>texto</td>
+    <td>40</td>
+    <td>-</td>
+    <td>-</td>
+    <td>não deve ser nulo</td>
+  </tr>
+  <tr>
+    <td>admin</td>
+    <td>determina de o funcionario tem privilégios de administrador</td>
+    <td>booleano</td>
+    <td>-</td>
+    <td>TRUE = é administrador<br>FALSE = não é administrador</td>
+    <td>-</td>
+    <td>não deve ser nulo</td>
+  </tr>
+  <tr>
+    <td>pontos</td>
+    <td>quantidade de pontos que o funcionario possui</td>
+    <td>inteiro</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>deve ser um inteiro positivo</td>
+  </tr>
+</table>
+
+### Tabela de LISTA
+<table>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Tamanho</th>
+            <th>Domínio</th>
+            <th>Formato</th>
+            <th>Restrições</th>
+        </tr>
+        <tr>
+            <td>id_lista</td>
+            <td>id da lista</td>
+            <td>inteiro</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>não deve ser nulo</td>
+        </tr>
+        <tr>
+            <td>inicio</td>
+            <td>data que a lista estará disponivel para ser feita</td>
+            <td>data</td>
+            <td>-</td>
+            <td>-</td>
+            <td>"AAAA-MM-DD"</td>
+            <td>não deve ser nulo</td>
+        </tr>
+        <tr>
+            <td>fim</td>
+            <td>data que a lista deixara de estar disponivel para ser feita</td>
+            <td>data</td>
+            <td>-</td>
+            <td>-</td>
+            <td>"AAAA-MM-DD"</td>
+            <td>o fim deve ser após o inicio e não deve ser nulo</td>
+        </tr>
+</table>
+
+### Tabela de AREA
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Descrição</th>
+    <th>Tipo</th>
+    <th>Tamanho</th>
+    <th>Domínio</th>
+    <th>Formato</th>
+    <th>Restrições</th>
+  </tr>
+  <tr>
+    <td>id_area</td>
+    <td>id da area</td>
+    <td>inteiro</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>não deve ser nulo</td>
+  </tr>
+  
+  <tr>
+    <td>nome_area</td>
+    <td>nome da area da pergunta</td>
+    <td>texto</td>
+    <td>30</td>
+    <td>-</td>
+    <td>-</td>
+    <td>não deve ser nulo</td>
+  </tr>
+</table>
+
+### Tabela de PERGUNTAS
+<table>
+    <tr>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Tipo</th>
+      <th>Tamanho</th>
+      <th>Domínio</th>
+      <th>Formato</th>
+      <th>Restrições</th>
+    </tr>
+    <tr>
+      <td>id_pergunta</td>
+      <td>id da pergunta</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>idf_area</td>
+      <td>id da area da pergunta</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>pergunta</td>
+      <td>a pergunta</td>
+      <td>texto</td>
+      <td>65,535</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>valor</td>
+      <td>a quantidade de pontos que vale a pergunta</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>deve ser um inteiro positivo</td>
+    </tr>
+    <tr>
+      <td>imagem</td>
+      <td>possível imagem que pode ser atribuída à pergunta (deve ser um link)</td>
+      <td>texto</td>
+      <td>65,535</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+</table>
+
+### Tabela de RESPOSTAS
+<table>
+    <tr>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Tipo</th>
+      <th>Tamanho</th>
+      <th>Domínio</th>
+      <th>Formato</th>
+      <th>Restrições</th>
+    </tr>
+    <tr>
+      <td>id_resposta</td>
+      <td>id da resposta</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>idf_pergunta</td>
+      <td>id da pergunta da qual a resposta faz parte</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>resposta</td>
+      <td>a resposta</td>
+      <td>texto</td>
+      <td>300</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>solucao</td>
+      <td>identificar se ela é a resposta correta</td>
+      <td>booleano</td>
+      <td>-</td>
+      <td>TRUE = resposta correta / FALSE = resposta incorreta</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+</table>
+
+### Tabela de PERGUNTA_LISTA
+<table>
+    <tr>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Tipo</th>
+      <th>Tamanho</th>
+      <th>Domínio</th>
+      <th>Formato</th>
+      <th>Restrições</th>
+    </tr>
+    <tr>
+      <td>id_pergunta_lista</td>
+      <td>id da relação de uma pergunta e lista específica</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>idf_pergunta</td>
+      <td>id da pergunta</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>relação com idf_lista deve ser único e não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>idf_lista</td>
+      <td>id da lista que a pergunta está presente</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>relação com idf_pergunta deve ser único e não deve ser nulo</td>
+    </tr>
+</table>
+
+### Tabela de FUNCIONÁRIO_PERGUNTA_LISTA
+<table>
+    <tr>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Tipo</th>
+      <th>Tamanho</th>
+      <th>Domínio</th>
+      <th>Formato</th>
+      <th>Restrições</th>
+    </tr>
+    <tr>
+      <td>idf_funcionario</td>
+      <td>id do funcionario</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>idf_pergunta_lista</td>
+      <td>id da pergunta de uma lista específica</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+    <tr>
+      <td>idf_resposta</td>
+      <td>id da resposta do funcionario</td>
+      <td>inteiro</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>não deve ser nulo</td>
+    </tr>
+</table>
+
+
+## Normalização
+Foram necessários certos cuidados em relação às normalizações de banco de dados.
+<img width="1063" height="558" alt="antes-da-norma" src="https://github.com/user-attachments/assets/af44b5e4-f3cb-4ec2-9bea-bd50f0f3dcf0" /> <br>
+Nesta versão antiga do DER, a tabela funcionario apresentava a coluna idf_area que seria um array (conjunto de valores) das áreas do sistema que ligaria diretamente com o funcionário, aplicando a 1° normalização, essa chave estrangeira foi descartada.
+
+## Modelo Físico
+
+### DDL
+```sql
+
+CREATE TABLE ranking (
+id_ranking int auto_increment PRIMARY KEY,
+qtd_pessoas int UNSIGNED NOT NULL unique,
+titulo varchar(30) NOT NULL,
+sobre text
+);
+CREATE TABLE funcionario (
+id_funcionario int auto_increment PRIMARY KEY,
+username varchar(40) not NULL unique,
+nome_funcionario varchar(40) NOT NULL,
+senha varchar(40) NOT NULL,
+admin boolean not NULL,
+pontos int UNSIGNED NOT NULL default 0
+);
+CREATE TABLE lista (
+id_lista int auto_increment PRIMARY KEY,
+inicio date NOT NULL,
+fim date NOT NULL,
+CONSTRAINT fim_depois CHECK (fim > inicio)
+);
+CREATE TABLE area (
+id_area int auto_increment PRIMARY KEY,
+nome_area varchar(30) NOT NULL
+);
+CREATE TABLE pergunta (
+id_pergunta int auto_increment PRIMARY KEY,
+idf_area int NOT NULL,
+pergunta text NOT NULL,
+valor int UNSIGNED NOT NULL,
+image text,
+FOREIGN KEY (idf_area) REFERENCES area(id_area)
+);
+CREATE TABLE resposta (
+id_resposta int auto_increment PRIMARY KEY,
+idf_pergunta int NOT NULL,
+resposta varchar(300) NOT NULL,
+solucao boolean NOT NULL,
+FOREIGN KEY (idf_pergunta) REFERENCES pergunta(id_pergunta)
+);
+CREATE TABLE pergunta_lista (
+id_pergunta_lista int auto_increment PRIMARY KEY,
+idf_pergunta int NOT NULL,
+idf_lista int NOT NULL,
+unique (idf_pergunta, idf_lista),
+FOREIGN KEY (idf_pergunta) REFERENCES pergunta(id_pergunta),
+FOREIGN KEY (idf_lista) REFERENCES lista(id_lista)
+);
+CREATE TABLE funcionario_pergunta_lista (
+idf_funcionario int NOT NULL,
+idf_pergunta_lista int NOT NULL,
+idf_resposta int NOT NULL,
+PRIMARY KEY (idf_funcionario, idf_pergunta_lista),
+FOREIGN KEY (idf_funcionario) REFERENCES funcionario(id_funcionario),
+FOREIGN KEY (idf_pergunta_lista) REFERENCES pergunta_lista(id_pergunta_lista),
+FOREIGN KEY (idf_resposta) REFERENCES resposta(id_resposta)
+);
+```
+
+### Scripts e DML
+
+```sql
+--Uma view que mostra o funcionário e seu ranque (mostra a qtd_pessoas que também serve de identificador):
+CREATE OR REPLACE VIEW funcio_ranque AS
+select funcionario.id_funcionario, username, nome_funcionario, admin, pontos, titulo, sobre
+from funcionario
+inner join (
+select funcionario.id_funcionario, min(qtd_pessoas) as minimo
+from funcionario
+inner join (
+select id_funcionario, ROW_NUMBER() OVER (ORDER BY pontos DESC) AS row_position
+from funcionario
+) as positions on positions.id_funcionario = funcionario.id_funcionario
+left join ranking on row_position <= qtd_pessoas
+group by id_funcionario
+) as asociacao on asociacao.id_funcionario = funcionario.id_funcionario
+left join ranking on ranking.qtd_pessoas = asociacao.minimo;
+
+
+--Função que determina, dependo se a resposta é correta ou não, os pontos do funcionario:
+DELIMITER //
+--z: id da resposta
+CREATE FUNCTION vrecompensa (z int)
+RETURNS int
+DETERMINISTIC
+BEGIN
+DECLARE recompensa int;
+select (valor * solucao) into recompensa from resposta
+inner join pergunta on resposta.idf_pergunta = pergunta.id_pergunta
+where id_resposta = z;
+RETURN recompensa;
+END //
+
+DELIMITER ;
+
+--Procedure que define uma nova relação funcionário, resposta e pergunta de certa lista, e atualiza os pontos do funcionário se a resposta for a correta
+DELIMITER //
+
+CREATE PROCEDURE responder(IN x INT, in y int, in z int)
+-- x = id do usuario logado
+-- y = id da pergunta em certa lista
+-- z = id da resposta
+BEGIN
+DECLARE recompensa INT;
+set recompensa = vrecompensa(z);
+INSERT INTO funcionario_pergunta_lista (idf_funcionario,idf_pergunta_lista,idf_resposta) VALUE (x,y,z);
+if recompensa > 0 then
+update funcionario set pontos = pontos + recompensa where id_funcionario = x;
+end if;
+END //
+
+DELIMITER ;
+
+--Registra um novo usuário
+INSERT INTO funcionario (username, nome_funcionario, senha, admin) value (w,x,y,z);
+
+--Edita uma pergunta
+UPDATE pergunta set pergunta = w, idf_area = x, image = y, valor = z where id_pergunta = a;
+
+--Exclui um ranque
+DELETE from ranking where id_ranking = a;
+
+--Consulta de relações pergunta_questionario e perguntas (das perguntas) do questionario
+select id_pergunta_lista, pergunta from pergunta_lista
+inner join pergunta on id_pergunta = idf_pergunta
+where idf_lista = a;
+```
 
 # Linguagem de programação
 <img width="1534" height="1291" alt="Diagrama sem nome drawio (1)" src="https://github.com/user-attachments/assets/5568c545-eea8-45e3-a563-484ec7ccc513" />
