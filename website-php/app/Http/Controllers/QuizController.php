@@ -44,6 +44,23 @@ class QuizController extends Controller
         // Conta quantas perguntas a lista tem no total
         $totalPerguntas = DB::table('pergunta_lista')->where('idf_lista', $id_lista)->count();
 
+        // Se a lista não tem perguntas cadastradas ainda
+        if ($totalPerguntas === 0) {
+            return redirect()->route('dashboard')->with('error', 'Este módulo ainda não possui questões cadastradas. Volte mais tarde!');
+        }
+
+        // Conta quantas o usuário logado já respondeu nesta lista específica
+        $totalRespondidas = DB::table('funcionario_pergunta_lista')
+            ->join('pergunta_lista', 'funcionario_pergunta_lista.idf_pergunta_lista', '=', 'pergunta_lista.id_pergunta_lista')
+            ->where('pergunta_lista.idf_lista', $id_lista)
+            ->where('funcionario_pergunta_lista.idf_funcionario', $idFuncionario)
+            ->count();
+
+        // Se o usuário já respondeu tudo
+        if ($totalRespondidas >= $totalPerguntas && $totalPerguntas > 0) {
+            return redirect()->route('dashboard')->with('error', 'Você já concluiu este treinamento obrigatório!');
+        }
+
         // Conta quantas o usuário logado já respondeu nesta lista específica
         $totalRespondidas = DB::table('funcionario_pergunta_lista')
             ->join('pergunta_lista', 'funcionario_pergunta_lista.idf_pergunta_lista', '=', 'pergunta_lista.id_pergunta_lista')
