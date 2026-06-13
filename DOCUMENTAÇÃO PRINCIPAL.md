@@ -141,7 +141,7 @@ Como o sistema atua numa arquitetura cliente-servidor, adicionar novos servidore
 Outra possibilidade- que não foi concebida nesta implementação- é de usuários acessarem a plataforma fora da rede local do servidor (Internet), que exigiria um servidor em uma rede pública para atender usuários exteriores.
 
 ## Diagrama de Rede
-<img width="797" height="405" alt="Captura de tela 2026-06-11 194344" src="https://github.com/user-attachments/assets/50838897-68ad-483d-8c94-0255629992e6" />
+<img width="797" height="405" alt="Captura de tela 2026-06-11 194344" src="https://github.com/user-attachments/assets/50838897-68ad-483d-8c94-0255629992e6" /> <br>
 Na figura acima, os computadores se comunicam dentro de uma rede interna, e acessam os serviços da plataforma. Dessa forma, o acesso é feito exclusivamente pelo usuários dentro da empresa.
 
 # Banco de dados
