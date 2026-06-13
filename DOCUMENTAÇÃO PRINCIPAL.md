@@ -532,12 +532,6 @@ Uma lista pode ter várias perguntas, e uma pergunta pode pertencer a várias li
     </tr>
 </table>
 
-
-## Normalização
-Foram necessários certos cuidados em relação às normalizações de banco de dados.
-<img width="1063" height="558" alt="antes-da-norma" src="https://github.com/user-attachments/assets/af44b5e4-f3cb-4ec2-9bea-bd50f0f3dcf0" /> <br>
-Nesta versão antiga do DER, a tabela funcionario apresentava a coluna idf_area que seria um array (conjunto de valores) das áreas do sistema que ligaria diretamente com o funcionário, aplicando a 1° normalização, essa chave estrangeira foi descartada.
-
 ## Modelo Físico
 
 ### DDL
@@ -669,6 +663,11 @@ select id_pergunta_lista, pergunta from pergunta_lista
 inner join pergunta on id_pergunta = idf_pergunta
 where idf_lista = a;
 ```
+
+## Normalização
+Foram necessários certos cuidados em relação às normalizações de banco de dados.
+<img width="1063" height="558" alt="antes-da-norma" src="https://github.com/user-attachments/assets/af44b5e4-f3cb-4ec2-9bea-bd50f0f3dcf0" /> <br>
+Nesta versão antiga do DER, a tabela funcionario apresentava a coluna idf_area que seria um array (conjunto de valores) das áreas do sistema que ligaria diretamente com o funcionário, aplicando a 1° normalização, essa chave estrangeira foi descartada.
 
 # Linguagem de programação
 <img width="1534" height="1291" alt="Diagrama sem nome drawio (1)" src="https://github.com/user-attachments/assets/5568c545-eea8-45e3-a563-484ec7ccc513" />
