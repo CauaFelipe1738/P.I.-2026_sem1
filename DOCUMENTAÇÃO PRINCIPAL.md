@@ -248,7 +248,7 @@ Uma lista pode ter várias perguntas, e uma pergunta pode pertencer a várias li
     <td>senha</td>
     <td>senha utilizada para acesso o site</td>
     <td>texto</td>
-    <td>40</td>
+    <td>60</td>
     <td>-</td>
     <td>-</td>
     <td>não deve ser nulo</td>
