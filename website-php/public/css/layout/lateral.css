@@ -5,16 +5,22 @@
 }
 
 .menu li {
-    padding: 12px 14px;
+    padding: 0;
     border-radius: 10px;
     border: 1px solid transparent;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .menu li a {
     color: white;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 14px;
+    border-radius: inherit;
 }
 
 .menu li a:visited,
@@ -73,11 +79,25 @@
 
 .content {
     padding: 18px 20px 24px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content::after {
+    content: "CorpWare - Plataforma de treinamento corporativo | 2026";
+    margin-top: auto;
+    padding-top: 22px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    border-top: 1px solid rgba(56, 210, 248, 0.18);
 }
 
 .topbar {
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
     gap: 14px;
 }
@@ -95,4 +115,115 @@
 
 .page.active {
   display: block;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding: 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .brand h1 {
+        font-size: 22px;
+    }
+
+    .menu {
+        grid-auto-flow: column;
+        grid-auto-columns: max-content;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .menu li {
+        white-space: nowrap;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .content::after {
+        margin-top: 36px;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .hero {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    .sidebar {
+        gap: 14px;
+        padding: 14px 12px;
+    }
+
+    .menu li {
+        font-size: 14px;
+    }
+
+    .menu li a {
+        min-height: 42px;
+        padding: 10px 12px;
+    }
+
+    .content {
+        padding: 12px;
+    }
+
+    .content::after {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .profile {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .profile-meta strong,
+    .profile-meta p {
+        overflow-wrap: anywhere;
+    }
+}
+
+.sidebar {
+    box-shadow: 18px 0 60px rgba(0, 0, 0, 0.22);
+}
+
+.brand h1 {
+    color: #ffffff;
+    text-shadow: 0 0 22px rgba(56, 210, 248, 0.28);
+}
+
+.menu li {
+    transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.menu li:hover {
+    background: rgba(56, 210, 248, 0.08);
+    border-color: rgba(56, 210, 248, 0.2);
+    transform: none;
+}
+
+.menu li.active {
+    background: linear-gradient(135deg, rgba(56, 210, 248, 0.18), rgba(124, 92, 255, 0.12));
+    box-shadow: inset 3px 0 0 var(--accent), 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.avatar {
+    box-shadow: 0 10px 24px rgba(56, 210, 248, 0.12);
 }

@@ -21,6 +21,14 @@ Route::middleware('auth')->group(function () {
 // Rotas exclusivas para administradores
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
+
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    // Rotas do CRUD de admin
+    // Route::get('/admin/usuarios', [UserController::class, 'index'])->name('admin.usuarios.index');
+    // Route::get('/admin/perguntas', [PerguntaController::class, 'index'])->name('admin.perguntas.index');
+    // Route::get('/admin/ranking', [RankingController::class, 'adminIndex'])->name('admin.ranking.index');
+    // Route::get('/admin/listas', [ListaController::class, 'index'])->name('admin.listas.index');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
