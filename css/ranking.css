@@ -101,6 +101,7 @@
   border-radius: 16px;
   background: #17213a;
   color: #e9eeff;
+  min-width: 0;
 }
 
 .list-row span {
@@ -109,21 +110,46 @@
 }
 
 .list-row strong {
+  display: grid;
+  min-width: 0;
   font-size: 19px;
   font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-row strong small {
+  display: block;
+  min-width: 0;
+  margin-top: 4px;
+  color: #9ba8c6;
+  font-size: 13px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .list-row em {
+  min-width: 0;
   font-size: 21px;
   font-weight: 700;
   font-style: italic;
   color: #e2e7f7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .list-row b {
   justify-self: end;
   font-size: 20px;
   font-weight: 800;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .list-row.me {
