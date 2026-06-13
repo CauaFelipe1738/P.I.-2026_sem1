@@ -115,70 +115,7 @@
         </form>
     </main>
 
-    <script src="./create_quest.js"></script>
-    <script>
-        const questionnaireBeingEdited = JSON.parse(sessionStorage.getItem("questionarioEditando") || "null");
-
-        if (questionnaireBeingEdited) {
-            startDateInput.value = questionnaireBeingEdited.startDate || "";
-            endDateInput.value = questionnaireBeingEdited.endDate || "";
-        }
-
-        function renderAddOnlyQuestionBank() {
-            const availableQuestions = getAvailableQuestions();
-
-            if (!availableQuestions.length) {
-                bankQuestionList.innerHTML = `
-                    <label class="bank-question-option is-empty">
-                        <input type="checkbox" disabled>
-                        <span>Nenhuma pergunta disponivel no banco.</span>
-                    </label>
-                `;
-                return;
-            }
-
-            bankQuestionList.innerHTML = availableQuestions.map((question) => {
-                const alreadySelected = selectedQuestions.some((selectedQuestion) => String(selectedQuestion.id) === String(question.id));
-
-                return `
-                    <label class="bank-question-option ${alreadySelected ? "is-selected" : ""}">
-                        <input type="checkbox" value="${escapeHtml(question.id)}" ${alreadySelected ? "checked disabled" : ""}>
-                        <span>${escapeHtml(question.text)}</span>
-                        <small>${alreadySelected ? "Ja adicionada" : "Adicionar"}</small>
-                    </label>
-                `;
-            }).join("");
-        }
-
-        renderQuestionBank = renderAddOnlyQuestionBank;
-
-        function addOnlyQuestionBankSelection(event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-
-            const availableQuestions = getAvailableQuestions();
-            const selectedIds = [...bankQuestionList.querySelectorAll('input[type="checkbox"]:checked:not(:disabled)')]
-                .map((input) => input.value);
-
-            const newQuestions = availableQuestions.filter((question) => {
-                const wasChosen = selectedIds.includes(String(question.id));
-                const alreadySelected = selectedQuestions.some((selectedQuestion) => String(selectedQuestion.id) === String(question.id));
-                return wasChosen && !alreadySelected;
-            });
-
-            if (!newQuestions.length) {
-                showMessage("Selecione pelo menos uma pergunta nova.", "error");
-                return;
-            }
-
-            selectedQuestions = [...selectedQuestions, ...newQuestions];
-            renderSelectedQuestions();
-            questionBankPicker.hidden = true;
-            showMessage("Perguntas adicionadas ao questionario.");
-        }
-
-        applyQuestionBankButton.addEventListener("click", addOnlyQuestionBankSelection, true);
-    </script>
+    <script src="./update_quest.js"></script>
 </body>
 
 </html>

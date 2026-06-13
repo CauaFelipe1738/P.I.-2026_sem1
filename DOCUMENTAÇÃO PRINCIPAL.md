@@ -119,7 +119,7 @@ _Fluxo Principal_
 
 ## Descrição da Comunicação do Sistema
 A plataforma possui um sistema de comunicação entre o Front-end, Back-end e o Banco de Dados. o sistema funciona baseado em arquitetura cliente-servidor: Os clientes fazem requisições para o servidor que dispõe do conteúdo da plataforma e armazena os dados. Os hosts devem estar na mesma rede que o servidor para realizar requisições.
-Neste caso, o front-end do site requisitado é guardado no navegador do cliente, e todas as informações do banco de dados são conversam com o Front-end pelo uso de APIs, que pegam a informação bruta, convertem para uma formatação que o front-end entenda e vice-versa. Cada requisição enviada para o servidor contém as especificação de uma ação que incluem visualização e alteração de dados do banco.
+Neste caso, o front-end do site requisitado é guardado no navegador do cliente, e todas as informações do banco de dados conversam com o Front-end pelo uso de APIs, que pegam a informação bruta, convertem para uma formatação que o front-end entenda e vice-versa. Cada requisição enviada para o servidor contém as especificação de uma ação que incluem visualização e alteração de dados do banco.
 
 ## Topologia de Rede
 Para uma implementação real da rede, propõe-se a topologia estrela, onde o switch serve como ponte para comunicação de todos os outros hosts.
@@ -141,7 +141,7 @@ Como o sistema atua numa arquitetura cliente-servidor, adicionar novos servidore
 Outra possibilidade- que não foi concebida nesta implementação- é de usuários acessarem a plataforma fora da rede local do servidor (Internet), que exigiria um servidor em uma rede pública para atender usuários exteriores.
 
 ## Diagrama de Rede
-<img width="797" height="405" alt="Captura de tela 2026-06-11 194344" src="https://github.com/user-attachments/assets/50838897-68ad-483d-8c94-0255629992e6" />
+<img width="797" height="405" alt="Captura de tela 2026-06-11 194344" src="https://github.com/user-attachments/assets/50838897-68ad-483d-8c94-0255629992e6" /> <br>
 Na figura acima, os computadores se comunicam dentro de uma rede interna, e acessam os serviços da plataforma. Dessa forma, o acesso é feito exclusivamente pelo usuários dentro da empresa.
 
 # Banco de dados
@@ -149,6 +149,8 @@ Na figura acima, os computadores se comunicam dentro de uma rede interna, e aces
 *complete aqui*
 
 # Linguagem de programação
+<img width="1534" height="1291" alt="Diagrama sem nome drawio (1)" src="https://github.com/user-attachments/assets/5568c545-eea8-45e3-a563-484ec7ccc513" />
 
-*fluxograma*
+
+
 

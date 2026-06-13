@@ -42,7 +42,10 @@
 
                 <label class="field theme-field">
                     <span>Tema da pergunta</span>
-                    <input type="text" maxlength="80" aria-label="Tema da pergunta" id="question-theme">
+                    <span class="theme-control">
+                        <select aria-label="Tema da pergunta" id="question-theme"></select>
+                        <button class="theme-create-button" type="button" id="open-theme-modal">Criar tema</button>
+                    </span>
                 </label>
 
                 <div class="two-columns">
@@ -68,29 +71,56 @@
                     </label>
                 </div>
             </section>
-
-            <section class="panel answers-panel" aria-labelledby="answers-title">
-                <div class="section-heading">
-                    <h2 id="answers-title">Respostas</h2>
-                    <p>Adicione as alternativas e marque a correta.</p>
-                </div>
-
-                <div class="answer-list">
-
-                </div>
-
-                <button class="add-answer" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                        <path d="M12 5v14"></path>
-                        <path d="M5 12h14"></path>
-                    </svg>
-                    Adicionar Resposta
-                </button>
-            </section>
         </form>
+
+        <div class="modal-overlay" id="theme-modal" aria-hidden="true">
+            <div class="theme-modal" role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
+                <div class="theme-modal-header">
+                    <h2 id="theme-modal-title">Criar tema</h2>
+                    <button class="modal-close" type="button" id="close-theme-modal" aria-label="Fechar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <label class="field">
+                    <span>Nome do tema</span>
+                    <input type="text" maxlength="80" aria-label="Nome do tema" id="new-theme-name">
+                </label>
+
+                <div class="modal-actions">
+                    <button class="button button-secondary" type="button" id="cancel-theme-modal">Cancelar</button>
+                    <button class="button button-primary" type="button" id="save-theme">Salvar tema</button>
+                </div>
+            </div>
+        </div>
+        
+        <section class="panel answers-panel" aria-labelledby="answers-title">
+            <div class="section-heading">
+                <h2 id="answers-title">Respostas</h2>
+                <p>Adicione as alternativas e marque a correta.</p>
+            </div>
+
+            <div class="answer-list">
+
+            </div>
+
+            <button class="add-answer" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                </svg>
+                Adicionar Resposta
+            </button>
+        </section>
+
+
+
     </main>
-    <script src="./create_pergunta.js"></script>
+
+    <script src="./update_pergunta.js"></script>
 </body>
 
 </html>
-    
