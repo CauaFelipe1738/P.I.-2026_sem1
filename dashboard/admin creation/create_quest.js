@@ -66,7 +66,13 @@ function getAvailableQuestions() {
     const lastCreatedQuestion = JSON.parse(localStorage.getItem(CREATED_QUESTION_KEY) || "null");
     const questions = Array.isArray(savedQuestions) ? [...savedQuestions] : [];
 
-    if (lastCreatedQuestion) {
+    const hasLastCreated = lastCreatedQuestion && questions.some((question) => {
+        const questionId = question.id || question.id_pergunta;
+        const lastQuestionId = lastCreatedQuestion.id || lastCreatedQuestion.id_pergunta;
+        return questionId && lastQuestionId && String(questionId) === String(lastQuestionId);
+    });
+
+    if (lastCreatedQuestion && !hasLastCreated) {
         questions.push(lastCreatedQuestion);
     }
 
@@ -77,6 +83,10 @@ function getAvailableQuestions() {
 }
 
 function renderSelectedQuestions() {
+    if (!questionList) {
+        return;
+    }
+
     if (!selectedQuestions.length) {
         questionList.innerHTML = `
             <article class="question-item">
@@ -108,6 +118,10 @@ function renderSelectedQuestions() {
 }
 
 function renderQuestionBank() {
+    if (!bankQuestionList) {
+        return;
+    }
+
     const availableQuestions = getAvailableQuestions();
 
     if (!availableQuestions.length) {
@@ -133,6 +147,10 @@ function renderQuestionBank() {
 }
 
 function toggleQuestionBank() {
+    if (!questionBankPicker) {
+        return;
+    }
+
     const willOpen = questionBankPicker.hidden;
 
     questionBankPicker.hidden = !willOpen;
@@ -143,6 +161,10 @@ function toggleQuestionBank() {
 }
 
 function applyQuestionBankSelection() {
+    if (!bankQuestionList || !questionBankPicker) {
+        return;
+    }
+
     const availableQuestions = getAvailableQuestions();
     const selectedIds = [...bankQuestionList.querySelectorAll('input[type="checkbox"]:checked')]
         .map((input) => input.value);
@@ -156,10 +178,10 @@ function applyQuestionBankSelection() {
 function getQuestionnaireData() {
     return {
         id: Date.now(),
-        titulo: titleInput.value.trim(),
-        descricao: descriptionInput.value.trim(),
-        inicio: startDateInput.value,
-        fim: endDateInput.value,
+        titulo: titleInput?.value.trim() || `Questionario ${new Date().toLocaleDateString("pt-BR")}`,
+        descricao: descriptionInput?.value.trim() || "",
+        inicio: startDateInput?.value || "",
+        fim: endDateInput?.value || "",
         perguntas: selectedQuestions,
         embaralhar: shuffleInput?.checked || false,
         exibir_resultados: showResultsInput?.checked || false
@@ -167,7 +189,7 @@ function getQuestionnaireData() {
 }
 
 function validateQuestionnaire(data) {
-    if (!data.titulo) {
+    if (titleInput && !data.titulo) {
         return "Digite o titulo do questionario.";
     }
 
@@ -204,6 +226,10 @@ async function requestJson(url, options = {}) {
 }
 
 async function saveQuestionnaireToApi(data) {
+    if (!API_BASE_URL && window.location.protocol === "file:") {
+        throw new Error("API indisponivel em arquivo local");
+    }
+
     const payload = {
         titulo: data.titulo,
         descricao: data.descricao,
@@ -250,6 +276,8 @@ async function saveQuestionnaire() {
     } catch (error) {
         console.warn("API indisponivel. Salvando questionario no localStorage.", error.message);
         saveQuestionnaireLocally(data);
+    } finally {
+        saveButton.disabled = false;
     }
 
     showMessage("Questionario salvo com sucesso.");
@@ -264,26 +292,36 @@ form.addEventListener("submit", (event) => {
 });
 
 saveButton.addEventListener("click", saveQuestionnaire);
-addQuestionButton.addEventListener("click", toggleQuestionBank);
-applyQuestionBankButton.addEventListener("click", applyQuestionBankSelection);
-closeQuestionBankButton.addEventListener("click", () => {
-    questionBankPicker.hidden = true;
-});
+if (addQuestionButton) {
+    addQuestionButton.addEventListener("click", toggleQuestionBank);
+}
 
-questionList.addEventListener("click", (event) => {
-    const removeButton = event.target.closest(".remove-question");
+if (applyQuestionBankButton) {
+    applyQuestionBankButton.addEventListener("click", applyQuestionBankSelection);
+}
 
-    if (!removeButton) {
-        return;
-    }
+if (closeQuestionBankButton && questionBankPicker) {
+    closeQuestionBankButton.addEventListener("click", () => {
+        questionBankPicker.hidden = true;
+    });
+}
 
-    const item = removeButton.closest(".question-item");
-    selectedQuestions = selectedQuestions.filter((question) => String(question.id) !== item.dataset.questionId);
-    renderSelectedQuestions();
+if (questionList) {
+    questionList.addEventListener("click", (event) => {
+        const removeButton = event.target.closest(".remove-question");
 
-    if (!questionBankPicker.hidden) {
-        renderQuestionBank();
-    }
-});
+        if (!removeButton) {
+            return;
+        }
+
+        const item = removeButton.closest(".question-item");
+        selectedQuestions = selectedQuestions.filter((question) => String(question.id) !== item.dataset.questionId);
+        renderSelectedQuestions();
+
+        if (questionBankPicker && !questionBankPicker.hidden) {
+            renderQuestionBank();
+        }
+    });
+}
 
 renderSelectedQuestions();

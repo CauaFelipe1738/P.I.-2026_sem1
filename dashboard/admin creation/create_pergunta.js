@@ -7,9 +7,11 @@
         const saveButton = document.querySelector("#save-question");
         const scoreInput = document.querySelector("#question-score");
         const imageInput = document.querySelector("#question-image");
-        const imageFileName = document.querySelector("#image-file-name");
         const themeModal = document.querySelector("#theme-modal");
+        const themeModalTitle = document.querySelector("#theme-modal-title");
         const openThemeModalButton = document.querySelector("#open-theme-modal");
+        const editThemeButton = document.querySelector("#edit-theme");
+        const deleteThemeButton = document.querySelector("#delete-theme");
         const closeThemeModalButton = document.querySelector("#close-theme-modal");
         const cancelThemeModalButton = document.querySelector("#cancel-theme-modal");
         const saveThemeButton = document.querySelector("#save-theme");
@@ -20,6 +22,7 @@
         const defaultThemes = [
         ];
         let toastTimer;
+        let editingTheme = "";
 
         function showToast(message, type = "success") {
             let toast = document.querySelector(".page-toast");
@@ -80,14 +83,16 @@
             });
         }
 
-        function openThemeModal() {
+        function openThemeModal(themeName = "") {
             if (!themeModal || !newThemeInput) {
                 return;
             }
 
+            editingTheme = normalizeThemeName(themeName);
+            themeModalTitle.textContent = editingTheme ? "Editar tema" : "Criar tema";
             themeModal.classList.add("is-visible");
             themeModal.setAttribute("aria-hidden", "false");
-            newThemeInput.value = "";
+            newThemeInput.value = editingTheme;
             newThemeInput.classList.remove("is-invalid");
             setTimeout(() => newThemeInput.focus(), 0);
         }
@@ -99,6 +104,7 @@
 
             themeModal.classList.remove("is-visible");
             themeModal.setAttribute("aria-hidden", "true");
+            editingTheme = "";
         }
 
         function saveNewTheme() {
@@ -107,7 +113,7 @@
             }
 
             const themeName = normalizeThemeName(newThemeInput.value);
-            const existingTheme = getThemes().find((theme) => theme.toLowerCase() === themeName.toLowerCase());
+            const existingTheme = getThemes().find((theme) => theme.toLowerCase() === themeName.toLowerCase() && theme.toLowerCase() !== editingTheme.toLowerCase());
 
             newThemeInput.classList.remove("is-invalid");
 
@@ -124,12 +130,48 @@
                 return;
             }
 
-            const storedThemes = getStoredThemes();
-            storedThemes.push(themeName);
+            const isEditing = Boolean(editingTheme);
+            let storedThemes = getStoredThemes();
+
+            if (isEditing) {
+                storedThemes = storedThemes.map((theme) => theme.toLowerCase() === editingTheme.toLowerCase() ? themeName : theme);
+            } else {
+                storedThemes.push(themeName);
+            }
+
             localStorage.setItem(THEMES_STORAGE_KEY, JSON.stringify(storedThemes));
             renderThemeOptions(themeName);
             closeThemeModal();
-            showToast("Tema criado com sucesso.");
+            showToast(isEditing ? "Tema atualizado com sucesso." : "Tema criado com sucesso.");
+        }
+
+        function editSelectedTheme() {
+            const selectedTheme = normalizeThemeName(themeInput.value);
+
+            if (!selectedTheme) {
+                showToast("Selecione um tema para editar.", "error");
+                return;
+            }
+
+            openThemeModal(selectedTheme);
+        }
+
+        function deleteSelectedTheme() {
+            const selectedTheme = normalizeThemeName(themeInput.value);
+
+            if (!selectedTheme) {
+                showToast("Selecione um tema para excluir.", "error");
+                return;
+            }
+
+            if (!confirm(`Deseja excluir o tema "${selectedTheme}"?`)) {
+                return;
+            }
+
+            const storedThemes = getStoredThemes().filter((theme) => theme.toLowerCase() !== selectedTheme.toLowerCase());
+            localStorage.setItem(THEMES_STORAGE_KEY, JSON.stringify(storedThemes));
+            renderThemeOptions();
+            showToast("Tema excluido com sucesso.");
         }
 
         function refreshAnswerLetters() {
@@ -225,7 +267,7 @@
             return {
                 question: questionText.value.trim(),
                 theme: themeInput.value.trim(),
-                image: imageInput.files[0] ? imageInput.files[0].name : "",
+                image: imageInput.value.trim(),
                 score: Number(scoreInput.value),
                 answers
             };
@@ -249,7 +291,7 @@
                 return "Informe uma pontuação válida.";
             }
 
-            if (data.answers.length < 2) {
+            if (answerList && data.answers.length < 2) {
                 return "Adicione pelo menos duas respostas.";
             }
 
@@ -262,7 +304,7 @@
                 return "Preencha todas as alternativas.";
             }
 
-            if (!data.answers.some((answer) => answer.correct)) {
+            if (answerList && !data.answers.some((answer) => answer.correct)) {
                 return "Marque uma resposta correta.";
             }
 
@@ -277,7 +319,15 @@
         renderThemeOptions();
 
         if (openThemeModalButton) {
-            openThemeModalButton.addEventListener("click", openThemeModal);
+            openThemeModalButton.addEventListener("click", () => openThemeModal());
+        }
+
+        if (editThemeButton) {
+            editThemeButton.addEventListener("click", editSelectedTheme);
+        }
+
+        if (deleteThemeButton) {
+            deleteThemeButton.addEventListener("click", deleteSelectedTheme);
         }
 
         if (closeThemeModalButton) {
@@ -312,12 +362,6 @@
                 }
             });
         }
-
-        imageInput.addEventListener("change", () => {
-            imageFileName.textContent = imageInput.files[0]
-                ? imageInput.files[0].name
-                : "Nenhuma imagem selecionada";
-        });
 
         if (answerList) {
             answerList.querySelectorAll(".answer-text").forEach(makeAnswerEditable);
@@ -379,5 +423,15 @@
             }
 
             localStorage.setItem("perguntaCriada", JSON.stringify(data));
+            const savedQuestions = JSON.parse(localStorage.getItem("perguntasAdmin") || "[]");
+            savedQuestions.push({
+                id: Date.now(),
+                question: data.question,
+                theme: data.theme,
+                image: data.image,
+                score: data.score,
+                answers: data.answers
+            });
+            localStorage.setItem("perguntasAdmin", JSON.stringify(savedQuestions));
             showToast("Pergunta salva com sucesso.");
         });

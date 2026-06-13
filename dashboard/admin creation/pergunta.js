@@ -6,14 +6,19 @@ const QUESTIONS_ENDPOINTS = [
 ];
 const CREATED_QUESTION_KEY = "perguntaCriada";
 const QUESTIONS_STORAGE_KEY = "perguntasAdmin";
+const THEMES_STORAGE_KEY = "temasPergunta";
 const UPDATE_QUESTION_PAGE = "./update_pergunta.html";
 
 const tableBody = document.querySelector("#questions-table-body");
 const searchInput = document.querySelector('.search-field input[type="search"]');
+const themeFilter = document.querySelector("#question-theme-filter");
 const footerText = document.querySelector(".table-footer span");
+const editSelectedButton = document.querySelector("#edit-selected-question");
+const deleteSelectedButton = document.querySelector("#delete-selected-question");
 
 let questions = [];
 let apiEndpoint = "";
+let selectedQuestionId = "";
 
 function escapeHtml(value) {
     return String(value ?? "")
@@ -98,11 +103,60 @@ function updateFooter(total, showing) {
         : "Nenhuma pergunta encontrada";
 }
 
+function getStoredThemes() {
+    try {
+        const storedThemes = JSON.parse(localStorage.getItem(THEMES_STORAGE_KEY) || "[]");
+        return Array.isArray(storedThemes) ? storedThemes : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function renderThemeFilter() {
+    if (!themeFilter) {
+        return;
+    }
+
+    const selectedTheme = themeFilter.value;
+    const questionThemes = questions.map((question) => question.area).filter(Boolean);
+    const themes = [...new Set([...getStoredThemes(), ...questionThemes])].sort((first, second) => first.localeCompare(second));
+
+    themeFilter.innerHTML = '<option value="">Todos os temas</option>';
+
+    themes.forEach((theme) => {
+        const option = document.createElement("option");
+        option.value = theme;
+        option.textContent = theme;
+        option.selected = theme === selectedTheme;
+        themeFilter.appendChild(option);
+    });
+}
+
+function getSelectedQuestion() {
+    return questions.find((question) => String(question.id) === String(selectedQuestionId));
+}
+
+function updateSelectedActions() {
+    const hasSelection = Boolean(getSelectedQuestion());
+
+    if (editSelectedButton) {
+        editSelectedButton.disabled = !hasSelection;
+    }
+
+    if (deleteSelectedButton) {
+        deleteSelectedButton.disabled = !hasSelection;
+    }
+}
+
 function renderQuestions() {
     const search = searchInput.value.trim().toLowerCase();
+    const selectedTheme = themeFilter ? themeFilter.value : "";
     const filteredQuestions = questions.filter((question) => {
         const searchable = `${question.id} ${question.text} ${question.area} ${question.value}`.toLowerCase();
-        return searchable.includes(search);
+        const matchesSearch = searchable.includes(search);
+        const matchesTheme = !selectedTheme || question.area === selectedTheme;
+
+        return matchesSearch && matchesTheme;
     });
 
     if (!filteredQuestions.length) {
@@ -111,12 +165,14 @@ function renderQuestions() {
                 <td colspan="4">Nenhuma pergunta encontrada.</td>
             </tr>
         `;
+        selectedQuestionId = "";
         updateFooter(questions.length, 0);
+        updateSelectedActions();
         return;
     }
 
     tableBody.innerHTML = filteredQuestions.map((question) => `
-        <tr data-question-id="${escapeHtml(question.id)}">
+        <tr data-question-id="${escapeHtml(question.id)}" class="${String(question.id) === String(selectedQuestionId) ? "is-selected" : ""}">
             <td>
                 <div class="user-cell">
                     ${escapeHtml(question.text)}
@@ -138,6 +194,7 @@ function renderQuestions() {
     `).join("");
 
     updateFooter(questions.length, filteredQuestions.length);
+    updateSelectedActions();
 }
 
 async function requestJson(url, options = {}) {
@@ -185,6 +242,7 @@ async function loadQuestions() {
     const storedQuestions = getStoredQuestions();
 
     questions = apiQuestions.length ? apiQuestions : storedQuestions;
+    renderThemeFilter();
     renderQuestions();
 }
 
@@ -205,21 +263,31 @@ async function deleteQuestion(question) {
     }
 
     questions = questions.filter((item) => item.id !== question.id);
+    selectedQuestionId = "";
     saveStoredQuestions(questions);
     renderQuestions();
 }
 
 searchInput.addEventListener("input", renderQuestions);
 
+if (themeFilter) {
+    themeFilter.addEventListener("change", renderQuestions);
+}
+
 tableBody.addEventListener("click", async (event) => {
     const editButton = event.target.closest(".edit-question");
     const deleteButton = event.target.closest(".delete-question");
+    const row = event.target.closest("tr[data-question-id]");
+
+    if (row) {
+        selectedQuestionId = row.dataset.questionId;
+        renderQuestions();
+    }
 
     if (!editButton && !deleteButton) {
         return;
     }
 
-    const row = event.target.closest("tr");
     const question = questions.find((item) => String(item.id) === row.dataset.questionId);
 
     if (!question) {
@@ -241,5 +309,35 @@ tableBody.addEventListener("click", async (event) => {
         console.error(error);
     }
 });
+
+if (editSelectedButton) {
+    editSelectedButton.addEventListener("click", () => {
+        const question = getSelectedQuestion();
+
+        if (question) {
+            editQuestion(question);
+        }
+    });
+}
+
+if (deleteSelectedButton) {
+    deleteSelectedButton.addEventListener("click", async () => {
+        const question = getSelectedQuestion();
+
+        if (!question) {
+            return;
+        }
+
+        deleteSelectedButton.disabled = true;
+
+        try {
+            await deleteQuestion(question);
+        } catch (error) {
+            alert("Nao foi possivel excluir a pergunta. Verifique se a API esta funcionando.");
+            deleteSelectedButton.disabled = false;
+            console.error(error);
+        }
+    });
+}
 
 loadQuestions();

@@ -25,11 +25,13 @@ function getInitials(name) {
 
 function normalizeUser(user, index, source = "api") {
     const name = user.nome_funcionario || user.nome || user.name || user.usuario || "Sem nome";
+    const username = user.username || user.usuario || user.login || user.email || "";
     const isAdmin = Boolean(Number(user.admin)) || user.access === "Administrador" || user.tipo_acesso === "administrador";
 
     return {
         id: user.id_funcionario || user.id_usuario || user.id || `local-${index}`,
         name,
+        username,
         role: user.titulo || user.role || user.cargo || `Pontos: ${user.pontos ?? 0}`,
         access: isAdmin ? "Administrador" : "Usuario",
         avatar: user.avatar || getInitials(name),
@@ -48,6 +50,7 @@ function saveStoredUsers(nextUsers) {
         .filter((user) => user.source === "local")
         .map((user) => ({
             name: user.name,
+            username: user.username,
             role: user.role,
             access: user.access,
             avatar: user.avatar,
@@ -101,14 +104,14 @@ function editUser(user) {
 function renderUsers() {
     const search = searchInput.value.trim().toLowerCase();
     const filteredUsers = users.filter((user) => {
-        const searchable = `${user.name} ${user.role} ${user.access}`.toLowerCase();
+        const searchable = `${user.name} ${user.username} ${user.role} ${user.access}`.toLowerCase();
         return searchable.includes(search);
     });
 
     if (!filteredUsers.length) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="4">Nenhum usuario encontrado.</td>
+                <td colspan="5">Nenhum usuario encontrado.</td>
             </tr>
         `;
         updateFooter(users.length, 0);
@@ -123,10 +126,11 @@ function renderUsers() {
                 <td>
                     <div class="user-cell">
                         <span class="avatar ${escapeHtml(user.color)}">${escapeHtml(user.avatar)}</span>
-                        ${escapeHtml(user.name)}
+                        <span class="text-ellipsis">${escapeHtml(user.name)}</span>
                     </div>
                 </td>
-                <td>${escapeHtml(user.role)}</td>
+                <td><span class="text-ellipsis">${escapeHtml(user.username || "@sem-usuario")}</span></td>
+                <td><span class="text-ellipsis">${escapeHtml(user.role)}</span></td>
                 <td><span class="badge ${accessClass}">${escapeHtml(user.access)}</span></td>
                 <td>
                     <div class="actions">
@@ -182,7 +186,7 @@ async function loadUsersFromApi() {
 async function loadUsers() {
     tableBody.innerHTML = `
         <tr>
-            <td colspan="4">Carregando usuarios...</td>
+            <td colspan="5">Carregando usuarios...</td>
         </tr>
     `;
 
