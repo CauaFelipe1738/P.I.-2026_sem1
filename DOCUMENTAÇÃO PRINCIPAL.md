@@ -670,7 +670,38 @@ Foram necessários certos cuidados em relação às normalizações de banco de 
 Nesta versão antiga do DER, a tabela funcionario apresentava a coluna idf_area que seria um array (conjunto de valores) das áreas do sistema que ligaria diretamente com o funcionário, aplicando a 1° normalização, essa chave estrangeira foi descartada.
 
 # Linguagem de programação
-<img width="1534" height="1291" alt="Diagrama sem nome drawio (1)" src="https://github.com/user-attachments/assets/5568c545-eea8-45e3-a563-484ec7ccc513" />
+# Fluxograma 1 - Login Usuário
+<img width="800" height="784" alt="login" src="https://github.com/user-attachments/assets/90e9431f-b29d-4742-b7d6-dcbba459e2ad" />
+
+# Fluxograma 2 - Questionario partindo do login
+<img width="1283" height="978" alt="realizacaoquestionario" src="https://github.com/user-attachments/assets/4cc193e2-e109-480d-8466-811019211918" />
+
+# Fluxograma 3 - Visualização do ranking
+<img width="604" height="877" alt="acessoaorankinguser" src="https://github.com/user-attachments/assets/2272fef7-df5d-499d-9134-21667e4ad20c" />
+
+# Fluxograma 4 - Criar ou editar Usuários (Admin)
+<img width="994" height="1140" alt="criareeditarfunc drawio (4) (1)" src="https://github.com/user-attachments/assets/3047cb3c-9ded-4755-8fbf-d080f637fd37" />
+
+# Fluxograma 5 - Criar ou editar Rankings (Admin)
+<img width="993" height="1139" alt="rankingadmin (1)" src="https://github.com/user-attachments/assets/6d3f5e0b-d402-4f0a-b20b-013511fe4993" />
+
+# Fluxograma 6 - Criar ou editar perguntas
+<img width="993" height="1140" alt="perguntas drawio (1)" src="https://github.com/user-attachments/assets/450392f4-7e7a-4b02-81bb-cf0a538582a9" />
+
+# Fluxograma 7 - Criar ou editar questionários
+<img width="993" height="1140" alt="Questionario drawio (1)" src="https://github.com/user-attachments/assets/4e636e5e-3a6b-4792-b849-e6d0e664d11b" />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
