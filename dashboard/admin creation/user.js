@@ -22,7 +22,7 @@ const normalize = (user, index, source = "api") => {
     source
   };
 };
-const saveLocal = () => Admin.write(STORAGE_KEY, users.filter((user) => user.source === "local").map(({ name, username, role, access, avatar, color }) => ({ name, username, role, access, avatar, color })));
+const saveLocal = () => Admin.write(STORAGE_KEY, users.filter((user) => user.source === "local").map(({ id, name, username, role, access, avatar, color }) => ({ id, name, username, role, access, avatar, color })));
 const edit = (user) => {
   sessionStorage.setItem("usuarioEditando", JSON.stringify(user));
   location.href = `./update_user.html?id=${encodeURIComponent(user.id)}&source=${encodeURIComponent(user.source)}`;

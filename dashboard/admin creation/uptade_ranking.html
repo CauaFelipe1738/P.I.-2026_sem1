@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Novo Ranking</title>
+    <title>Editar Ranking</title>
     <link rel="stylesheet" href="../../css/create_user.css">
     <link rel="stylesheet" href="../../css/create_ranking.css">
     <link rel="stylesheet" href="../../css/base.css">
@@ -14,8 +14,8 @@
     <main class="create-user-page ranking-page">
         <header class="page-header">
             <div class="page-title">
-                <h1>Criar Novo Ranking</h1>
-                <p>Defina o titulo, a quantidade de participantes e a descricao que vao aparecer na listagem.</p>
+                <h1>Editar Ranking</h1>
+                <p>Atualize o titulo, a quantidade de participantes e a descricao exibida na listagem.</p>
             </div>
 
             <a class="back-button" href="./ranking.html">
@@ -122,7 +122,7 @@
                         <path d="M17 21v-8H7v8"></path>
                         <path d="M7 3v5h8"></path>
                     </svg>
-                    Salvar Ranking
+                    Salvar Alteracoes
                 </button>
             </footer>
         </form>
@@ -136,6 +136,7 @@
             `${API_BASE_URL}/api/rank`
         ];
         const STORAGE_KEY = "rankingsAdmin";
+        const editing = JSON.parse(sessionStorage.getItem("rankingEditando") || "null");
         const form = document.querySelector("#ranking-form");
         const titleInput = form.querySelector('input[name="titulo"]');
         const countInput = form.querySelector('input[name="qtd_pessoas"]');
@@ -164,8 +165,9 @@
         async function saveRankingToApi(data) {
             for (const endpoint of RANKING_ENDPOINTS) {
                 try {
-                    return await requestJson(endpoint, {
-                        method: "POST",
+                    const url = editing?.id ? `${endpoint}/${encodeURIComponent(editing.id)}` : endpoint;
+                    return await requestJson(url, {
+                        method: editing?.id ? "PUT" : "POST",
                         body: JSON.stringify(data)
                     });
                 } catch (error) {
@@ -178,11 +180,24 @@
 
         function saveRankingLocally(data) {
             const rankings = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-            rankings.push({
+            const id = editing?.id || editing?.id_ranking || Date.now();
+            const index = rankings.findIndex((ranking) => String(ranking.id_ranking || ranking.id) === String(id));
+            const item = {
                 ...data,
-                id_ranking: Date.now()
-            });
+                id_ranking: id
+            };
+
+            if (index >= 0) rankings[index] = item;
+            else rankings.push(item);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(rankings));
+        }
+
+        function loadRanking() {
+            if (!editing) return;
+            titleInput.value = editing.titulo || editing.title || "";
+            countInput.value = editing.qtdPessoas ?? editing.qtd_pessoas ?? editing.quantidade ?? "";
+            aboutInput.value = editing.sobre || editing.descricao || editing.description || "";
+            updatePreview();
         }
 
         function updatePreview() {
@@ -227,6 +242,8 @@
 
             window.location.href = "./ranking.html";
         });
+
+        loadRanking();
     </script>
 </body>
 

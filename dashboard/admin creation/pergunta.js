@@ -8,11 +8,15 @@ const themeFilter = Admin.$("#question-theme-filter");
 const footerText = Admin.$(".table-footer span");
 const editSelectedButton = Admin.$("#edit-selected-question");
 const deleteSelectedButton = Admin.$("#delete-selected-question");
+const createQuestionLink = Admin.$("#create-question-link");
+const themeModal = Admin.$("#theme-modal");
+const themeInput = Admin.$("#new-theme-name");
 
 let questions = [];
 let apiEndpoint = "";
 let selectedId = "";
 
+const cleanTheme = (value) => value.trim().replace(/\s+/g, " ");
 const normalize = (question, index, source = "api") => ({
   id: question.id_pergunta || question.id || `local-${index}`,
   text: question.pergunta || question.question || question.texto || question.text || "Sem pergunta",
@@ -40,6 +44,39 @@ const saveLocal = () => {
   if (!local.length) localStorage.removeItem(CREATED_KEY);
 };
 const selectedQuestion = () => questions.find((item) => String(item.id) === String(selectedId));
+const storedThemes = () => [...new Set(Admin.read(THEMES_KEY).map(cleanTheme).filter(Boolean))];
+const updateCreateLink = () => {
+  if (!createQuestionLink) return;
+  const theme = themeFilter?.value || "";
+  createQuestionLink.href = theme ? `create_pergunta.html?theme=${encodeURIComponent(theme)}` : "create_pergunta.html";
+};
+
+function toggleThemeModal(open) {
+  themeModal?.classList.toggle("is-visible", open);
+  themeModal?.setAttribute("aria-hidden", String(!open));
+  if (open) {
+    themeInput.value = "";
+    themeInput.classList.remove("is-invalid");
+    setTimeout(() => themeInput.focus(), 0);
+  }
+}
+
+function saveTheme() {
+  const theme = cleanTheme(themeInput.value);
+  const existing = storedThemes().find((item) => item.toLowerCase() === theme.toLowerCase());
+  themeInput.classList.remove("is-invalid");
+
+  if (!theme) {
+    themeInput.classList.add("is-invalid");
+    return Admin.toast("Digite o nome do tema.", "error");
+  }
+
+  if (!existing) Admin.write(THEMES_KEY, [...storedThemes(), theme]);
+  renderThemes(existing || theme);
+  render();
+  toggleThemeModal(false);
+  Admin.toast(existing ? "Tema selecionado." : "Tema criado com sucesso.");
+}
 const updateActions = () => {
   const disabled = !selectedQuestion();
   if (editSelectedButton) editSelectedButton.disabled = disabled;
@@ -62,7 +99,7 @@ const remove = async (question) => {
 function renderThemes() {
   if (!themeFilter) return;
   const selected = themeFilter.value;
-  const themes = [...new Set([...Admin.read(THEMES_KEY), ...questions.map((item) => item.area).filter(Boolean)])].sort((a, b) => a.localeCompare(b));
+  const themes = [...new Set([...storedThemes(), ...questions.map((item) => item.area).filter(Boolean)])].sort((a, b) => a.localeCompare(b));
   themeFilter.innerHTML = '<option value="">Todos os temas</option>';
   themes.forEach((theme) => themeFilter.add(new Option(theme, theme, false, theme === selected)));
 }
@@ -86,6 +123,7 @@ function render() {
 
   if (!filtered.some((item) => String(item.id) === String(selectedId))) selectedId = "";
   Admin.footer(footerText, questions.length, filtered.length, "perguntas");
+  updateCreateLink();
   updateActions();
 }
 
@@ -98,8 +136,17 @@ async function load() {
   render();
 }
 
-searchInput.addEventListener("input", render);
+searchInput?.addEventListener("input", render);
 themeFilter?.addEventListener("change", render);
+Admin.$("#open-theme-modal")?.addEventListener("click", () => toggleThemeModal(true));
+Admin.$("#close-theme-modal")?.addEventListener("click", () => toggleThemeModal(false));
+Admin.$("#cancel-theme-modal")?.addEventListener("click", () => toggleThemeModal(false));
+Admin.$("#save-theme")?.addEventListener("click", saveTheme);
+themeModal?.addEventListener("click", ({ target }) => target === themeModal && toggleThemeModal(false));
+themeInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") event.preventDefault(), saveTheme();
+  if (event.key === "Escape") toggleThemeModal(false);
+});
 tableBody.addEventListener("click", async ({ target }) => {
   const row = target.closest("tr[data-question-id]");
   const question = row && questions.find((item) => String(item.id) === row.dataset.questionId);
@@ -122,6 +169,17 @@ tableBody.addEventListener("click", async ({ target }) => {
   }
 });
 editSelectedButton?.addEventListener("click", () => selectedQuestion() && edit(selectedQuestion()));
-deleteSelectedButton?.addEventListener("click", async () => selectedQuestion() && remove(selectedQuestion()));
+deleteSelectedButton?.addEventListener("click", async () => {
+  const question = selectedQuestion();
+  if (!question) return;
+  deleteSelectedButton.disabled = true;
+  try {
+    await remove(question);
+  } catch (error) {
+    alert("Nao foi possivel excluir a pergunta. Verifique se a API esta funcionando.");
+    updateActions();
+    console.error(error);
+  }
+});
 
 load();

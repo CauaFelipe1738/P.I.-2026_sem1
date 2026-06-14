@@ -42,7 +42,7 @@
             </label>
 
             <div class="toolbar-actions" aria-label="Acoes de perguntas">
-                <a class="toolbar-button primary" href="create_pergunta.html">
+                <a class="toolbar-button primary" href="create_pergunta.html" id="create-question-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                         <path d="M12 5v14"></path>
                         <path d="M5 12h14"></path>
@@ -81,6 +81,14 @@
                     <option value="">Todos os temas</option>
                 </select>
             </label>
+
+            <button class="toolbar-button primary theme-create-button" type="button" id="open-theme-modal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                </svg>
+                Criar tema
+            </button>
         </div>
 
         <section class="users-table-wrap" aria-label="Lista de usuários">
@@ -114,6 +122,31 @@
             </footer>
         </section>
     </main>
+
+    <div class="modal-overlay" id="theme-modal" aria-hidden="true">
+        <div class="theme-modal" role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
+            <div class="theme-modal-header">
+                <h2 id="theme-modal-title">Criar tema</h2>
+                <button class="modal-close" type="button" id="close-theme-modal" aria-label="Fechar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <label class="theme-modal-field">
+                <span>Nome do tema</span>
+                <input type="text" maxlength="80" aria-label="Nome do tema" id="new-theme-name">
+            </label>
+
+            <div class="modal-actions">
+                <button class="toolbar-button" type="button" id="cancel-theme-modal">Cancelar</button>
+                <button class="toolbar-button primary" type="button" id="save-theme">Salvar tema</button>
+            </div>
+        </div>
+    </div>
+
     <script src="./admin-utils.js"></script>
     <script src="./pergunta.js"></script>
 </body>

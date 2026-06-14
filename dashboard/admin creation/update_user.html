@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Novo Usuário</title>
+    <title>Editar Usuário</title>
     <link rel="stylesheet" href="../../css/create_user.css">
     <link rel="stylesheet" href="../../css/base.css"> 
 </head>
@@ -13,8 +13,8 @@
     <main class="create-user-page">
         <header class="page-header">
             <div class="page-title">
-                <h1>Criar Novo Usuário</h1>
-                <p>Preencha os dados abaixo para adicionar um novo usuário à plataforma.</p>
+                <h1>Editar Usuário</h1>
+                <p>Atualize os dados do usuário selecionado.</p>
             </div>
 
             <a class="back-button" href="./user.html">
@@ -52,7 +52,7 @@
                     <label class="field password-field">
                         <span>Senha</span>
                         <span class="password-control">
-                            <input type="password" name="senha" placeholder="Digite a senha" minlength="6">
+                            <input type="password" name="senha" placeholder="Nova senha (opcional)" minlength="6">
                             <button type="button" aria-label="Mostrar senha">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                     <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
@@ -60,7 +60,7 @@
                                 </svg>
                             </button>
                         </span>
-                        <small>Mínimo de 6 caracteres.</small>
+                        <small>Deixe em branco para manter a senha atual.</small>
                     </label>
                 </div>
 
@@ -123,7 +123,7 @@
                         <path d="M19 8v6"></path>
                         <path d="M22 11h-6"></path>
                     </svg>
-                    Salvar Usuário
+                    Salvar Alterações
                 </button>
             </footer>
         </form>
@@ -134,6 +134,7 @@
         const passwordInput = document.querySelector('input[name="senha"]');
         const passwordToggle = document.querySelector(".password-control button");
         const storageKey = "usuariosAdmin";
+        const editing = JSON.parse(sessionStorage.getItem("usuarioEditando") || "null");
 
         function getInitials(name) {
             return name
@@ -147,6 +148,15 @@
         passwordToggle.addEventListener("click", () => {
             passwordInput.type = passwordInput.type === "password" ? "text" : "password";
         });
+
+        function loadUser() {
+            if (!editing) return;
+            form.querySelector('input[name="nome"]').value = editing.name || editing.nome || "";
+            form.querySelector('input[name="username"]').value = editing.username || editing.usuario || "";
+            const access = editing.access === "Administrador" ? "administrador" : "usuario";
+            const accessInput = form.querySelector(`input[name="tipo_acesso"][value="${access}"]`);
+            if (accessInput) accessInput.checked = true;
+        }
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
@@ -167,26 +177,33 @@
                 return;
             }
 
-            if (password.length < 6) {
+            if (password && password.length < 6) {
                 alert("A senha deve ter no mínimo 6 caracteres.");
                 return;
             }
 
             const users = JSON.parse(localStorage.getItem(storageKey)) || [];
             const access = accessValue === "administrador" ? "Administrador" : "Usuário";
-
-            users.push({
+            const id = editing?.id || Date.now();
+            const index = users.findIndex((user) => String(user.id) === String(id) || (editing?.username && user.username === editing.username));
+            const updatedUser = {
+                id,
                 name,
                 username,
-                role: "Sem cargo definido",
+                role: editing?.role || "Sem cargo definido",
                 access,
                 avatar: getInitials(name),
                 color: access === "Administrador" ? "am" : "cs"
-            });
+            };
+
+            if (index >= 0) users[index] = updatedUser;
+            else users.push(updatedUser);
 
             localStorage.setItem(storageKey, JSON.stringify(users));
             window.location.href = "./user.html";
         });
+
+        loadUser();
     </script>
 </body>
 

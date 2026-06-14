@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Pergunta</title>
+    <title>Editar Pergunta</title>
     <link rel="stylesheet" href="../../css/create_pergunta.css">
 </head>
 
@@ -13,19 +13,19 @@
 
         <header class="page-header">
             <div>
-                <h1>Criar Pergunta</h1>
-                <p>Adicione uma nova pergunta ao seu questionário.</p>
+                <h1>Editar Pergunta</h1>
+                <p>Atualize os dados e alternativas da pergunta selecionada.</p>
             </div>
 
             <div class="header-actions">
-                <a class="button button-secondary" href="../admin.html" id="cancel-question">Cancelar</a>
+                <a class="button button-secondary" href="./pergunta.html" id="cancel-question">Cancelar</a>
                 <button class="button button-primary" type="button" id="save-question">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
                         <path d="M17 21v-8H7v8"></path>
                         <path d="M7 3v5h8"></path>
                     </svg>
-                    Salvar Pergunta
+                    Salvar Alterações
                 </button>
             </div>
         </header>
@@ -44,7 +44,6 @@
                     <span>Tema da pergunta</span>
                     <span class="theme-control">
                         <select aria-label="Tema da pergunta" id="question-theme"></select>
-                        <button class="theme-create-button" type="button" id="open-theme-modal">Criar tema</button>
                     </span>
                 </label>
 
@@ -73,30 +72,6 @@
             </section>
         </form>
 
-        <div class="modal-overlay" id="theme-modal" aria-hidden="true">
-            <div class="theme-modal" role="dialog" aria-modal="true" aria-labelledby="theme-modal-title">
-                <div class="theme-modal-header">
-                    <h2 id="theme-modal-title">Criar tema</h2>
-                    <button class="modal-close" type="button" id="close-theme-modal" aria-label="Fechar">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                            <path d="M18 6 6 18"></path>
-                            <path d="m6 6 12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <label class="field">
-                    <span>Nome do tema</span>
-                    <input type="text" maxlength="80" aria-label="Nome do tema" id="new-theme-name">
-                </label>
-
-                <div class="modal-actions">
-                    <button class="button button-secondary" type="button" id="cancel-theme-modal">Cancelar</button>
-                    <button class="button button-primary" type="button" id="save-theme">Salvar tema</button>
-                </div>
-            </div>
-        </div>
-        
         <section class="panel answers-panel" aria-labelledby="answers-title">
             <div class="section-heading">
                 <h2 id="answers-title">Respostas</h2>

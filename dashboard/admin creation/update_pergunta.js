@@ -1,4 +1,5 @@
 const THEMES_KEY = "temasPergunta";
+const QUESTIONS_KEY = "perguntasAdmin";
 const CREATED_KEY = "perguntaCriada";
 const form = Admin.$(".question-form");
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -8,10 +9,9 @@ const imageName = Admin.$("#image-file-name");
 const fields = {
   text: Admin.$("#question-text"),
   theme: Admin.$("#question-theme"),
-  score: Admin.$("#question-score"),
-  modal: Admin.$("#theme-modal"),
-  modalInput: Admin.$("#new-theme-name")
+  score: Admin.$("#question-score")
 };
+const editing = JSON.parse(sessionStorage.getItem("perguntaEditando") || "null");
 
 const normalize = (value) => value.trim().replace(/\s+/g, " ");
 const themes = () => [...new Set(Admin.read(THEMES_KEY).map(normalize).filter(Boolean))];
@@ -24,32 +24,8 @@ const answerOptions = () => Admin.$$(".answer-option", answerList);
 
 function renderThemes(selected = "") {
   fields.theme.innerHTML = '<option value="">Selecione um tema</option>';
-  themes().forEach((theme) => fields.theme.add(new Option(theme, theme, false, theme === selected)));
-}
-
-function toggleModal(open) {
-  fields.modal?.classList.toggle("is-visible", open);
-  fields.modal?.setAttribute("aria-hidden", String(!open));
-  if (open) {
-    fields.modalInput.value = "";
-    setInvalid(fields.modalInput, false);
-    setTimeout(() => fields.modalInput.focus(), 0);
-  }
-}
-
-function saveTheme() {
-  const theme = normalize(fields.modalInput.value);
-  const existing = themes().find((item) => item.toLowerCase() === theme.toLowerCase());
-  setInvalid(fields.modalInput, false);
-
-  if (!theme) {
-    setInvalid(fields.modalInput);
-    return Admin.toast("Digite o nome do tema.", "error");
-  }
-  if (!existing) Admin.write(THEMES_KEY, [...themes(), theme]);
-  renderThemes(existing || theme);
-  toggleModal(false);
-  Admin.toast(existing ? "Tema selecionado." : "Tema criado com sucesso.");
+  const options = [...new Set([...themes(), selected].map(normalize).filter(Boolean))];
+  options.forEach((theme) => fields.theme.add(new Option(theme, theme, false, theme === selected)));
 }
 
 function refreshAnswers() {
@@ -91,9 +67,11 @@ function addAnswer(text = "Nova resposta") {
 
 function getData() {
   return {
+    id: editing?.id || editing?.id_pergunta || Date.now(),
+    source: editing?.source || "local",
     question: fields.text.value.trim(),
     theme: fields.theme.value.trim(),
-    image: imageInput.files[0]?.name || "",
+    image: imageInput.files[0]?.name || editing?.image || editing?.imagem || "",
     score: Number(fields.score.value),
     answers: answerOptions().map((option, index) => ({
       letter: letters[index] || String(index + 1),
@@ -119,21 +97,43 @@ function saveQuestion() {
   const data = getData();
   const error = validate(data);
   if (error) return Admin.toast(error, "error");
+
+  const questions = Admin.read(QUESTIONS_KEY);
+  const index = questions.findIndex((item) => String(item.id || item.id_pergunta) === String(data.id));
+  const stored = { id: data.id, question: data.question, theme: data.theme, image: data.image, score: data.score, answers: data.answers };
+  if (index >= 0) questions[index] = stored;
+  else questions.push(stored);
+  Admin.write(QUESTIONS_KEY, questions);
   Admin.write(CREATED_KEY, data);
   Admin.toast("Pergunta salva com sucesso.");
+  setTimeout(() => location.href = "./pergunta.html", 600);
+}
+
+function loadQuestion() {
+  if (!editing) return;
+  fields.text.value = editing.text || editing.question || editing.pergunta || "";
+  fields.score.value = editing.value ?? editing.score ?? editing.valor ?? "";
+  renderThemes(editing.area || editing.theme || editing.tema || "");
+  if (imageName) imageName.textContent = editing.image || editing.imagem || "Nenhuma imagem selecionada";
+  const answers = editing.answers || editing.respostas || [];
+  answerList.innerHTML = "";
+  if (answers.length) {
+    answers.forEach((answer) => addAnswer(answer.text || answer.resposta || answer.answer || "Nova resposta"));
+    const correctIndex = answers.findIndex((answer) => answer.correct || answer.correta);
+    if (correctIndex >= 0) {
+      const radio = Admin.$$('input[type="radio"]', answerList)[correctIndex];
+      radio.checked = true;
+      setCorrect(radio);
+    }
+  } else {
+    addAnswer();
+    addAnswer();
+  }
+  updateCounter();
 }
 
 fields.text?.addEventListener("input", updateCounter);
 imageInput?.addEventListener("change", () => imageName.textContent = imageInput.files[0]?.name || "Nenhuma imagem selecionada");
-Admin.$("#open-theme-modal")?.addEventListener("click", () => toggleModal(true));
-Admin.$("#close-theme-modal")?.addEventListener("click", () => toggleModal(false));
-Admin.$("#cancel-theme-modal")?.addEventListener("click", () => toggleModal(false));
-Admin.$("#save-theme")?.addEventListener("click", saveTheme);
-fields.modal?.addEventListener("click", ({ target }) => target === fields.modal && toggleModal(false));
-fields.modalInput?.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") event.preventDefault(), saveTheme();
-  if (event.key === "Escape") toggleModal(false);
-});
 answerList.addEventListener("change", ({ target }) => target.matches('input[type="radio"]') && setCorrect(target));
 answerList.addEventListener("click", ({ target }) => {
   const button = target.closest(".delete-answer");
@@ -156,5 +156,8 @@ Admin.$("#save-question")?.addEventListener("click", saveQuestion);
 
 updateCounter();
 renderThemes();
-addAnswer();
-addAnswer();
+loadQuestion();
+if (!answerOptions().length) {
+  addAnswer();
+  addAnswer();
+}
