@@ -41,13 +41,17 @@ class AdminRankingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'titulo' => 'required|string|max:30',
-            'qtd_pessoas' => 'required|integer|min:1',
-            'sobre' => 'nullable|string'
+        'titulo' => 'required|string|max:30',
+        'qtd_pessoas' => 'required|integer|min:1|unique:ranking,qtd_pessoas',
+        'sobre' => 'nullable|string',
+        ], [
+            // Mensagem de erro caso a regra unique falhe
+            'qtd_pessoas.unique' => 'Já existe um ranking cadastrado com essa exata quantidade de pessoas. Escolha outro valor.',
         ]);
 
         Ranking::create($request->all());
-        return redirect()->route('admin.rankings.index')->with('success', 'Ranking criado!');
+
+        return redirect('/admin/rankings')->with('success', 'Ranking criado com sucesso!');
     }
 
     /**
@@ -73,10 +77,13 @@ class AdminRankingController extends Controller
     public function update(Request $request, $id)
     {
         $ranking = Ranking::findOrFail($id);
+
         $request->validate([
-            'titulo' => 'required|string|max:30',
-            'qtd_pessoas' => 'required|integer|min:1',
-            'sobre' => 'nullable|string'
+        'titulo' => 'required|string|max:30',
+        'qtd_pessoas' => 'required|integer|min:1|unique:ranking,qtd_pessoas,' . $id . ',id_ranking',
+        'sobre' => 'nullable|string',
+        ], [
+            'qtd_pessoas.unique' => 'Já existe um outro ranking cadastrado com essa exata quantidade de pessoas. Escolha outro valor.',
         ]);
 
         $ranking->update($request->all());

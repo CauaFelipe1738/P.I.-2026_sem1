@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const titulos = document.querySelectorAll(".list-row em");
+    const titulos = document.querySelectorAll("[data-tooltip]");
 
-    // cria tooltip único (reutilizável)
     const tooltip = document.createElement("div");
     tooltip.classList.add("tooltip");
     document.body.appendChild(tooltip);

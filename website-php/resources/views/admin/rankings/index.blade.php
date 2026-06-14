@@ -13,8 +13,6 @@
         .pagination a:hover { background: rgba(22, 39, 67, 0.4); }
         .pagination svg { width: 19px; height: 19px; }
         .w-5 { width: 1.25rem; } .h-5 { height: 1.25rem; }
-        /* Cursor de ajuda para mostrar que o texto tem tooltip */
-        .texto-truncado { cursor: help; border-bottom: 1px dotted #8fa4c7; }
     </style>
 </head>
 <body>
@@ -55,9 +53,10 @@
                     @forelse($rankings as $ranking)
                         <tr>
                             <td><strong>{{ $ranking->titulo }}</strong></td>
-                            <td>{{ $ranking->qtd_pessoas }} participantes</td>
+                            <td>{{ $ranking->qtd_pessoas }}</td>
+
                             <td>
-                                <span class="texto-truncado" title="{{ $ranking->sobre }}">
+                                <span data-tooltip="{{ $ranking->sobre }}" style="cursor: pointer;">
                                     {{ \Illuminate\Support\Str::limit($ranking->sobre, 50, '...') }}
                                 </span>
                             </td>
@@ -110,5 +109,7 @@
             </footer>
         </section>
     </main>
+
+    <script src="{{ asset('js/pages/ranking.js') }}"></script>
 </body>
 </html>

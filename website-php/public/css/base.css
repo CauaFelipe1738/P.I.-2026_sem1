@@ -79,3 +79,20 @@ select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+
+.tooltip {
+  position: absolute;
+  display: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #0b1224;
+  color: #fff;
+  font-size: 13px;
+  z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.tooltip.active {
+  display: block;
+}
