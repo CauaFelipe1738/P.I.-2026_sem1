@@ -65,7 +65,7 @@
                 <span class="action-arrow" aria-hidden="true">›</span>
             </a>
 
-            <a class="action-card" href="#">
+            <a class="action-card" href="{{ route('admin.listas.index') }}">
                 <span class="action-icon questionnaire" aria-hidden="true">
                     <img src="{{ asset('img/admin/tabela-de-edicao.png') }}" alt="" class="icon">
                 </span>

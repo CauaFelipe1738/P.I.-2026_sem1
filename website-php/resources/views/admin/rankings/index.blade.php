@@ -76,7 +76,7 @@
                 </tbody>
             </table>
             <footer class="table-footer">
-                <span>Mostrando {{ $rankings->firstItem() ?? 0 }} a {{ $rankings->lastItem() ?? 0 }} de {{ $rankings->total() }} usuários</span>
+                <span>Mostrando {{ $rankings->firstItem() ?? 0 }} a {{ $rankings->lastItem() ?? 0 }} de {{ $rankings->total() }} rankings</span>
 
                 @if ($rankings->hasPages())
                     <nav class="pagination" aria-label="Paginação">

@@ -41,9 +41,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/rankings/{id}/editar', [AdminRankingController::class, 'edit'])->name('rankings.edit');
     Route::put('/rankings/{id}', [AdminRankingController::class, 'update'])->name('rankings.update');
     Route::delete('/rankings/{id}', [AdminRankingController::class, 'destroy'])->name('rankings.destroy');
-    // Route::get('/perguntas', [PerguntaController::class, 'index'])->name('perguntas.index');
-    // Route::get('/ranking', [RankingController::class, 'adminIndex'])->name('ranking.index');
-    // Route::get('/listas', [ListaController::class, 'index'])->name('listas.index');
+
+
+    Route::get('/questionarios', [AdminListaController::class, 'index'])->name('listas.index');
+    Route::get('/questionarios/criar', [AdminListaController::class, 'create'])->name('listas.create');
+    Route::post('/questionarios/salvar', [AdminListaController::class, 'store'])->name('listas.store');
+    Route::get('/questionarios/{id}/editar', [AdminListaController::class, 'edit'])->name('listas.edit');
+    Route::put('/questionarios/{id}', [AdminListaController::class, 'update'])->name('listas.update');
+    Route::delete('/questionarios/{id}', [AdminListaController::class, 'destroy'])->name('listas.destroy');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

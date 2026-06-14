@@ -13,13 +13,16 @@ class AdminListaController extends Controller
      */
     public function index(Request $request)
     {
-        // Traz junto todas as perguntas associadas a cada lista
-        $listas = Lista::with('perguntas')->get();
+        $busca = $request->input('search');
+        $query = Lista::query();
 
-        if ($request->expectsJson()) {
-            return response()->json(['status' => 'success', 'data' => $listas]);
+        if (!empty($busca)) {
+            // Busca pelo ID do questionário
+            $query->where('id_lista', $busca);
         }
-        return view('admin.listas.index', compact('listas'));
+
+        $listas = $query->paginate(10)->appends(['search' => $busca]);
+        return view('admin.listas.index', compact('listas', 'busca'));
     }
 
     /**
@@ -27,7 +30,7 @@ class AdminListaController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.listas.create');
     }
 
     /**
@@ -36,27 +39,18 @@ class AdminListaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'inicio' => 'required|date|after_or_equal:today',
-            'fim' => 'required|date|after:inicio',
-            'perguntas' => 'required|array', // Array de IDs das perguntas selecionadas
-            'perguntas.*' => 'integer|exists:pergunta,id_pergunta' // Valida se cada ID realmente existe na tabela pergunta
+            'data_inicio' => 'required|date',
+            'data_fim' => 'required|date|after:data_inicio',
+        ], [
+            'data_fim.after' => 'A data de fim deve ser posterior à data de início.'
         ]);
 
-        // Cria a lista (ID, data de início e fim)
-        $lista = Lista::create($request->only(['inicio', 'fim']));
+        Lista::create([
+            'inicio' => $request->data_inicio,
+            'fim' => $request->data_fim,
+        ]);
 
-        // Alimenta a tabela pivô "pergunta_lista" automaticamente
-        // O método "attach" faz exatamente a inserção dos relacionamentos no banco
-        $lista->perguntas()->attach($request->perguntas);
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Questionário criado e perguntas vinculadas!',
-                'data' => $lista->load('perguntas')
-            ], 201);
-        }
-        return redirect()->back()->with('success', 'Questionário criado com sucesso!');
+        return redirect('/admin/questionarios')->with('success', 'Questionário criado com sucesso!');
     }
 
     /**
@@ -70,9 +64,10 @@ class AdminListaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Lista $lista)
+    public function edit($id)
     {
-        //
+        $lista = Lista::findOrFail($id);
+        return view('admin.listas.edit', compact('lista'));
     }
 
     /**
@@ -83,25 +78,18 @@ class AdminListaController extends Controller
         $lista = Lista::findOrFail($id);
 
         $request->validate([
-            'inicio' => 'required|date',
-            'fim' => 'required|date|after:inicio',
-            'perguntas' => 'required|array',
-            'perguntas.*' => 'integer|exists:pergunta,id_pergunta'
+            'data_inicio' => 'required|date',
+            'data_fim' => 'required|date|after:data_inicio',
+        ], [
+            'data_fim.after' => 'A data de fim deve ser posterior à data de início.'
         ]);
 
-        $lista->update($request->only(['inicio', 'fim']));
+        $lista->update([
+            'inicio' => $request->data_inicio,
+            'fim' => $request->data_fim,
+        ]);
 
-        // Método "sync" remove todas as perguntas antigas que não foram enviadas e adiciona as novas, mantendo a tabela pivô atualizada
-        $lista->perguntas()->sync($request->perguntas);
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Questionário atualizado!',
-                'data' => $lista->load('perguntas')
-            ]);
-        }
-        return redirect()->back()->with('success', 'Questionário atualizado com sucesso!');
+        return redirect('/admin/questionarios')->with('success', 'Questionário atualizado com sucesso!');
     }
 
     /**
@@ -109,13 +97,7 @@ class AdminListaController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $lista = Lista::findOrFail($id);
-
-        $lista->delete();
-
-        if ($request->expectsJson()) {
-            return response()->json(['status' => 'success', 'message' => 'Questionário excluído!']);
-        }
-        return redirect()->back()->with('success', 'Questionário excluído!');
+        Lista::destroy($id);
+        return back()->with('success', 'Questionário excluído!');
     }
 }
