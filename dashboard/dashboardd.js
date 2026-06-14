@@ -1,51 +1,35 @@
-console.log("dashboard carregado");
+const pages = {
+  seguranca: "./questionario.html",
+  compliance: "./compliance.html"
+};
 
-function carregarDadosTreinamento(treinamentoId) {
-  const dadosSalvos = localStorage.getItem(treinamentoId);
-
-  if (!dadosSalvos) {
+function getProgress(trainingId) {
+  try {
+    return JSON.parse(localStorage.getItem(trainingId));
+  } catch {
     return null;
   }
-
-  return JSON.parse(dadosSalvos);
 }
 
-function atualizarCardTreinamento(treinamentoId, sufixoElemento) {
-  const dados = carregarDadosTreinamento(treinamentoId);
-  const status = document.getElementById(`status-${sufixoElemento}`);
-  const barra = document.getElementById(`barra-${sufixoElemento}`);
-  const botao = document.getElementById(`botao-${sufixoElemento}`);
+function atualizarCardTreinamento(trainingId, suffix) {
+  const dados = getProgress(trainingId);
+  const status = document.getElementById(`status-${suffix}`);
+  const barra = document.getElementById(`barra-${suffix}`);
+  const botao = document.getElementById(`botao-${suffix}`);
   const link = botao?.closest("a");
 
-  if (!status || !barra || !botao) {
-    console.error("Nao encontrei os elementos do card.", sufixoElemento);
-    return;
-  }
+  if (!status || !barra || !botao) return;
 
-  if (!dados) {
-    status.textContent = "NAO INICIADO";
-    status.className = "status status-nao-iniciado";
-    barra.style.width = "0%";
-    botao.textContent = "INICIAR AGORA";
-    if (link) link.href = sufixoElemento === "compliance" ? "./compliance.html" : "./questionario.html";
-    return;
-  }
+  const page = pages[suffix];
+  const respondidas = dados?.respondidas || 0;
+  const total = dados?.total || 1;
+  const concluido = Boolean(dados?.concluido);
 
-  const porcentagem = (dados.respondidas / dados.total) * 100;
-
-  barra.style.width = porcentagem + "%";
-
-  if (dados.concluido) {
-    status.textContent = "CONCLUIDO";
-    status.className = "status status-concluido";
-    botao.textContent = "REVISAR";
-    if (link) link.href = sufixoElemento === "compliance" ? "./compliance.html?review=1" : "./questionario.html?review=1";
-  } else {
-    status.textContent = "EM ANDAMENTO";
-    status.className = "status status-andamento";
-    botao.textContent = "CONTINUAR";
-    if (link) link.href = sufixoElemento === "compliance" ? "./compliance.html" : "./questionario.html";
-  }
+  barra.style.width = dados ? `${(respondidas / total) * 100}%` : "0%";
+  status.textContent = !dados ? "NAO INICIADO" : concluido ? "CONCLUIDO" : "EM ANDAMENTO";
+  status.className = `status ${!dados ? "status-nao-iniciado" : concluido ? "status-concluido" : "status-andamento"}`;
+  botao.textContent = !dados ? "INICIAR AGORA" : concluido ? "REVISAR" : "CONTINUAR";
+  if (link) link.href = concluido ? `${page}?review=1` : page;
 }
 
 atualizarCardTreinamento("seguranca_info", "seguranca");

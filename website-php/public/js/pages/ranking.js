@@ -1,27 +1,18 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const titulos = document.querySelectorAll(".list-row em");
+document.addEventListener("DOMContentLoaded", () => {
+  const tooltip = Object.assign(document.createElement("div"), { className: "tooltip" });
+  document.body.appendChild(tooltip);
 
-    // cria tooltip único (reutilizável)
-    const tooltip = document.createElement("div");
-    tooltip.classList.add("tooltip");
-    document.body.appendChild(tooltip);
-
-    titulos.forEach((item) => {
-        item.addEventListener("mouseenter", (e) => {
-            const texto = e.target.getAttribute("data-tooltip");
-            if (texto) {
-                tooltip.textContent = texto;
-                tooltip.classList.add("active");
-            }
-        });
-
-        item.addEventListener("mousemove", (e) => {
-            tooltip.style.left = e.pageX + 15 + "px";
-            tooltip.style.top = e.pageY + 15 + "px";
-        });
-
-        item.addEventListener("mouseleave", () => {
-            tooltip.classList.remove("active");
-        });
+  document.querySelectorAll(".list-row em").forEach((item) => {
+    item.addEventListener("mouseenter", () => {
+      const text = item.dataset.tooltip;
+      if (!text) return;
+      tooltip.textContent = text;
+      tooltip.classList.add("active");
     });
+    item.addEventListener("mousemove", ({ pageX, pageY }) => {
+      tooltip.style.left = `${pageX + 15}px`;
+      tooltip.style.top = `${pageY + 15}px`;
+    });
+    item.addEventListener("mouseleave", () => tooltip.classList.remove("active"));
+  });
 });
