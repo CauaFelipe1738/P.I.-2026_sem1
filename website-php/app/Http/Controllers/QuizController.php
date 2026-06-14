@@ -121,7 +121,7 @@ class QuizController extends Controller
             return response()->json(['error' => 'Vínculo da pergunta não encontrado.'], 400);
         }
 
-        // Executa a procedure do grupo
+        // Executa a procedure "responder"
         DB::statement('CALL responder(?, ?, ?)', [
             Auth::id(),
             $perguntaLista->id_pergunta_lista,

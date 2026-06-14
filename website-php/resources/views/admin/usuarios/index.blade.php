@@ -95,21 +95,26 @@
                             </td>
                             <td>
                                 <div class="actions">
-                                    <a href="#" class="icon-button edit-user" aria-label="Editar">
+                                    <a href="{{ route('admin.usuarios.edit', $user->id_funcionario) }}" class="icon-button edit-user" aria-label="Editar">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                             <path d="m16 4 4 4L8 20H4v-4L16 4Z"></path>
                                             <path d="m14 6 4 4"></path>
                                         </svg>
                                     </a>
-                                    <a href="#" class="icon-button delete-user" aria-label="Excluir">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                                            <path d="M3 6h18"></path>
-                                            <path d="M8 6V4h8v2"></path>
-                                            <path d="M19 6 18 20H6L5 6"></path>
-                                            <path d="M10 11v5"></path>
-                                            <path d="M14 11v5"></path>
-                                        </svg>
-                                    </a>
+
+                                    <form action="{{ route('admin.usuarios.destroy', $user->id_funcionario) }}" method="POST" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="icon-button delete-user" aria-label="Excluir" style="border: none; cursor: pointer;">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                                <path d="M3 6h18"></path>
+                                                <path d="M8 6V4h8v2"></path>
+                                                <path d="M19 6 18 20H6L5 6"></path>
+                                                <path d="M10 11v5"></path>
+                                                <path d="M14 11v5"></path>
+                                            </svg>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

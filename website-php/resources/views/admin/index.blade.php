@@ -54,7 +54,7 @@
                 <span class="action-arrow" aria-hidden="true">›</span>
             </a>
 
-            <a class="action-card" href="#">
+            <a class="action-card" href="{{ route('admin.rankings.index') }}">
                 <span class="action-icon rankingg" aria-hidden="true">
                     <img src="{{ asset('img/admin/ranking-da-pagina.png') }}" alt="" class="icon">
                 </span>

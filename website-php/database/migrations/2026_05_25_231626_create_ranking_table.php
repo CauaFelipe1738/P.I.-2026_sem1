@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ranking', function (Blueprint $table) {
             $table->id('id_ranking');
-            $table->integer('qtd_pessoas');
+            $table->unsignedInteger('qtd_pessoas')->unique();
             $table->string('titulo', 30);
             $table->text('sobre')->nullable();
             $table->timestamps();

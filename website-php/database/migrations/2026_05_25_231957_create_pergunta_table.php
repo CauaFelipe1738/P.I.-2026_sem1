@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('id_pergunta');
             $table->foreignId('idf_area')->constrained('area', 'id_area')->onDelete('restrict'); // Obriga o administrador a realocar as perguntas antes de excluir a área
             $table->text('pergunta');
-            $table->integer('valor');
-            $table->text('image')->nullable();
+            $table->unsignedInteger('valor');
+            $table->text('imagem')->nullable();
             $table->timestamps();
         });
     }

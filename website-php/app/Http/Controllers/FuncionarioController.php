@@ -106,24 +106,53 @@ class FuncionarioController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Funcionario $funcionario)
+    public function edit($id)
     {
-        //
+        $usuario = Funcionario::findOrFail($id);
+        return view('admin.usuarios.edit', compact('usuario'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Funcionario $funcionario)
+    public function update(Request $request, $id)
     {
-        //
+        $usuario = Funcionario::findOrFail($id);
+
+        $request->validate([
+            'nome' => 'required|string|max:40',
+            // O unique ignora o ID do próprio usuário para ele poder salvar sem mudar o username
+            'username' => 'required|string|max:40|unique:funcionario,username,' . $id . ',id_funcionario',
+            'senha' => 'nullable|string|min:6', // Senha é opcional na edição
+            'tipo_acesso' => 'required|in:administrador,usuario',
+        ]);
+
+        $usuario->nome_funcionario = $request->nome;
+        $usuario->username = $request->username;
+        $usuario->admin = $request->tipo_acesso === 'administrador' ? 1 : 0;
+
+        // Só atualiza a senha se ele digitou uma nova
+        if ($request->filled('senha')) {
+            $usuario->senha = Hash::make($request->senha);
+        }
+
+        $usuario->save();
+
+        return redirect()->route('admin.usuarios.index')->with('success', 'Usuário atualizado com sucesso!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Funcionario $funcionario)
+    public function destroy($id)
     {
-        //
+        // Proteção extra: Não deixa o admin excluir a si mesmo!
+        if ($id == auth()->id()) {
+            return back()->with('error', 'Você não pode excluir sua própria conta.');
+        }
+
+        Funcionario::destroy($id);
+
+        return back()->with('success', 'Usuário excluído!');
     }
 }

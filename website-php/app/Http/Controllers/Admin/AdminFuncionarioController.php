@@ -64,7 +64,7 @@ class AdminFuncionarioController extends Controller
         // Busca o funcionário pelo ID. Se não achar, dá erro 404 automaticamente.
         $funcionario = Funcionario::findOrFail($id);
 
-        // 1. Se a API (Postman/JS) estiver pedindo os dados em JSON
+        // Se a API (Postman/JS) estiver pedindo os dados em JSON
         if ($request->expectsJson()) {
             return response()->json([
                 'status' => 'success',

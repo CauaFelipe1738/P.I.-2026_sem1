@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminFuncionarioController;
 use App\Http\Controllers\Admin\AdminListaController;
+use App\Http\Controllers\Admin\AdminRankingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -24,14 +25,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
     // Rotas do CRUD de admin
-    // Route::get('/admin/usuarios', [UserController::class, 'index'])->name('admin.usuarios.index');
+    // Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
 
     Route::get('/usuarios', [FuncionarioController::class, 'index'])->name('usuarios.index');
     Route::get('/usuarios/criar', [FuncionarioController::class, 'create'])->name('usuarios.create');
     Route::post('/usuarios/salvar', [FuncionarioController::class, 'store'])->name('usuarios.store');
-    // Route::get('/admin/perguntas', [PerguntaController::class, 'index'])->name('perguntas.index');
-    // Route::get('/admin/ranking', [RankingController::class, 'adminIndex'])->name('ranking.index');
-    // Route::get('/admin/listas', [ListaController::class, 'index'])->name('listas.index');
+
+    Route::get('/usuarios/{id}/editar', [FuncionarioController::class, 'edit'])->name('usuarios.edit');
+    Route::put('/usuarios/{id}', [FuncionarioController::class, 'update'])->name('usuarios.update');
+    Route::delete('/usuarios/{id}', [FuncionarioController::class, 'destroy'])->name('usuarios.destroy');
+
+    Route::get('/rankings', [AdminRankingController::class, 'index'])->name('rankings.index');
+    Route::get('/rankings/criar', [AdminRankingController::class, 'create'])->name('rankings.create');
+    Route::post('/rankings/salvar', [AdminRankingController::class, 'store'])->name('rankings.store');
+    Route::get('/rankings/{id}/editar', [AdminRankingController::class, 'edit'])->name('rankings.edit');
+    Route::put('/rankings/{id}', [AdminRankingController::class, 'update'])->name('rankings.update');
+    Route::delete('/rankings/{id}', [AdminRankingController::class, 'destroy'])->name('rankings.destroy');
+    // Route::get('/perguntas', [PerguntaController::class, 'index'])->name('perguntas.index');
+    // Route::get('/ranking', [RankingController::class, 'adminIndex'])->name('ranking.index');
+    // Route::get('/listas', [ListaController::class, 'index'])->name('listas.index');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id('id_pergunta_lista');
             $table->foreignId('idf_pergunta')->constrained('pergunta', 'id_pergunta')->onDelete('cascade');
             $table->foreignId('idf_lista')->constrained('lista', 'id_lista')->onDelete('cascade');
+
+            // Adiciona a restrição garantindo que o par pergunta/lista não se repita
+            $table->unique(['idf_pergunta', 'idf_lista']);
+
             $table->timestamps();
         });
     }
