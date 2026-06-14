@@ -29,19 +29,16 @@
 
     <div class="list">
         @foreach($funcionarios as $index => $funcionario)
-            @php
-                $titulo = $funcionario->pontos >= 18000 ? 'Poseidon' : ($funcionario->pontos >= 15000 ? 'Príncipe' : ($funcionario->pontos >= 12000 ? 'Lutador' : 'Recruta'));
-            @endphp
             <article class="list-row {{ ($funcionario->id_funcionario === auth()->id()) ? 'me' : '' }}">
                 <span>#{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
 
-                <div style="display: flex; flex-direction: column;">
+                <div style="display: flex; flex-direction: column; min-width: 0;">
                     <strong>{{ $funcionario->nome_funcionario }}</strong>
                     <small style="color: var(--muted); font-size: 12px; margin-top: 2px;">{{ '@' . $funcionario->username }}</small>
                 </div>
 
-                <em data-tooltip="18k XP: Poseidon | 15k XP: Príncipe | 12k XP: Lutador">
-                    {{ $titulo }}
+                <em data-tooltip="{{ $funcionario->sobre ?? 'Sem descrição disponível.' }}">
+                    {{ $funcionario->titulo ?? 'Recruta' }}
                 </em>
                 <b>{{ number_format($funcionario->pontos, 0, ',', '.') }} XP</b>
             </article>

@@ -1,107 +1,172 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const $ = (selector) => document.querySelector(selector);
-  const state = { index: 0, skipped: 0, correct: 0, incorrect: 0, advancing: false };
-  const ui = {
-    toast: $("#toast"),
-    confirm: $(".confirm-button"),
-    skip: $(".skip-button"),
-    title: $("#question-title"),
-    progressText: $("#progress-text"),
-    progressFill: $("#progress-fill"),
-    answers: $("#answers-container"),
-    result: $("#result-card"),
-    quiz: $("#quiz-container"),
-    xp: $("#user-xp")
-  };
-  let toastTimer;
+document.addEventListener('DOMContentLoaded', () => {
+    // === ELEMENTOS DA TELA ===
+    const toast = document.querySelector("#toast");
+    const confirmButton = document.querySelector(".confirm-button");
+    const skipButton = document.querySelector(".skip-button");
+    const questionTitle = document.querySelector("#question-title");
+    const progressStatus = document.querySelector("#progress-text");
+    const progressFill = document.querySelector("#progress-fill");
+    const answersContainer = document.querySelector("#answers-container");
+    const resultCard = document.querySelector("#result-card");
+    const quizContainer = document.querySelector("#quiz-container");
+    const userXp = document.querySelector("#user-xp");
 
-  const toast = (message) => {
-    ui.toast.textContent = message;
-    ui.toast.classList.add("is-visible");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => ui.toast.classList.remove("is-visible"), 2200);
-  };
-  const progress = () => {
-    ui.progressText.textContent = `${state.index} / ${quizData.length} RESPONDIDAS`;
-    ui.progressFill.style.width = `${(state.index / quizData.length) * 100}%`;
-  };
-  const finish = () => {
-    ui.quiz.style.display = "none";
-    ui.result.style.display = "block";
-    progress();
-    $("#skipped-count").textContent = state.skipped;
-    $("#correct-count").textContent = state.correct;
-    $("#incorrect-count").textContent = state.incorrect;
-    toast("Quiz finalizado! Desempenho computado.");
-  };
-  const load = () => {
-    if (state.index >= quizData.length) return finish();
+    // Contadores e controle de estado
+    let currentQuestionIndex = 0;
+    let skippedCount = 0;
+    let correctCount = 0;
+    let incorrectCount = 0;
+    let toastTimer;
+    let isAdvancing = false;
 
-    const letters = ["A", "B", "C", "D", "E"];
-    const question = quizData[state.index];
-    ui.title.textContent = question.pergunta;
-    ui.answers.innerHTML = question.respostas.map((answer, index) => `
-      <button class="answer" type="button" data-id="${answer.id_resposta}" data-solucao="${answer.solucao ? "1" : "0"}">
-        <span class="answer-letter">${letters[index] || "-"}</span>
-        <span class="answer-text">${answer.resposta}</span>
-        <span class="choice-ring"></span>
-      </button>
-    `).join("");
-    state.advancing = false;
-    ui.confirm.disabled = false;
-    ui.confirm.textContent = "CONFIRMAR RESPOSTA";
-  };
-  const saveAnswer = async (idResposta) => {
-    const question = quizData[state.index];
-    try {
-      const response = await fetch(`${urlBase}/quiz/${listaId}/pergunta/${question.id_pergunta}/responder`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", "X-CSRF-TOKEN": csrfToken },
-        body: JSON.stringify({ id_resposta: idResposta })
-      });
-      const data = await response.json();
-      if (response.ok) ui.xp.textContent = `${data.pontos_totais.toLocaleString("pt-BR")} pontos`;
-    } catch (error) {
-      console.error("Erro ao salvar no banco:", error);
+    // Inicializa a barra de progresso com 0 respondidas e carrega a primeira pergunta
+    updateProgressUi(0);
+    loadQuestion(currentQuestionIndex);
+
+    // === FUNÇÕES DE INTERFACE ===
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.remove("is-visible");
+        }, 2200);
     }
-  };
-  const next = () => {
-    state.index += 1;
-    progress();
-    load();
-  };
 
-  ui.answers.addEventListener("click", ({ target }) => {
-    const answer = target.closest(".answer");
-    if (!answer || state.advancing) return;
-    document.querySelectorAll(".answer").forEach((item) => item.classList.remove("is-selected"));
-    answer.classList.add("is-selected");
-  });
-  ui.skip.addEventListener("click", () => {
-    if (state.advancing) return;
-    state.skipped += 1;
-    next();
-  });
-  ui.confirm.addEventListener("click", async () => {
-    if (state.advancing) return;
+    // Alinha o texto e a barra com base no número de questões já processadas
+    function updateProgressUi(index) {
+        progressStatus.textContent = `${index} / ${quizData.length} RESPONDIDAS`;
+        progressFill.style.width = `${(index / quizData.length) * 100}%`;
+    }
 
-    const selected = $(".answer.is-selected");
-    if (!selected) return toast("Selecione uma alternativa antes de confirmar.");
+    function loadQuestion(index) {
+        if (index >= quizData.length) {
+            showCompletionStats();
+            return;
+        }
 
-    state.advancing = true;
-    ui.confirm.disabled = true;
-    ui.confirm.textContent = "SALVANDO...";
+        const question = quizData[index];
+        questionTitle.textContent = question.pergunta;
+        answersContainer.innerHTML = '';
+        isAdvancing = false;
+        confirmButton.disabled = false;
+        confirmButton.textContent = "CONFIRMAR RESPOSTA";
 
-    const correct = selected.dataset.solucao === "1";
-    state[correct ? "correct" : "incorrect"] += 1;
-    selected.classList.add(correct ? "is-correct" : "is-incorrect");
-    if (!correct) $('.answer[data-solucao="1"]')?.classList.add("is-correct");
-    toast(correct ? "Resposta correta! Avançando..." : "Resposta incorreta.");
+        const letras = ['A', 'B', 'C', 'D', 'E'];
 
-    await saveAnswer(selected.dataset.id);
-    setTimeout(next, 900);
-  });
+        question.respostas.forEach((resposta, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'answer';
+            btn.type = 'button';
+            btn.dataset.id = resposta.id_resposta;
 
-  progress();
-  load();
+            // CORREÇÃO DO BUG CRÍTICO: Força o valor a ser a string "1" ou "0"
+            // Isso evita o problema do interpretador ler como "true"/"false" texto
+            btn.dataset.solucao = resposta.solucao ? "1" : "0";
+
+            btn.innerHTML = `
+                <span class="answer-letter">${letras[idx] || '-'}</span>
+                <span class="answer-text">${resposta.resposta}</span>
+                <span class="choice-ring"></span>
+            `;
+
+            btn.addEventListener('click', () => {
+                if (isAdvancing) return;
+                document.querySelectorAll('.answer').forEach(b => b.classList.remove('is-selected'));
+                btn.classList.add('is-selected');
+            });
+
+            answersContainer.appendChild(btn);
+        });
+    }
+
+    function showCompletionStats() {
+        quizContainer.style.display = 'none';
+        resultCard.style.display = 'block';
+        updateProgressUi(quizData.length); // Barra em 100%
+
+        // Alimenta cada contador individualmente com as variáveis do estado do JS
+        document.querySelector("#skipped-count").textContent = skippedCount;
+        document.querySelector("#correct-count").textContent = correctCount;
+        document.querySelector("#incorrect-count").textContent = incorrectCount;
+
+        showToast("Quiz finalizado! Desempenho computado.");
+    }
+
+    // === COMUNICAÇÃO COM O LARAVEL ===
+    async function salvarRespostaNoBanco(idResposta) {
+        const question = quizData[currentQuestionIndex];
+        const endpoint = `${urlBase}/quiz/${listaId}/pergunta/${question.id_pergunta}/responder`;
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ id_resposta: idResposta })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                // Trocado de 'XP' para 'pontos' em tempo real conforme solicitado
+                userXp.textContent = `${data.pontos_totais.toLocaleString('pt-BR')} pontos`;
+            }
+        } catch (error) {
+            console.error("Erro ao salvar no banco:", error);
+        }
+    }
+
+    // === BOTÕES DE AÇÃO ===
+    skipButton.addEventListener("click", () => {
+        if (isAdvancing) return;
+        skippedCount++;
+        currentQuestionIndex++;
+        updateProgressUi(currentQuestionIndex); // Avança a barra imediatamente ao pular
+        loadQuestion(currentQuestionIndex);
+    });
+
+    confirmButton.addEventListener("click", async () => {
+        if (isAdvancing) return;
+
+        const selected = document.querySelector(".answer.is-selected");
+        if (!selected) {
+            showToast("Selecione uma alternativa antes de confirmar.");
+            return;
+        }
+
+        isAdvancing = true;
+        confirmButton.disabled = true;
+        confirmButton.textContent = "SALVANDO...";
+
+        // Agora comparamos string com string ("1" === "1"), funciona perfeitamente!
+        const isCorrect = selected.dataset.solucao === "1";
+        const answerId = selected.dataset.id;
+
+        // Feedback visual imediato para o usuário
+        if (isCorrect) {
+            correctCount++;
+            selected.classList.add("is-correct");
+            showToast("Resposta correta! Avançando...");
+        } else {
+            incorrectCount++;
+            selected.classList.add("is-incorrect");
+            // Destaca a alternativa correta em verde para aprendizado do colaborador
+            const correctElement = document.querySelector(`.answer[data-solucao="1"]`);
+            if (correctElement) correctElement.classList.add("is-correct");
+            showToast("Resposta incorreta.");
+        }
+
+        // Dispara a procedure do seu grupo no banco de dados em segundo plano
+        await salvarRespostaNoBanco(answerId);
+
+        // Aguarda a animação visual por 900ms antes de mover a barra e carregar a próxima
+        setTimeout(() => {
+            currentQuestionIndex++;
+            updateProgressUi(currentQuestionIndex);
+            loadQuestion(currentQuestionIndex);
+        }, 900);
+    });
 });
