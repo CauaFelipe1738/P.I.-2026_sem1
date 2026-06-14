@@ -374,3 +374,89 @@ h2 {
         min-width: 0;
     }
 }
+
+@media (max-width: 520px) {
+    .create-user-page {
+        padding: 20px 12px;
+    }
+
+    .page-header {
+        margin: 0 0 24px;
+    }
+
+    .page-title h1 {
+        font-size: 28px;
+    }
+
+    .page-title p,
+    .radio-copy small,
+    .password-field small,
+    .info-card p {
+        font-size: 15px;
+    }
+
+    .form-card {
+        padding: 22px 14px;
+    }
+
+    .card-heading {
+        gap: 12px;
+    }
+
+    .heading-icon {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+    }
+
+    .radio-option {
+        gap: 12px;
+    }
+
+    .form-actions {
+        padding: 14px 12px;
+    }
+}
+
+.create-user-page {
+    background:
+        radial-gradient(circle at 16% 0%, rgba(18, 221, 234, 0.1), transparent 31%),
+        linear-gradient(145deg, rgba(10, 19, 33, 0.9), rgba(5, 12, 23, 0.9));
+}
+
+.form-card {
+    background:
+        radial-gradient(circle at 0% 0%, rgba(18, 221, 234, 0.08), transparent 28%),
+        linear-gradient(145deg, rgba(14, 28, 47, 0.88), rgba(10, 20, 35, 0.82));
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.form-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(18, 221, 234, 0.34);
+    box-shadow: 0 24px 54px rgba(0, 0, 0, 0.25);
+}
+
+.field input,
+.field select,
+.password-control,
+.ranking-about-field textarea {
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.field input:focus,
+.field select:focus,
+.password-control:focus-within,
+.ranking-about-field textarea:focus {
+    border-color: rgba(18, 221, 234, 0.62);
+    box-shadow: 0 0 0 4px rgba(18, 221, 234, 0.1);
+    background: rgba(9, 19, 34, 0.82);
+}
+
+.save-button:hover,
+.cancel-button:hover,
+.back-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}

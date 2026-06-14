@@ -7,23 +7,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/base.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/user.css') }}">
-
-    <style>
-        .pagination { display: flex; align-items: center; gap: 8px; }
-        .pagination p { display: none; } /* Esconde texto inútil do paginador */
-        .pagination span[aria-current="page"] {
-            display: grid; place-items: center; width: 48px; height: 50px;
-            border: 1px solid #2e73ff; border-radius: 8px; color: #a9d2ff;
-            background: rgba(22, 39, 67, 0.4); font-size: 16px; font-weight: bold;
-        }
-        .pagination a, .pagination span {
-            display: grid; place-items: center; width: 40px; height: 40px;
-            color: #8fa4c7; text-decoration: none; border-radius: 8px; font-weight: bold;
-        }
-        .pagination a:hover { background: rgba(22, 39, 67, 0.4); }
-        .pagination svg { width: 19px; height: 19px; }
-        .w-5 { width: 1.25rem; } .h-5 { height: 1.25rem; }
-    </style>
 </head>
 <body>
     <main class="users-page">
@@ -130,9 +113,35 @@
 
             <footer class="table-footer">
                 <span>Mostrando {{ $usuarios->firstItem() ?? 0 }} a {{ $usuarios->lastItem() ?? 0 }} de {{ $usuarios->total() }} usuários</span>
-                <nav class="pagination" aria-label="Paginação">
-                    {{ $usuarios->links('pagination::tailwind') }}
-                </nav>
+
+                @if ($usuarios->hasPages())
+                    <nav class="pagination" aria-label="Paginação">
+                        {{-- Botão Voltar (Desabilitado se estiver na primeira página) --}}
+                        @if ($usuarios->onFirstPage())
+                            <span class="page-arrow" style="opacity: 0.3; cursor: not-allowed;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+                            </span>
+                        @else
+                            <a href="{{ $usuarios->previousPageUrl() }}" class="page-arrow" aria-label="Página anterior" style="text-decoration: none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+                            </a>
+                        @endif
+
+                        {{-- Número da Página Atual --}}
+                        <span class="page-number" aria-current="page">{{ $usuarios->currentPage() }}</span>
+
+                        {{-- Botão Avançar (Desabilitado se estiver na última página) --}}
+                        @if ($usuarios->hasMorePages())
+                            <a href="{{ $usuarios->nextPageUrl() }}" class="page-arrow" aria-label="Próxima página" style="text-decoration: none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+                            </a>
+                        @else
+                            <span class="page-arrow" style="opacity: 0.3; cursor: not-allowed;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+                            </span>
+                        @endif
+                    </nav>
+                @endif
             </footer>
         </section>
     </main>

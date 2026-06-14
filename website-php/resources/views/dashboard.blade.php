@@ -33,13 +33,13 @@
         <article class="panel">
 
         @if($lista->perguntas == 0)
-            <span class="status" style="background-color: #6c757d; color: white;">EM BREVE</span>
+            <span class="status" style="background-color: #6c757d; color: white; border-radius: 6px; padding: 4px 12px; display: inline-block;">EM BREVE</span>
         @elseif($lista->respostas >= $lista->perguntas && $lista->perguntas > 0)
-            <span class="status" style="background-color: #2ec4b6; color: white;">CONCLUÍDO</span>
+            <span class="status" style="background-color: #2ec4b6; color: white; border-radius: 6px; padding: 4px 12px; display: inline-block;">CONCLUÍDO</span>
         @elseif($lista->respostas > 0)
-            <span class="status" style="background-color: #ff9f1c; color: white;">EM ANDAMENTO</span>
+            <span class="status" style="background-color: #ff9f1c; color: white; border-radius: 6px; padding: 4px 12px; display: inline-block;">EM ANDAMENTO</span>
         @else
-            <span class="status status-nao-iniciado">NÃO INICIADO</span>
+            <span class="status status-nao-iniciado" style="border-radius: 6px; padding: 4px 12px; display: inline-block;">NÃO INICIADO</span>
         @endif
 
         <p class="questao" style="font-weight: bold; font-size: 1.2rem; margin-top: 10px;">Lista #{{ $lista->id_lista }}</p>

@@ -129,34 +129,34 @@
         padding: 16px;
         border-right: 0;
         border-bottom: 1px solid var(--line);
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
     }
 
     .brand h1 {
         font-size: 22px;
+        margin: 0;
     }
 
-    .menu {
-        grid-auto-flow: column;
-        grid-auto-columns: max-content;
+    ul.menu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
         overflow-x: auto;
-        padding-bottom: 4px;
+        white-space: nowrap;
     }
 
     .menu li {
         white-space: nowrap;
     }
 
-    .content {
-        padding: 16px;
-    }
-
-    .content::after {
-        margin-top: 36px;
-    }
-
     .topbar {
-        display: flex;
         justify-content: flex-end;
+        margin-bottom: 20px;
     }
 
     .hero {
@@ -167,17 +167,26 @@
 
 @media (max-width: 520px) {
     .sidebar {
-        gap: 14px;
+        flex-direction: column;
+        align-items: stretch;
         padding: 14px 12px;
     }
 
-    .menu li {
-        font-size: 14px;
+    .brand {
+        text-align: center;
+    }
+
+    ul.menu {
+        justify-content: space-between;
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 5px;
     }
 
     .menu li a {
         min-height: 42px;
         padding: 10px 12px;
+        font-size: 13px;
     }
 
     .content {
@@ -192,11 +201,6 @@
     .profile {
         width: 100%;
         justify-content: space-between;
-    }
-
-    .profile-meta strong,
-    .profile-meta p {
-        overflow-wrap: anywhere;
     }
 }
 

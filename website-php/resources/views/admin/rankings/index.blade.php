@@ -77,8 +77,36 @@
                 </tbody>
             </table>
             <footer class="table-footer">
-                <span>Mostrando {{ $rankings->firstItem() ?? 0 }} a {{ $rankings->lastItem() ?? 0 }} de {{ $rankings->total() }} rankings</span>
-                <nav class="pagination">{{ $rankings->links('pagination::tailwind') }}</nav>
+                <span>Mostrando {{ $rankings->firstItem() ?? 0 }} a {{ $rankings->lastItem() ?? 0 }} de {{ $rankings->total() }} usuários</span>
+
+                @if ($rankings->hasPages())
+                    <nav class="pagination" aria-label="Paginação">
+                        {{-- Botão Voltar (Desabilitado se estiver na primeira página) --}}
+                        @if ($rankings->onFirstPage())
+                            <span class="page-arrow" style="opacity: 0.3; cursor: not-allowed;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+                            </span>
+                        @else
+                            <a href="{{ $rankings->previousPageUrl() }}" class="page-arrow" aria-label="Página anterior" style="text-decoration: none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+                            </a>
+                        @endif
+
+                        {{-- Número da Página Atual --}}
+                        <span class="page-number" aria-current="page">{{ $rankings->currentPage() }}</span>
+
+                        {{-- Botão Avançar (Desabilitado se estiver na última página) --}}
+                        @if ($rankings->hasMorePages())
+                            <a href="{{ $rankings->nextPageUrl() }}" class="page-arrow" aria-label="Próxima página" style="text-decoration: none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+                            </a>
+                        @else
+                            <span class="page-arrow" style="opacity: 0.3; cursor: not-allowed;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+                            </span>
+                        @endif
+                    </nav>
+                @endif
             </footer>
         </section>
     </main>
