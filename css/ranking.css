@@ -156,6 +156,9 @@
   background: #17213a;
 }
 
+.tooltip{position:absolute;display:none;padding:8px 10px;border-radius:8px;background:#0b1224;color:#fff;font-size:13px;z-index:99;box-shadow:0 8px 24px #0006}
+.tooltip.active{display:block}
+
 @media (max-width: 900px) {
   .page {
     padding: 24px 16px 48px;
