@@ -254,7 +254,7 @@ textarea::placeholder {
 
 .theme-control {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 150px 96px 96px;
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
 }
 
