@@ -671,25 +671,28 @@ Nesta versão antiga do DER, a tabela funcionario apresentava a coluna idf_area 
 
 # Linguagem de programação
 # Fluxograma 1 - Login Usuário
-<img width="800" height="784" alt="login" src="https://github.com/user-attachments/assets/90e9431f-b29d-4742-b7d6-dcbba459e2ad" />
+<img width="800" height="784" alt="login" src="https://github.com/user-attachments/assets/90e9431f-b29d-4742-b7d6-dcbba459e2ad" /> ALTERAR
 
 # Fluxograma 2 - Questionario partindo do login
-<img width="1283" height="978" alt="realizacaoquestionario" src="https://github.com/user-attachments/assets/4cc193e2-e109-480d-8466-811019211918" />
+<img width="1283" height="978" alt="realizacaoquestionario" src="https://github.com/user-attachments/assets/4cc193e2-e109-480d-8466-811019211918" /> alterar
 
 # Fluxograma 3 - Visualização do ranking
 <img width="604" height="877" alt="acessoaorankinguser" src="https://github.com/user-attachments/assets/2272fef7-df5d-499d-9134-21667e4ad20c" />
 
 # Fluxograma 4 - Criar ou editar Usuários (Admin)
-<img width="994" height="1140" alt="criareeditarfunc drawio (4) (1)" src="https://github.com/user-attachments/assets/3047cb3c-9ded-4755-8fbf-d080f637fd37" />
+<img width="995" height="1140" alt="IMG_5904 jpg (1)" src="https://github.com/user-attachments/assets/a64904bf-878c-49d4-aeb4-9f912d88b266" />
+
 
 # Fluxograma 5 - Criar ou editar Rankings (Admin)
-<img width="993" height="1139" alt="rankingadmin (1)" src="https://github.com/user-attachments/assets/6d3f5e0b-d402-4f0a-b20b-013511fe4993" />
+<img width="992" height="1140" alt="criareeditarfunc drawio (9)" src="https://github.com/user-attachments/assets/fcb7716b-40b0-4181-9267-cec49849aeb0" />
 
 # Fluxograma 6 - Criar ou editar perguntas
-<img width="993" height="1140" alt="perguntas drawio (1)" src="https://github.com/user-attachments/assets/450392f4-7e7a-4b02-81bb-cf0a538582a9" />
+<img width="1004" height="1130" alt="edicaofluxo drawio (2)" src="https://github.com/user-attachments/assets/f9e87262-9959-429e-ac39-12eb5ac931d8" /> 
+
 
 # Fluxograma 7 - Criar ou editar questionários
-<img width="993" height="1140" alt="Questionario drawio (1)" src="https://github.com/user-attachments/assets/4e636e5e-3a6b-4792-b849-e6d0e664d11b" />
+<img width="1004" height="1130" alt="edicaofluxo drawio (1)" src="https://github.com/user-attachments/assets/97756ef3-8301-4be4-b259-154f20a7a542" /> 
+
 
 
 
