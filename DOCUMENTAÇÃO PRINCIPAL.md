@@ -671,13 +671,13 @@ Nesta versão antiga do DER, a tabela funcionario apresentava a coluna idf_area 
 
 # Linguagem de programação
 # Fluxograma 1 - Login Usuário
-<img width="800" height="784" alt="login" src="https://github.com/user-attachments/assets/90e9431f-b29d-4742-b7d6-dcbba459e2ad" /> ALTERAR
+<img width="800" height="784" alt="login" src="https://github.com/user-attachments/assets/90e9431f-b29d-4742-b7d6-dcbba459e2ad" /> VOU ALTERAR
 
 # Fluxograma 2 - Questionario partindo do login
-<img width="1283" height="978" alt="realizacaoquestionario" src="https://github.com/user-attachments/assets/4cc193e2-e109-480d-8466-811019211918" /> alterar
+<img width="1283" height="978" alt="realizacaoquestionario" src="https://github.com/user-attachments/assets/4cc193e2-e109-480d-8466-811019211918" /> VOU ALTERAR
 
 # Fluxograma 3 - Visualização do ranking
-<img width="604" height="877" alt="acessoaorankinguser" src="https://github.com/user-attachments/assets/2272fef7-df5d-499d-9134-21667e4ad20c" />
+<img width="604" height="877" alt="acessoaorankinguser" src="https://github.com/user-attachments/assets/2272fef7-df5d-499d-9134-21667e4ad20c" /> VOU ALTERAR
 
 # Fluxograma 4 - Criar ou editar Usuários (Admin)
 <img width="995" height="1140" alt="IMG_5904 jpg (1)" src="https://github.com/user-attachments/assets/a64904bf-878c-49d4-aeb4-9f912d88b266" />
