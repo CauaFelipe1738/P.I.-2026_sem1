@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Lista;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminListaController extends Controller
 {
@@ -30,7 +31,14 @@ class AdminListaController extends Controller
      */
     public function create()
     {
-        return view('admin.listas.create');
+        // Puxa todas as perguntas com o nome da área para listar no formulário
+        $todasPerguntas = DB::table('pergunta')
+            ->join('area', 'pergunta.idf_area', '=', 'area.id_area')
+            ->select('pergunta.id_pergunta', 'pergunta.pergunta', 'pergunta.valor', 'area.nome_area')
+            ->orderBy('area.nome_area')
+            ->get();
+
+        return view('admin.listas.create', compact('todasPerguntas'));
     }
 
     /**
@@ -41,16 +49,30 @@ class AdminListaController extends Controller
         $request->validate([
             'data_inicio' => 'required|date',
             'data_fim' => 'required|date|after:data_inicio',
-        ], [
-            'data_fim.after' => 'A data de fim deve ser posterior à data de início.'
+            'perguntas' => 'required|array|min:1', // Exige pelo menos 1 pergunta
         ]);
 
-        Lista::create([
+        // Cria a lista e pega o ID gerado
+        $idLista = Lista::insertGetId([
             'inicio' => $request->data_inicio,
             'fim' => $request->data_fim,
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
 
-        return redirect('/admin/questionarios')->with('success', 'Questionário criado com sucesso!');
+        // Prepara o array para inserir na tabela pergunta_lista (Relação N:N)
+        $relacoes = [];
+        foreach ($request->perguntas as $idPergunta) {
+            $relacoes[] = [
+                'idf_lista' => $idLista,
+                'idf_pergunta' => $idPergunta,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
+        DB::table('pergunta_lista')->insert($relacoes);
+
+        return redirect()->route('admin.listas.index')->with('success', 'Questionário criado com sucesso!');
     }
 
     /**
@@ -67,7 +89,20 @@ class AdminListaController extends Controller
     public function edit($id)
     {
         $lista = Lista::findOrFail($id);
-        return view('admin.listas.edit', compact('lista'));
+
+        $todasPerguntas = DB::table('pergunta')
+            ->join('area', 'pergunta.idf_area', '=', 'area.id_area')
+            ->select('pergunta.id_pergunta', 'pergunta.pergunta', 'pergunta.valor', 'area.nome_area')
+            ->orderBy('area.nome_area')
+            ->get();
+
+        // Pega apenas os IDs das perguntas que já pertencem a essa lista para marcar os checkboxes
+        $perguntasSelecionadas = DB::table('pergunta_lista')
+            ->where('idf_lista', $id)
+            ->pluck('idf_pergunta')
+            ->toArray();
+
+        return view('admin.listas.create', compact('lista', 'todasPerguntas', 'perguntasSelecionadas'));
     }
 
     /**
@@ -80,8 +115,7 @@ class AdminListaController extends Controller
         $request->validate([
             'data_inicio' => 'required|date',
             'data_fim' => 'required|date|after:data_inicio',
-        ], [
-            'data_fim.after' => 'A data de fim deve ser posterior à data de início.'
+            'perguntas' => 'required|array|min:1',
         ]);
 
         $lista->update([
@@ -89,7 +123,21 @@ class AdminListaController extends Controller
             'fim' => $request->data_fim,
         ]);
 
-        return redirect('/admin/questionarios')->with('success', 'Questionário atualizado com sucesso!');
+        // Apaga as relações antigas e insere as novas
+        DB::table('pergunta_lista')->where('idf_lista', $id)->delete();
+
+        $relacoes = [];
+        foreach ($request->perguntas as $idPergunta) {
+            $relacoes[] = [
+                'idf_lista' => $id,
+                'idf_pergunta' => $idPergunta,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
+        DB::table('pergunta_lista')->insert($relacoes);
+
+        return redirect()->route('admin.listas.index')->with('success', 'Questionário atualizado com sucesso!');
     }
 
     /**

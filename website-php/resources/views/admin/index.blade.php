@@ -43,7 +43,7 @@
                 <span class="action-arrow" aria-hidden="true">›</span>
             </a>
 
-            <a class="action-card" href="#">
+            <a class="action-card" href="{{ route('admin.perguntas.index') }}">
                 <span class="action-icon perguntas" aria-hidden="true">
                     <img src="{{ asset('img/admin/perguntas-frequentes.png') }}" alt="" class="icon">
                 </span>

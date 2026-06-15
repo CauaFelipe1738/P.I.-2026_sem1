@@ -48,21 +48,25 @@
             Até: {{ \Carbon\Carbon::parse($lista->fim)->format('d/m/Y') }}
         </p>
 
-        @if($lista->perguntas == 0)
-            <button class="btn-iniciar" style="background-color: #6c757d; cursor: not-allowed;" disabled>
-                SEM QUESTÕES
-            </button>
-        @elseif($lista->respostas >= $lista->perguntas && $lista->perguntas > 0)
-            <button class="btn-iniciar" style="background-color: #a3a3a3; cursor: not-allowed;" disabled>
-                CONCLUÍDO
-            </button>
-        @else
-            <a href="{{ route('quiz.show', $lista->id_lista) }}">
-                <button class="btn-iniciar">
-                    {{ $lista->respostas > 0 ? 'CONTINUAR' : 'INICIAR AGORA' }}
+        <div style="margin-top: 20px;">
+            @if($lista->perguntas == 0)
+                <button class="btn-iniciar" style="background-color: #6c757d; cursor: not-allowed;" disabled>
+                    SEM QUESTÕES
                 </button>
-            </a>
-        @endif
+            @elseif($lista->respostas >= $lista->perguntas && $lista->perguntas > 0)
+                <a href="{{ route('quiz.show', $lista->id_lista) }}">
+                    <button class="btn-iniciar" style="background-color: #3cc9eb; color: #061124;">
+                        REVISAR
+                    </button>
+                </a>
+            @else
+                <a href="{{ route('quiz.show', $lista->id_lista) }}">
+                    <button class="btn-iniciar">
+                        {{ $lista->respostas > 0 ? 'CONTINUAR' : 'INICIAR AGORA' }}
+                    </button>
+                </a>
+            @endif
+        </div>
 
         <div class="container-barra">
             @php

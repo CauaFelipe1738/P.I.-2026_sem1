@@ -11,16 +11,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const quizContainer = document.querySelector("#quiz-container");
     const userXp = document.querySelector("#user-xp");
 
-    // Contadores e controle de estado
-    let currentQuestionIndex = 0;
-    let skippedCount = 0;
+    if (skipButton) skipButton.style.display = 'none';
+
+    // Estado do Quiz
     let correctCount = 0;
     let incorrectCount = 0;
+    let totalPontosGanhos = 0;
+    const totalPontosPossiveis = quizData.reduce((acc, q) => acc + q.valor, 0);
     let toastTimer;
     let isAdvancing = false;
 
-    // Inicializa a barra de progresso com 0 respondidas e carrega a primeira pergunta
-    updateProgressUi(0);
+    // Calcula de onde começar baseado nas respostas que já vieram do banco
+    let answeredCount = Object.keys(respostasUsuario).length;
+    let currentQuestionIndex = answeredCount < quizData.length ? answeredCount : 0;
+
+    // Pré-calcula os acertos para a tela final caso a pessoa já tenha respondido tudo
+    quizData.forEach(q => {
+        const userRespId = respostasUsuario[q.id_pergunta];
+        if (userRespId) {
+            const respObj = q.respostas.find(r => r.id_resposta == userRespId);
+            if (respObj && respObj.solucao) {
+                correctCount++;
+                totalPontosGanhos += q.valor;
+            } else {
+                incorrectCount++;
+            }
+        }
+    });
+
+    userXp.textContent = `${totalPontosGanhos} PONTOS`;
+
+    updateProgressUi(answeredCount);
     loadQuestion(currentQuestionIndex);
 
     // === FUNÇÕES DE INTERFACE ===
@@ -28,15 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
         toast.textContent = message;
         toast.classList.add("is-visible");
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-            toast.classList.remove("is-visible");
-        }, 2200);
+        toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2200);
     }
 
-    // Alinha o texto e a barra com base no número de questões já processadas
-    function updateProgressUi(index) {
-        progressStatus.textContent = `${index} / ${quizData.length} RESPONDIDAS`;
-        progressFill.style.width = `${(index / quizData.length) * 100}%`;
+    function updateProgressUi(count) {
+        progressStatus.textContent = `${count} / ${quizData.length} QUESTÕES`;
+        progressFill.style.width = `${(count / quizData.length) * 100}%`;
     }
 
     function loadQuestion(index) {
@@ -49,19 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
         questionTitle.textContent = question.pergunta;
         answersContainer.innerHTML = '';
         isAdvancing = false;
-        confirmButton.disabled = false;
-        confirmButton.textContent = "CONFIRMAR RESPOSTA";
 
         const letras = ['A', 'B', 'C', 'D', 'E'];
+
+        // Verifica se essa pergunta já foi respondida no passado
+        const alreadyAnsweredId = respostasUsuario[question.id_pergunta];
 
         question.respostas.forEach((resposta, idx) => {
             const btn = document.createElement('button');
             btn.className = 'answer';
             btn.type = 'button';
             btn.dataset.id = resposta.id_resposta;
-
-            // CORREÇÃO DO BUG CRÍTICO: Força o valor a ser a string "1" ou "0"
-            // Isso evita o problema do interpretador ler como "true"/"false" texto
             btn.dataset.solucao = resposta.solucao ? "1" : "0";
 
             btn.innerHTML = `
@@ -70,27 +86,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="choice-ring"></span>
             `;
 
-            btn.addEventListener('click', () => {
-                if (isAdvancing) return;
-                document.querySelectorAll('.answer').forEach(b => b.classList.remove('is-selected'));
-                btn.classList.add('is-selected');
-            });
+            // MODO REVISÃO: Bloqueia interações e pinta de verde/vermelho
+            if (alreadyAnsweredId) {
+                btn.style.cursor = 'default';
+                if (resposta.solucao) {
+                    btn.classList.add("is-correct"); // Pinta a certa de verde
+                }
+                if (resposta.id_resposta == alreadyAnsweredId && !resposta.solucao) {
+                    btn.classList.add("is-incorrect"); // Pinta a errada que o usuário escolheu de vermelho
+                }
+            } else {
+                // MODO JOGO NORMAL
+                btn.addEventListener('click', () => {
+                    if (isAdvancing) return;
+                    document.querySelectorAll('.answer').forEach(b => b.classList.remove('is-selected'));
+                    btn.classList.add('is-selected');
+                });
+            }
 
             answersContainer.appendChild(btn);
         });
+
+        // Configura o botão principal
+        confirmButton.disabled = false;
+        if (alreadyAnsweredId) {
+            // Se já respondeu, o botão apenas avança
+            confirmButton.textContent = "PRÓXIMA QUESTÃO ▸";
+            confirmButton.dataset.action = "next";
+        } else {
+            // Se não respondeu, o botão salva
+            confirmButton.textContent = "CONFIRMAR RESPOSTA";
+            confirmButton.dataset.action = "save";
+        }
     }
 
     function showCompletionStats() {
         quizContainer.style.display = 'none';
         resultCard.style.display = 'block';
-        updateProgressUi(quizData.length); // Barra em 100%
+        updateProgressUi(quizData.length);
 
-        // Alimenta cada contador individualmente com as variáveis do estado do JS
-        document.querySelector("#skipped-count").textContent = skippedCount;
+        // NOVO: Mostra no formato "Pontos obtidos / Total possível"
+        document.querySelector("#skipped-count").textContent = `${totalPontosGanhos} / ${totalPontosPossiveis}`;
+        document.querySelector("#skipped-count").previousElementSibling.textContent = "Pontuação Obtida";
+
         document.querySelector("#correct-count").textContent = correctCount;
         document.querySelector("#incorrect-count").textContent = incorrectCount;
 
-        showToast("Quiz finalizado! Desempenho computado.");
+        showToast("Você chegou ao fim do questionário!");
     }
 
     // === COMUNICAÇÃO COM O LARAVEL ===
@@ -101,36 +143,30 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                 body: JSON.stringify({ id_resposta: idResposta })
             });
-
             const data = await response.json();
             if (response.ok) {
-                // Trocado de 'XP' para 'pontos' em tempo real conforme solicitado
-                userXp.textContent = `${data.pontos_totais.toLocaleString('pt-BR')} pontos`;
+                userXp.textContent = `${data.pontos_totais.toLocaleString('pt-BR')} PONTOS`;
             }
         } catch (error) {
-            console.error("Erro ao salvar no banco:", error);
+            console.error("Erro ao salvar:", error);
         }
     }
 
-    // === BOTÕES DE AÇÃO ===
-    skipButton.addEventListener("click", () => {
-        if (isAdvancing) return;
-        skippedCount++;
-        currentQuestionIndex++;
-        updateProgressUi(currentQuestionIndex); // Avança a barra imediatamente ao pular
-        loadQuestion(currentQuestionIndex);
-    });
-
+    // === BOTÃO PRINCIPAL (SALVAR ou AVANÇAR) ===
     confirmButton.addEventListener("click", async () => {
         if (isAdvancing) return;
 
+        // Se for Modo Revisão, apenas avança a página
+        if (confirmButton.dataset.action === "next") {
+            currentQuestionIndex++;
+            loadQuestion(currentQuestionIndex);
+            return;
+        }
+
+        // Se for Salvar
         const selected = document.querySelector(".answer.is-selected");
         if (!selected) {
             showToast("Selecione uma alternativa antes de confirmar.");
@@ -141,32 +177,34 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmButton.disabled = true;
         confirmButton.textContent = "SALVANDO...";
 
-        // Agora comparamos string com string ("1" === "1"), funciona perfeitamente!
         const isCorrect = selected.dataset.solucao === "1";
         const answerId = selected.dataset.id;
+        const question = quizData[currentQuestionIndex];
 
-        // Feedback visual imediato para o usuário
+        // Adiciona a resposta no array local para virar "Revisão" na hora
+        respostasUsuario[question.id_pergunta] = answerId;
+
         if (isCorrect) {
             correctCount++;
+            totalPontosGanhos += question.valor;
             selected.classList.add("is-correct");
             showToast("Resposta correta! Avançando...");
+            userXp.textContent = `${totalPontosGanhos} PONTOS`;
         } else {
             incorrectCount++;
             selected.classList.add("is-incorrect");
-            // Destaca a alternativa correta em verde para aprendizado do colaborador
-            const correctElement = document.querySelector(`.answer[data-solucao="1"]`);
-            if (correctElement) correctElement.classList.add("is-correct");
+            document.querySelector(`.answer[data-solucao="1"]`)?.classList.add("is-correct");
             showToast("Resposta incorreta.");
         }
 
-        // Dispara a procedure do seu grupo no banco de dados em segundo plano
         await salvarRespostaNoBanco(answerId);
 
-        // Aguarda a animação visual por 900ms antes de mover a barra e carregar a próxima
+        // Avança barra de progresso e carrega a próxima
+        updateProgressUi(Object.keys(respostasUsuario).length);
+
         setTimeout(() => {
             currentQuestionIndex++;
-            updateProgressUi(currentQuestionIndex);
             loadQuestion(currentQuestionIndex);
-        }, 900);
+        }, 1200); // 1.2s para a pessoa conseguir ler a resposta certa
     });
 });

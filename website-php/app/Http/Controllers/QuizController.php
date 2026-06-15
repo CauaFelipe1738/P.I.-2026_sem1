@@ -41,43 +41,27 @@ class QuizController extends Controller
     {
         $idFuncionario = Auth::id();
 
-        // Conta quantas perguntas a lista tem no total
-        $totalPerguntas = DB::table('pergunta_lista')->where('idf_lista', $id_lista)->count();
+        // Carrega a lista com as perguntas e alternativas os models
+        $lista = Lista::with('perguntas.respostas')->findOrFail($id_lista);
 
-        // Se a lista não tem perguntas cadastradas ainda
-        if ($totalPerguntas === 0) {
+        // Se a lista não tem perguntas cadastradas ainda (trava de segurança)
+        if ($lista->perguntas->count() === 0) {
             return redirect()->route('dashboard')->with('error', 'Este módulo ainda não possui questões cadastradas. Volte mais tarde!');
         }
 
-        // Conta quantas o usuário logado já respondeu nesta lista específica
-        $totalRespondidas = DB::table('funcionario_pergunta_lista')
+        // Puxa as respostas que o usuário já escolheu nesta lista no passado
+        // Retorna um array prático: [id_pergunta => id_resposta_escolhida]
+        $respostasUsuario = DB::table('funcionario_pergunta_lista')
             ->join('pergunta_lista', 'funcionario_pergunta_lista.idf_pergunta_lista', '=', 'pergunta_lista.id_pergunta_lista')
             ->where('pergunta_lista.idf_lista', $id_lista)
             ->where('funcionario_pergunta_lista.idf_funcionario', $idFuncionario)
-            ->count();
+            ->pluck('idf_resposta', 'idf_pergunta')
+            ->toArray();
 
-        // Se o usuário já respondeu tudo
-        if ($totalRespondidas >= $totalPerguntas && $totalPerguntas > 0) {
-            return redirect()->route('dashboard')->with('error', 'Você já concluiu este treinamento obrigatório!');
-        }
-
-        // Conta quantas o usuário logado já respondeu nesta lista específica
-        $totalRespondidas = DB::table('funcionario_pergunta_lista')
-            ->join('pergunta_lista', 'funcionario_pergunta_lista.idf_pergunta_lista', '=', 'pergunta_lista.id_pergunta_lista')
-            ->where('pergunta_lista.idf_lista', $id_lista)
-            ->where('funcionario_pergunta_lista.idf_funcionario', $idFuncionario)
-            ->count();
-
-        // Se ele já respondeu tudo, barra o acesso e manda de volta ao Dashboard
-        if ($totalRespondidas >= $totalPerguntas && $totalPerguntas > 0) {
-            return redirect()->route('dashboard')->with('error', 'Você já concluiu este treinamento obrigatório!');
-        }
-
-        // Se estiver liberado, carrega o quiz normalmente
-        $lista = Lista::with('perguntas.respostas')->findOrFail($id_lista);
         $perguntasJson = $lista->perguntas->toJson();
 
-        return view('quiz.show', compact('lista', 'perguntasJson'));
+        // Mandamos o histórico de respostas pra view junto com o resto
+        return view('quiz.show', compact('lista', 'perguntasJson', 'respostasUsuario'));
     }
 
     /**

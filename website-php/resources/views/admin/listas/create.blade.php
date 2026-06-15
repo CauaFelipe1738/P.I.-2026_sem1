@@ -1,20 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ isset($lista) ? 'Editar' : 'Criar' }} Questionário</title>
     <link rel="stylesheet" href="{{ asset('css/base.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/create_user.css') }}">
-    </head>
+    <style>
+        /* Estilos para a lista de perguntas combinarem com o tema escuro */
+        .questions-container {
+            margin-top: 20px;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid rgba(134, 163, 207, 0.17);
+            border-radius: 8px;
+            background: rgba(5, 12, 23, 0.5);
+        }
+        .question-item {
+            display: grid;
+            grid-template-columns: 30px 1fr;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(134, 163, 207, 0.1);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .question-item:hover {
+            background: rgba(18, 221, 234, 0.05);
+        }
+        .question-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            accent-color: #12ddea;
+            cursor: pointer;
+        }
+        .question-meta {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+            font-size: 13px;
+        }
+        .badge-area { color: #12ddea; background: rgba(18, 221, 234, 0.1); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        .badge-xp { color: #7df66f; background: rgba(125, 246, 111, 0.1); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+
+        /* Custom Scrollbar para a lista de perguntas */
+        .questions-container::-webkit-scrollbar { width: 8px; }
+        .questions-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 8px; }
+        .questions-container::-webkit-scrollbar-thumb { background: rgba(134, 163, 207, 0.3); border-radius: 8px; }
+    </style>
+</head>
 
 <body>
     <main class="create-user-page quest-page">
         <header class="page-header">
             <div class="page-title">
                 <h1>{{ isset($lista) ? 'Editar Questionário #'.$lista->id_lista : 'Criar Questionário' }}</h1>
-                <p>Defina o período de disponibilidade para as avaliações e pesquisas.</p>
+                <p>Defina o período e selecione as perguntas que farão parte desta lista.</p>
             </div>
 
             <a class="back-button" href="{{ route('admin.listas.index') }}">
@@ -70,6 +112,48 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="form-card personal-card" style="grid-column: 1 / -1; min-height: 0; margin-top: -10px;">
+                    <div class="card-heading" style="justify-content: space-between; align-items: flex-end;">
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <span class="heading-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M9 11l3 3L22 4"></path>
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                </svg>
+                            </span>
+                            <div>
+                                <h2>Selecionar Perguntas</h2>
+                                <p style="color: var(--muted); font-size: 14px; margin-top: 4px;">Marque as perguntas que vão compor esta lista.</p>
+                            </div>
+                        </div>
+
+                        <div class="field" style="margin: 0; width: 300px;">
+                            <input type="text" id="search-questions" placeholder="Pesquisar pergunta..." style="height: 42px;">
+                        </div>
+                    </div>
+
+                    <div class="questions-container" id="questions-list">
+                        @forelse($todasPerguntas ?? [] as $p)
+                            <label class="question-item">
+                                <input type="checkbox" name="perguntas[]" value="{{ $p->id_pergunta }}"
+                                    {{ (is_array(old('perguntas', $perguntasSelecionadas ?? [])) && in_array($p->id_pergunta, old('perguntas', $perguntasSelecionadas ?? []))) ? 'checked' : '' }}>
+
+                                <div class="question-content">
+                                    <strong style="color: #fff; font-size: 16px; display: block; line-height: 1.4;">{{ $p->pergunta }}</strong>
+                                    <div class="question-meta">
+                                        <span class="badge-area">{{ $p->nome_area }}</span>
+                                        <span class="badge-xp">{{ $p->valor }} XP</span>
+                                    </div>
+                                </div>
+                            </label>
+                        @empty
+                            <div style="padding: 30px; text-align: center; color: var(--muted);">
+                                Nenhuma pergunta cadastrada no sistema. Vá até o menu de Perguntas para criar.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
             </section>
 
             <footer class="form-actions">
@@ -85,5 +169,21 @@
             </footer>
         </form>
     </main>
+
+    <script>
+        document.getElementById('search-questions').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.question-item');
+
+            items.forEach(item => {
+                const text = item.querySelector('.question-content').textContent.toLowerCase();
+                if (text.includes(term)) {
+                    item.style.display = 'grid'; // Retorna pro grid
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

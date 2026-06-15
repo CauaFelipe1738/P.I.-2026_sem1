@@ -53,18 +53,22 @@
                 <thead>
                     <tr>
                         <th>Usuário</th>
-                        <th>Titulo</th>
+                        <th>Título</th>
                         <th>Tipo de Acesso</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="users-table-body">
                     @forelse($usuarios as $user)
+                        @php
+                            $nomes = explode(' ', trim($user->nome_funcionario));
+                            $iniciais = strtoupper(substr($nomes[0], 0, 1) . (isset($nomes[1]) ? substr($nomes[1], 0, 1) : ''));
+                        @endphp
                         <tr>
                             <td>
                                 <div class="user-cell">
                                     <span class="avatar {{ $user->admin ? 'am' : 'cs' }}">
-                                        {{ strtoupper(substr($user->nome_funcionario, 0, 2)) }}
+                                        {{ $iniciais }}
                                     </span>
                                     {{ $user->nome_funcionario }}
                                     <small style="color: var(--muted); margin-left: 5px;">{{ '@' . $user->username }}</small>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminFuncionarioController;
 use App\Http\Controllers\Admin\AdminListaController;
+use App\Http\Controllers\Admin\AdminPerguntaController;
 use App\Http\Controllers\Admin\AdminRankingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
@@ -49,6 +50,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/questionarios/{id}/editar', [AdminListaController::class, 'edit'])->name('listas.edit');
     Route::put('/questionarios/{id}', [AdminListaController::class, 'update'])->name('listas.update');
     Route::delete('/questionarios/{id}', [AdminListaController::class, 'destroy'])->name('listas.destroy');
+
+    Route::get('/perguntas', [AdminPerguntaController::class, 'index'])->name('perguntas.index');
+    Route::post('/areas', [AdminPerguntaController::class, 'storeArea'])->name('areas.store');
+    Route::delete('/perguntas/{id}', [AdminPerguntaController::class, 'destroy'])->name('perguntas.destroy');
+    Route::get('/perguntas/criar', [AdminPerguntaController::class, 'create'])->name('perguntas.create');
+    Route::post('/perguntas/salvar', [AdminPerguntaController::class, 'store'])->name('perguntas.store');
+    Route::get('/perguntas/{id}/editar', [AdminPerguntaController::class, 'edit'])->name('perguntas.edit');
+    Route::put('/perguntas/{id}', [AdminPerguntaController::class, 'update'])->name('perguntas.update');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

@@ -8,26 +8,22 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // Chama a procedure do banco de dados passando o ID do usuário logado e a data de hoje
-        $listas = DB::select('CALL fetch_listas(?, ?)', [
-            auth()->id(),
-            now()->format('Y-m-d')
+        $usuarioLogado = auth()->user();
+        $hoje = Carbon::today()->toDateString();
+
+        $listasBrutas = DB::select('CALL fetch_listas(?, ?)', [
+            $usuarioLogado->id_funcionario,
+            $hoje
         ]);
 
-        // Se a requisição pedir JSON
-        if ($request->expectsJson()) {
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'funcionario' => auth()->user(),
-                    'listas' => $listas,
-                ]
-            ], 200);
-        }
+        $listas = collect($listasBrutas)->sortByDesc(function ($lista) {
+            return $lista->perguntas > 0 ? 1 : 0;
+        })->values();
 
-        // Se for um navegador normal, retorna a tela do Blade
-        return view('dashboard', compact('listas'));
+        $pontosObtidos = $usuarioLogado->pontos;
+
+        return view('dashboard', compact('listas', 'pontosObtidos'));
     }
 }

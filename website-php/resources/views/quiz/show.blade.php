@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="{{ asset('css/pages/quiz.css') }}">
 
     <script>
-        // Imprime a string do JSON sem escapar os caracteres especiais
         const quizData = {!! $perguntasJson !!};
+        const respostasUsuario = {!! json_encode($respostasUsuario) !!};
+
         const listaId = {{ $lista->id_lista }};
         const urlBase = "{{ url('/') }}";
         const csrfToken = "{{ csrf_token() }}";
@@ -37,7 +38,7 @@
             <div class="stats">
                 <div class="xp">
                     <span aria-hidden="true">⚡</span>
-                    <span id="user-xp">{{ number_format(auth()->user()->pontos, 0, ',', '.') }} PONTOS</span>
+                    <span id="user-xp">0 PONTOS</span>
                 </div>
             </div>
         </header>
