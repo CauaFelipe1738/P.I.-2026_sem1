@@ -37,6 +37,9 @@
         @if (session('success'))
             <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #6ee7b7; padding: 15px 20px; border-radius: 8px; margin-bottom: 24px;">{{ session('success') }}</div>
         @endif
+        @if (session('error'))
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px 20px; border-radius: 8px; margin-bottom: 24px;">{{ session('error') }}</div>
+        @endif
         @if ($errors->any())
             <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px 20px; border-radius: 8px; margin-bottom: 24px;">{{ $errors->first() }}</div>
         @endif
@@ -55,7 +58,7 @@
                     <span>Filtre as perguntas por área cadastrada.</span>
                 </div>
                 <label class="theme-select-field">
-                    <select name="area_id" onchange="document.getElementById('filter-form').submit()">
+                    <select name="area_id" id="question-theme-filter" onchange="document.getElementById('filter-form').submit()">
                         <option value="">Todas as Áreas</option>
                         @foreach($areas as $area)
                             <option value="{{ $area->id_area }}" {{ (isset($areaFiltro) && $areaFiltro == $area->id_area) ? 'selected' : '' }}>
@@ -64,10 +67,22 @@
                         @endforeach
                     </select>
                 </label>
-                <button class="toolbar-button primary theme-create-button" type="button" onclick="toggleAreaModal(true)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px; margin-right:8px;"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg> Criar Área
-                </button>
+
+                <div class="theme-actions" style="display: flex; gap: 10px;">
+                    <button class="toolbar-button primary theme-create-button" type="button" onclick="toggleAreaModal(true)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px; margin-right:8px;"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg> Criar Área
+                    </button>
+                    <button class="toolbar-button danger theme-delete-button" type="button" id="delete-theme-btn" {{ empty($areaFiltro) ? 'disabled' : '' }}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px; margin-right:8px;"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6 18 20H6L5 6"></path><path d="M10 11v5"></path><path d="M14 11v5"></path></svg> Deletar Área
+                    </button>
+                </div>
             </div>
+        </form>
+
+        <form action="{{ route('admin.areas.destroy') }}" method="POST" id="form-delete-area" style="display: none;">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="area_id" id="hidden-delete-area-id">
         </form>
 
         <section class="users-table-wrap">
@@ -151,6 +166,7 @@
     </div>
 
     <script>
+        // Função do Modal de Criar Área (Que já funcionava)
         function toggleAreaModal(show) {
             const modal = document.getElementById('area-modal');
             modal.style.display = show ? 'flex' : 'none';
@@ -161,12 +177,29 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Cria a div do Tooltip usando a sua classe do base.css
+            // Lógica de Deletar Área
+            const deleteBtn = document.getElementById('delete-theme-btn');
+            const selectTheme = document.getElementById('question-theme-filter');
+
+            if (selectTheme && deleteBtn) {
+                selectTheme.addEventListener('change', () => {
+                    deleteBtn.disabled = selectTheme.value === "";
+                });
+
+                deleteBtn.addEventListener('click', () => {
+                    const areaNome = selectTheme.options[selectTheme.selectedIndex].text;
+                    if (confirm(`Deseja realmente tentar excluir a área "${areaNome.trim()}"?`)) {
+                        document.getElementById('hidden-delete-area-id').value = selectTheme.value;
+                        document.getElementById('form-delete-area').submit();
+                    }
+                });
+            }
+
+            // Lógica do Tooltip flutuante usando base.css
             const tooltip = document.createElement('div');
             tooltip.className = 'tooltip';
             document.body.appendChild(tooltip);
 
-            // Quando o mouse entra em um elemento com o data-texto-tooltip
             document.addEventListener('mouseover', (e) => {
                 const target = e.target.closest('[data-texto-tooltip]');
                 if (target) {
@@ -175,7 +208,6 @@
                 }
             });
 
-            // Faz o Tooltip seguir o mouse (com um recuo de 15px para não ficar embaixo da seta)
             document.addEventListener('mousemove', (e) => {
                 if (tooltip.classList.contains('active')) {
                     tooltip.style.left = (e.pageX + 15) + 'px';
@@ -183,7 +215,6 @@
                 }
             });
 
-            // Quando o mouse sai, esconde o Tooltip
             document.addEventListener('mouseout', (e) => {
                 const target = e.target.closest('[data-texto-tooltip]');
                 if (target) {

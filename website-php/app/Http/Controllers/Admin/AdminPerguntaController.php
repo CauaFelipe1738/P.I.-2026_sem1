@@ -170,8 +170,30 @@ class AdminPerguntaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        Pergunta::destroy($id);
+        return back()->with('success', 'Pergunta excluída!');
+    }
+
+    public function destroyArea(Request $request)
+    {
+        $idArea = $request->input('area_id');
+
+        if (!$idArea) {
+            return back()->with('error', 'Selecione uma área para excluir.');
+        }
+
+        $possuiPerguntas = DB::table('pergunta')
+            ->where('idf_area', $idArea)
+            ->exists();
+
+        if ($possuiPerguntas) {
+            return back()->with('error', 'Ação bloqueada! Não é possível excluir esta Área pois existem perguntas cadastradas nela.');
+        }
+
+        DB::table('area')->where('id_area', $idArea)->delete();
+
+        return redirect()->route('admin.perguntas.index')->with('success', 'Área excluída com sucesso!');
     }
 }

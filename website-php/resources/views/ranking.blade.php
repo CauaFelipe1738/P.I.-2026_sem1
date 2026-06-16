@@ -32,15 +32,18 @@
             <article class="list-row {{ ($funcionario->id_funcionario === auth()->id()) ? 'me' : '' }}">
                 <span>#{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
 
-                <div style="display: flex; flex-direction: column; min-width: 0;">
-                    <strong>{{ $funcionario->nome_funcionario }}</strong>
-                    <small style="color: var(--muted); font-size: 12px; margin-top: 2px;">{{ '@' . $funcionario->username }}</small>
+                <div style="display: flex; flex-direction: column; min-width: 0;" data-tooltip="{{ $funcionario->nome_funcionario }} ({{ '@' . $funcionario->username }})">
+                    <strong>{{ \Illuminate\Support\Str::limit($funcionario->nome_funcionario, 22) }}</strong>
+                    <small>{{ \Illuminate\Support\Str::limit('@' . $funcionario->username, 25) }}</small>
                 </div>
 
-                <em data-tooltip="{{ $funcionario->sobre ?? 'Sem descrição disponível.' }}">
-                    {{ $funcionario->titulo ?? 'Recruta' }}
+                <em data-tooltip="{{ $funcionario->titulo ?? 'Recruta' }} - {{ $funcionario->sobre ?? 'Sem descrição.' }}">
+                    {{ \Illuminate\Support\Str::limit($funcionario->titulo ?? 'Recruta', 22) }}
                 </em>
-                <b>{{ number_format($funcionario->pontos, 0, ',', '.') }} XP</b>
+
+                <b data-tooltip="{{ number_format($funcionario->pontos, 0, ',', '.') }} Pontos de Experiência">
+                    {{ number_format($funcionario->pontos, 0, ',', '.') }} XP
+                </b>
             </article>
         @endforeach
     </div>

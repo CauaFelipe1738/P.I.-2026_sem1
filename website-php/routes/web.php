@@ -53,6 +53,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/perguntas', [AdminPerguntaController::class, 'index'])->name('perguntas.index');
     Route::post('/areas', [AdminPerguntaController::class, 'storeArea'])->name('areas.store');
+    Route::delete('/areas', [AdminPerguntaController::class, 'destroyArea'])->name('areas.destroy');
     Route::delete('/perguntas/{id}', [AdminPerguntaController::class, 'destroy'])->name('perguntas.destroy');
     Route::get('/perguntas/criar', [AdminPerguntaController::class, 'create'])->name('perguntas.create');
     Route::post('/perguntas/salvar', [AdminPerguntaController::class, 'store'])->name('perguntas.store');

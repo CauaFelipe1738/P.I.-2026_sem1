@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Lista;
 use App\Models\Pergunta;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
@@ -39,29 +39,37 @@ class QuizController extends Controller
      */
     public function show($id_lista)
     {
-        $idFuncionario = Auth::id();
+        $idFuncionario = auth()->user()->id_funcionario;
 
-        // Carrega a lista com as perguntas e alternativas os models
-        $lista = Lista::with('perguntas.respostas')->findOrFail($id_lista);
+        $lista = DB::table('lista')->where('id_lista', $id_lista)->first();
+        if (!$lista) return redirect()->route('dashboard')->with('error', 'Lista não encontrada.');
 
-        // Se a lista não tem perguntas cadastradas ainda (trava de segurança)
-        if ($lista->perguntas->count() === 0) {
-            return redirect()->route('dashboard')->with('error', 'Este módulo ainda não possui questões cadastradas. Volte mais tarde!');
+        $isExpired = $lista->fim < \Carbon\Carbon::today()->toDateString();
+
+        $perguntas = DB::table('pergunta')
+            ->join('pergunta_lista', 'pergunta.id_pergunta', '=', 'pergunta_lista.idf_pergunta')
+            ->where('pergunta_lista.idf_lista', $id_lista)
+            ->select('pergunta.*', 'pergunta_lista.id_pergunta_lista')
+            ->get();
+
+        if ($perguntas->count() === 0) {
+            return redirect()->route('dashboard')->with('error', 'Este questionário não possui questões.');
         }
 
-        // Puxa as respostas que o usuário já escolheu nesta lista no passado
-        // Retorna um array prático: [id_pergunta => id_resposta_escolhida]
+        foreach ($perguntas as $p) {
+            $p->respostas = DB::table('resposta')->where('idf_pergunta', $p->id_pergunta)->get();
+        }
+
         $respostasUsuario = DB::table('funcionario_pergunta_lista')
             ->join('pergunta_lista', 'funcionario_pergunta_lista.idf_pergunta_lista', '=', 'pergunta_lista.id_pergunta_lista')
             ->where('pergunta_lista.idf_lista', $id_lista)
             ->where('funcionario_pergunta_lista.idf_funcionario', $idFuncionario)
-            ->pluck('idf_resposta', 'idf_pergunta')
+            ->pluck('funcionario_pergunta_lista.idf_resposta', 'pergunta_lista.idf_pergunta')
             ->toArray();
 
-        $perguntasJson = $lista->perguntas->toJson();
+        $perguntasJson = json_encode($perguntas);
 
-        // Mandamos o histórico de respostas pra view junto com o resto
-        return view('quiz.show', compact('lista', 'perguntasJson', 'respostasUsuario'));
+        return view('quiz.show', compact('lista', 'perguntasJson', 'respostasUsuario', 'isExpired'));
     }
 
     /**
@@ -90,38 +98,40 @@ class QuizController extends Controller
 
     public function responder(Request $request, $id_lista, $id_pergunta)
     {
-        $request->validate([
-            'id_resposta' => 'required|integer|exists:resposta,id_resposta'
-        ]);
+        try {
+            $idFuncionario = auth()->user()->id_funcionario;
+            $idResposta = $request->input('id_resposta');
 
-        // Busca o ID direto da tabela pivô via SQL puro.
-        // Isso garante que o ID real vá para o parâmetro 'y' da procedure, ativando a trigger de pontos
-        $perguntaLista = DB::table('pergunta_lista')
-            ->where('idf_lista', $id_lista)
-            ->where('idf_pergunta', $id_pergunta)
-            ->first();
+            $pivo = DB::table('pergunta_lista')
+                ->where('idf_lista', $id_lista)
+                ->where('idf_pergunta', $id_pergunta)
+                ->first();
 
-        if (!$perguntaLista) {
-            return response()->json(['error' => 'Vínculo da pergunta não encontrado.'], 400);
+            if (!$pivo) {
+                return response()->json(['error' => 'Pivô do questionário não encontrado.'], 404);
+            }
+
+            // Verifica se o usuário já tem essa resposta salva
+            $jaRespondeu = DB::table('funcionario_pergunta_lista')
+                ->where('idf_funcionario', $idFuncionario)
+                ->where('idf_pergunta_lista', $pivo->id_pergunta_lista)
+                ->exists();
+
+            if (!$jaRespondeu) {
+                // Prepara os dados limpos para a procedure
+                $x = (int) $idFuncionario;
+                $y = (int) $pivo->id_pergunta_lista;
+                $z = (int) $idResposta;
+
+                // Executa a procedure
+                DB::unprepared("CALL responder({$x}, {$y}, {$z})");
+            }
+
+            return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            // Se o MySQL der erro, envia o motivo para a tela
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        // Executa a procedure "responder"
-        DB::statement('CALL responder(?, ?, ?)', [
-            Auth::id(),
-            $perguntaLista->id_pergunta_lista,
-            $request->id_resposta
-        ]);
-
-        if ($request->expectsJson()) {
-            // Força o Laravel a reler o usuário direto do banco para pegar os pontos novos computados pelo MySQL
-            $funcionarioAtualizado = Auth::user()->fresh();
-
-            return response()->json([
-                'status' => 'success',
-                'pontos_totais' => $funcionarioAtualizado->pontos
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Resposta salva!');
     }
 }

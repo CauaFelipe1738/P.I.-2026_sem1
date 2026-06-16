@@ -32,8 +32,15 @@
     @forelse($listas as $lista)
         <article class="panel">
 
+        @php
+            $hoje = \Carbon\Carbon::today()->toDateString();
+            $isExpired = $lista->fim < $hoje;
+        @endphp
+
         @if($lista->perguntas == 0)
             <span class="status" style="background-color: #6c757d; color: white; border-radius: 6px; padding: 4px 12px; display: inline-block;">EM BREVE</span>
+        @elseif($isExpired)
+            <span class="status" style="background-color: #e63946; color: white; border-radius: 6px; padding: 4px 12px; display: inline-block;">ENCERRADO</span>
         @elseif($lista->respostas >= $lista->perguntas && $lista->perguntas > 0)
             <span class="status" style="background-color: #2ec4b6; color: white; border-radius: 6px; padding: 4px 12px; display: inline-block;">CONCLUÍDO</span>
         @elseif($lista->respostas > 0)
@@ -48,25 +55,23 @@
             Até: {{ \Carbon\Carbon::parse($lista->fim)->format('d/m/Y') }}
         </p>
 
-        <div style="margin-top: 20px;">
-            @if($lista->perguntas == 0)
-                <button class="btn-iniciar" style="background-color: #6c757d; cursor: not-allowed;" disabled>
-                    SEM QUESTÕES
+        @if($lista->perguntas == 0)
+            <button class="btn-iniciar" style="background-color: #6c757d; cursor: not-allowed;" disabled>
+                SEM QUESTÕES
+            </button>
+        @elseif($isExpired || ($lista->respostas >= $lista->perguntas && $lista->perguntas > 0))
+            <a href="{{ route('quiz.show', $lista->id_lista) }}">
+                <button class="btn-iniciar" style="background-color: #3cc9eb; color: #061124;">
+                    REVISAR
                 </button>
-            @elseif($lista->respostas >= $lista->perguntas && $lista->perguntas > 0)
-                <a href="{{ route('quiz.show', $lista->id_lista) }}">
-                    <button class="btn-iniciar" style="background-color: #3cc9eb; color: #061124;">
-                        REVISAR
-                    </button>
-                </a>
-            @else
-                <a href="{{ route('quiz.show', $lista->id_lista) }}">
-                    <button class="btn-iniciar">
-                        {{ $lista->respostas > 0 ? 'CONTINUAR' : 'INICIAR AGORA' }}
-                    </button>
-                </a>
-            @endif
-        </div>
+            </a>
+        @else
+            <a href="{{ route('quiz.show', $lista->id_lista) }}">
+                <button class="btn-iniciar">
+                    {{ $lista->respostas > 0 ? 'CONTINUAR' : 'INICIAR AGORA' }}
+                </button>
+            </a>
+        @endif
 
         <div class="container-barra">
             @php

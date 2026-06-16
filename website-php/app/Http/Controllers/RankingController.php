@@ -15,7 +15,7 @@ class RankingController extends Controller
     public function index()
     {
         // Pega todos os funcionários com uma view, ordenados pela maior pontuação (desc)
-        $funcionarios = DB::table('funcio_ranque')->orderBy('pontos', 'desc')->get();
+        $funcionarios = DB::table('funcio_ranque')->orderBy('pontos', 'desc')->paginate(20);
 
         // Pega o usuário logado atualmente
         $usuarioLogado = auth()->user();

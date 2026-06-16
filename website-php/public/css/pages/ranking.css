@@ -6,6 +6,9 @@
 .stats { display: flex; flex-wrap: wrap; gap: 12px; flex-shrink: 0; }
 
 .stats article {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: clamp(175px, 16vw, 230px);
   min-height: 92px; height: auto;
   padding: 15px 17px;
@@ -16,49 +19,75 @@
   overflow: hidden;
 }
 
-.stats span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #95a0bb; }
 .stats strong {
-  display: block; max-width: 100%;
-  font-size: clamp(24px, 3.5vw, 39px);
-  line-height: 1; font-weight: 800; color: #62e5ff;
-  overflow-wrap: anywhere; word-break: break-word;
+  display: block;
+  max-width: 100%;
+  font-size: clamp(20px, 3vw, 32px); /* Reduzi levemente o max para caber melhor os milhões */
+  line-height: 1;
+  font-weight: 800;
+  color: #62e5ff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+.stats span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: #95a0bb; }
 
 .list { display: grid; gap: 14px; }
 
 .list-row {
   display: grid;
-  grid-template-columns: 80px minmax(140px, 1fr) minmax(220px, 1fr) minmax(100px, 140px);
-  align-items: center; min-height: 63px; padding: 0 18px;
+  /* O minmax(0, ...) é crucial! Ele impede que o texto expanda a coluna para fora da tela */
+  grid-template-columns: 50px minmax(0, 1.5fr) minmax(0, 1fr) minmax(80px, 120px);
+  align-items: center;
+  gap: 15px; /* Espaço seguro entre o nome, título e pontuação */
+  min-height: 63px;
+  padding: 0 18px;
   border: 1px solid rgba(116, 134, 180, 0.23);
-  border-radius: 16px; background: #17213a; color: #e9eeff;
-  min-width: 0;
+  border-radius: 16px;
+  background: #17213a;
+  color: #e9eeff;
 }
 
-.list-row span { font-size: 22px; font-weight: 500; }
+.list-row span { font-size: 20px; font-weight: 500; }
+
+/* Todos os textos ganham block, hidden e ellipsis para ganharem os "..." se ficarem longos */
+.list-row strong,
+.list-row small,
+.list-row em,
+.list-row b {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .list-row strong {
-  display: grid; min-width: 0; font-size: 19px; font-weight: 800;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 19px;
+  font-weight: 800;
 }
 
-.list-row strong small {
-  display: block; min-width: 0; margin-top: 4px; color: #9ba8c6;
-  font-size: 13px; font-weight: 700;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+.list-row small {
+  margin-top: 4px;
+  color: #9ba8c6;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .list-row em {
-  min-width: 0; font-size: 21px; font-weight: 700; font-style: italic; color: #e2e7f7;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: help;
+  font-size: 18px;
+  font-weight: 700;
+  font-style: italic;
+  color: #e2e7f7;
+  cursor: help;
 }
 
 .list-row b {
-  justify-self: end; font-size: 20px; font-weight: 800; max-width: 100%;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  justify-self: end;
+  font-size: 18px;
+  font-weight: 800;
+  color: #62e5ff;
 }
-
-.list-row.me { background: #17213a; }
 
 .tooltip {
   position: absolute; display: none; padding: 8px 10px; border-radius: 8px;
@@ -66,7 +95,28 @@
 }
 .tooltip.active { display: block; }
 
-@media (max-width: 900px) {
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding: 16px 24px;
+  background: #17213a;
+  border: 1px solid rgba(116, 134, 180, 0.23);
+  border-radius: 16px;
+  color: #9ba8c6;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pagination { display: flex; align-items: center; gap: 8px; }
+.pagination p { display: none; }
+.pagination span[aria-current="page"] { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #2e73ff; border-radius: 8px; color: #a9d2ff; background: rgba(22, 39, 67, 0.4); font-size: 14px; font-weight: bold; }
+.pagination a, .pagination span { display: grid; place-items: center; width: 40px; height: 40px; color: #8fa4c7; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.2s; }
+.pagination a:hover { background: rgba(22, 39, 67, 0.4); color: #fff; }
+.pagination svg { width: 18px; height: 18px; }
+
+@media (max-width: 1024px) {
   .page { padding: 24px 16px 48px; }
   .hero { flex-direction: column; }
   .hero h2 { font-size: 44px; }
@@ -84,4 +134,5 @@
   .stats { flex-direction: column; }
   .list-row { grid-template-columns: 48px minmax(0, 1fr); border-radius: 12px; }
   .list-row span, .list-row strong, .list-row em, .list-row b { font-size: 16px; }
+  .table-footer { flex-direction: column; gap: 16px; text-align: center; }
 }

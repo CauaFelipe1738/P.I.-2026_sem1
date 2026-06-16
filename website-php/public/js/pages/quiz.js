@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // === ELEMENTOS DA TELA ===
-    const toast = document.querySelector("#toast");
+    // 1. BLINDAGEM DE VARIÁVEIS (Evita que o JS quebre se o PHP mandar algo nulo)
+    const data = typeof quizData !== 'undefined' ? quizData : [];
+    const hist = typeof respostasUsuario !== 'undefined' ? respostasUsuario : {};
+    const exp = typeof isExpired !== 'undefined' ? isExpired : false;
+
+    // 2. ELEMENTOS DO DOM
     const confirmButton = document.querySelector(".confirm-button");
-    const skipButton = document.querySelector(".skip-button");
     const questionTitle = document.querySelector("#question-title");
     const progressStatus = document.querySelector("#progress-text");
     const progressFill = document.querySelector("#progress-fill");
@@ -10,42 +13,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultCard = document.querySelector("#result-card");
     const quizContainer = document.querySelector("#quiz-container");
     const userXp = document.querySelector("#user-xp");
+    const imageWrap = document.querySelector("#question-image-wrap");
+    const quizImg = document.querySelector("#quiz-question-image");
 
-    if (skipButton) skipButton.style.display = 'none';
+    if (!questionTitle || !answersContainer) return; // Aborta se a tela HTML estiver errada
 
-    // Estado do Quiz
+    // 3. ESTADO DO QUIZ
     let correctCount = 0;
     let incorrectCount = 0;
     let totalPontosGanhos = 0;
-    const totalPontosPossiveis = quizData.reduce((acc, q) => acc + q.valor, 0);
-    let toastTimer;
     let isAdvancing = false;
+    let toastTimer; // Variável do Toast que não pode sumir!
 
-    // Calcula de onde começar baseado nas respostas que já vieram do banco
-    let answeredCount = Object.keys(respostasUsuario).length;
-    let currentQuestionIndex = answeredCount < quizData.length ? answeredCount : 0;
+    const totalPontosPossiveis = data.reduce((acc, q) => acc + Number(q.valor || 0), 0);
+    const answeredCount = Object.keys(hist).length;
 
-    // Pré-calcula os acertos para a tela final caso a pessoa já tenha respondido tudo
-    quizData.forEach(q => {
-        const userRespId = respostasUsuario[q.id_pergunta];
+    const firstUnansweredIndex = data.findIndex(q => !hist[q.id_pergunta]);
+    const isFullyAnswered = answeredCount >= data.length;
+    let currentQuestionIndex = (isFullyAnswered || exp) ? 0 : (firstUnansweredIndex !== -1 ? firstUnansweredIndex : 0);
+
+    // 4. PROCESSA O HISTÓRICO DO BANCO
+    data.forEach(q => {
+        const userRespId = hist[q.id_pergunta];
         if (userRespId) {
-            const respObj = q.respostas.find(r => r.id_resposta == userRespId);
+            const respostas = q.respostas || [];
+            const respObj = respostas.find(r => r.id_resposta == userRespId);
             if (respObj && respObj.solucao) {
                 correctCount++;
-                totalPontosGanhos += q.valor;
+                totalPontosGanhos += Number(q.valor || 0);
             } else {
                 incorrectCount++;
             }
         }
     });
 
-    userXp.textContent = `${totalPontosGanhos} PONTOS`;
-
+    if (userXp) userXp.textContent = `${totalPontosGanhos} PONTOS`;
     updateProgressUi(answeredCount);
     loadQuestion(currentQuestionIndex);
 
-    // === FUNÇÕES DE INTERFACE ===
+    // 5. FUNÇÕES DE INTERFACE (UI)
     function showToast(message) {
+        const toast = document.querySelector("#toast");
+        if (!toast) return;
         toast.textContent = message;
         toast.classList.add("is-visible");
         clearTimeout(toastTimer);
@@ -53,68 +62,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateProgressUi(count) {
-        progressStatus.textContent = `${count} / ${quizData.length} QUESTÕES`;
-        progressFill.style.width = `${(count / quizData.length) * 100}%`;
+        if (progressStatus) progressStatus.textContent = `${count} / ${data.length} RESPONDIDAS`;
+        if (progressFill) progressFill.style.width = `${(count / data.length) * 100}%`;
     }
 
     function loadQuestion(index) {
-        if (index >= quizData.length) {
+        if (index >= data.length) {
             showCompletionStats();
             return;
         }
 
-        const question = quizData[index];
+        const question = data[index];
         questionTitle.textContent = question.pergunta;
         answersContainer.innerHTML = '';
         isAdvancing = false;
 
+        // Lógica de Imagem
+        if (question.imagem && question.imagem.trim() !== "") {
+            quizImg.src = question.imagem;
+            imageWrap.style.display = "block";
+        } else {
+            quizImg.src = "";
+            imageWrap.style.display = "none";
+        }
+
         const letras = ['A', 'B', 'C', 'D', 'E'];
+        const historicalAnswerId = hist[question.id_pergunta];
+        const isLocked = historicalAnswerId || exp;
+        const respostas = question.respostas || [];
 
-        // Verifica se essa pergunta já foi respondida no passado
-        const alreadyAnsweredId = respostasUsuario[question.id_pergunta];
-
-        question.respostas.forEach((resposta, idx) => {
+        respostas.forEach((resposta, idx) => {
             const btn = document.createElement('button');
             btn.className = 'answer';
             btn.type = 'button';
             btn.dataset.id = resposta.id_resposta;
             btn.dataset.solucao = resposta.solucao ? "1" : "0";
 
-            btn.innerHTML = `
-                <span class="answer-letter">${letras[idx] || '-'}</span>
-                <span class="answer-text">${resposta.resposta}</span>
-                <span class="choice-ring"></span>
-            `;
+            btn.innerHTML = `<span class="answer-letter">${letras[idx] || '-'}</span><span class="answer-text">${resposta.resposta}</span><span class="choice-ring"></span>`;
 
-            // MODO REVISÃO: Bloqueia interações e pinta de verde/vermelho
-            if (alreadyAnsweredId) {
+            if (isLocked) {
                 btn.style.cursor = 'default';
-                if (resposta.solucao) {
-                    btn.classList.add("is-correct"); // Pinta a certa de verde
-                }
-                if (resposta.id_resposta == alreadyAnsweredId && !resposta.solucao) {
-                    btn.classList.add("is-incorrect"); // Pinta a errada que o usuário escolheu de vermelho
-                }
+                if (resposta.solucao) btn.classList.add("is-correct");
+                if (historicalAnswerId && resposta.id_resposta == historicalAnswerId && !resposta.solucao) btn.classList.add("is-incorrect");
             } else {
-                // MODO JOGO NORMAL
                 btn.addEventListener('click', () => {
                     if (isAdvancing) return;
                     document.querySelectorAll('.answer').forEach(b => b.classList.remove('is-selected'));
                     btn.classList.add('is-selected');
                 });
             }
-
             answersContainer.appendChild(btn);
         });
 
-        // Configura o botão principal
         confirmButton.disabled = false;
-        if (alreadyAnsweredId) {
-            // Se já respondeu, o botão apenas avança
+        if (isLocked) {
             confirmButton.textContent = "PRÓXIMA QUESTÃO ▸";
             confirmButton.dataset.action = "next";
         } else {
-            // Se não respondeu, o botão salva
             confirmButton.textContent = "CONFIRMAR RESPOSTA";
             confirmButton.dataset.action = "save";
         }
@@ -123,88 +127,128 @@ document.addEventListener('DOMContentLoaded', () => {
     function showCompletionStats() {
         quizContainer.style.display = 'none';
         resultCard.style.display = 'block';
-        updateProgressUi(quizData.length);
+        updateProgressUi(data.length);
 
-        // NOVO: Mostra no formato "Pontos obtidos / Total possível"
-        document.querySelector("#skipped-count").textContent = `${totalPontosGanhos} / ${totalPontosPossiveis}`;
-        document.querySelector("#skipped-count").previousElementSibling.textContent = "Pontuação Obtida";
+        const skippedCountEl = document.querySelector("#skipped-count");
+        if (skippedCountEl) {
+            skippedCountEl.textContent = `${totalPontosGanhos} / ${totalPontosPossiveis}`;
+            if (skippedCountEl.previousElementSibling) skippedCountEl.previousElementSibling.textContent = "Pontuação Obtida";
+        }
 
-        document.querySelector("#correct-count").textContent = correctCount;
-        document.querySelector("#incorrect-count").textContent = incorrectCount;
+        const correctCountEl = document.querySelector("#correct-count");
+        if (correctCountEl) correctCountEl.textContent = correctCount;
 
-        showToast("Você chegou ao fim do questionário!");
+        const incorrectCountEl = document.querySelector("#incorrect-count");
+        if (incorrectCountEl) incorrectCountEl.textContent = incorrectCount;
     }
 
-    // === COMUNICAÇÃO COM O LARAVEL ===
+    // 6. FUNÇÃO DE SALVAR NO BANCO (COM PROTEÇÕES)
     async function salvarRespostaNoBanco(idResposta) {
-        const question = quizData[currentQuestionIndex];
-        const endpoint = `${urlBase}/quiz/${listaId}/pergunta/${question.id_pergunta}/responder`;
-
         try {
-            const response = await fetch(endpoint, {
+            const question = data[currentQuestionIndex];
+            if (!question) throw new Error("A pergunta sumiu da memória do JS.");
+
+            // Limpa barras duplas na URL (evita erros 404)
+            const cleanUrlBase = urlBase.replace(/\/+$/, '');
+            const endpoint = `${cleanUrlBase}/quiz/${listaId}/pergunta/${question.id_pergunta}/responder`;
+
+            // Cronômetro para não travar a tela se o banco cair
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+            const resposta = await fetch(endpoint, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                body: JSON.stringify({ id_resposta: idResposta })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ id_resposta: idResposta }),
+                signal: controller.signal
             });
-            const data = await response.json();
-            if (response.ok) {
-                userXp.textContent = `${data.pontos_totais.toLocaleString('pt-BR')} PONTOS`;
+
+            clearTimeout(timeoutId);
+
+            if (!resposta.ok) {
+                const erroData = await resposta.json().catch(() => ({}));
+                console.error("Laravel recusou:", erroData);
+                alert("O banco recusou salvar! Erro: " + (erroData.error || erroData.message || "Erro de Servidor (500)"));
+                return false;
             }
+
+            return true;
         } catch (error) {
-            console.error("Erro ao salvar:", error);
+            console.error("Erro Crítico no Fetch:", error);
+            if (error.name === 'AbortError') {
+                alert("O servidor demorou muito. O Banco de Dados travou!");
+            } else {
+                alert("Falha na rede ou Rota inexistente. Verifique o console (F12).");
+            }
+            return false;
         }
     }
 
-    // === BOTÃO PRINCIPAL (SALVAR ou AVANÇAR) ===
+    // 7. EVENTO DO BOTÃO PRINCIPAL
     confirmButton.addEventListener("click", async () => {
         if (isAdvancing) return;
 
-        // Se for Modo Revisão, apenas avança a página
         if (confirmButton.dataset.action === "next") {
             currentQuestionIndex++;
             loadQuestion(currentQuestionIndex);
             return;
         }
 
-        // Se for Salvar
         const selected = document.querySelector(".answer.is-selected");
-        if (!selected) {
-            showToast("Selecione uma alternativa antes de confirmar.");
-            return;
-        }
+        if (!selected) return alert("Selecione uma alternativa antes de confirmar.");
 
         isAdvancing = true;
         confirmButton.disabled = true;
         confirmButton.textContent = "SALVANDO...";
 
-        const isCorrect = selected.dataset.solucao === "1";
         const answerId = selected.dataset.id;
-        const question = quizData[currentQuestionIndex];
 
-        // Adiciona a resposta no array local para virar "Revisão" na hora
-        respostasUsuario[question.id_pergunta] = answerId;
+        try {
+            const salvouComSucesso = await salvarRespostaNoBanco(answerId);
 
-        if (isCorrect) {
-            correctCount++;
-            totalPontosGanhos += question.valor;
-            selected.classList.add("is-correct");
-            showToast("Resposta correta! Avançando...");
-            userXp.textContent = `${totalPontosGanhos} PONTOS`;
-        } else {
-            incorrectCount++;
-            selected.classList.add("is-incorrect");
-            document.querySelector(`.answer[data-solucao="1"]`)?.classList.add("is-correct");
-            showToast("Resposta incorreta.");
+            if (!salvouComSucesso) {
+                confirmButton.disabled = false;
+                confirmButton.textContent = "TENTAR NOVAMENTE";
+                isAdvancing = false;
+                return;
+            }
+
+            const isCorrect = selected.dataset.solucao === "1";
+            const question = data[currentQuestionIndex];
+            hist[question.id_pergunta] = answerId;
+
+            if (isCorrect) {
+                correctCount++;
+                totalPontosGanhos += Number(question.valor || 0);
+                selected.classList.add("is-correct");
+                if (userXp) userXp.textContent = `${totalPontosGanhos} PONTOS`;
+                showToast("Resposta salva!");
+            } else {
+                incorrectCount++;
+                selected.classList.add("is-incorrect");
+                const correctEl = document.querySelector(`.answer[data-solucao="1"]`);
+                if (correctEl) correctEl.classList.add("is-correct");
+                showToast("Resposta salva!");
+            }
+
+            updateProgressUi(Object.keys(hist).length);
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }, 1200);
+
+        } catch (fatalError) {
+            console.error("Crash no Script:", fatalError);
+            confirmButton.disabled = false;
+            confirmButton.textContent = "ERRO FATAL (TENTAR NOVAMENTE)";
+            isAdvancing = false;
+            alert("Erro interno do navegador: Uma função parou de funcionar.");
         }
-
-        await salvarRespostaNoBanco(answerId);
-
-        // Avança barra de progresso e carrega a próxima
-        updateProgressUi(Object.keys(respostasUsuario).length);
-
-        setTimeout(() => {
-            currentQuestionIndex++;
-            loadQuestion(currentQuestionIndex);
-        }, 1200); // 1.2s para a pessoa conseguir ler a resposta certa
     });
 });
