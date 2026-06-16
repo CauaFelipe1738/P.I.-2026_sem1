@@ -8,6 +8,7 @@
 </head>
 <body>
   <div class="container">
+
     <div class="left">
       <div class="left-content">
         <p class="kicker">PROTOTIPO GAMIFICAÇÃO</p>
@@ -17,6 +18,7 @@
         </p>
       </div>
     </div>
+
     <div class="right">
       <div class="login-box">
         <h2>AUTENTICAÇÃO</h2>
@@ -38,7 +40,7 @@
 
           <div class="password-head">
             <label for="senha">CHAVE DE ACESSO</label>
-            </div>
+          </div>
           <div class="field">
             <input id="senha" name="senha" type="password" placeholder="••••••••••••" required>
           </div>
@@ -47,6 +49,7 @@
         </form>
       </div>
     </div>
+
   </div>
 </body>
 </html>

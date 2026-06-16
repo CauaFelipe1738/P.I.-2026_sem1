@@ -12,6 +12,9 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\RankingController;
 use Illuminate\Support\Facades\Route;
 
+// Redirecionamento para a tela de login
+Route::redirect('/', '/login');
+
 // Rotas para todos os funcionários logados
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -24,9 +27,6 @@ Route::middleware('auth')->group(function () {
 // Rotas exclusivas para administradores
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-
-    // Rotas do CRUD de admin
-    // Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
 
     Route::get('/usuarios', [FuncionarioController::class, 'index'])->name('usuarios.index');
     Route::get('/usuarios/criar', [FuncionarioController::class, 'create'])->name('usuarios.create');
@@ -59,9 +59,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/perguntas/salvar', [AdminPerguntaController::class, 'store'])->name('perguntas.store');
     Route::get('/perguntas/{id}/editar', [AdminPerguntaController::class, 'edit'])->name('perguntas.edit');
     Route::put('/perguntas/{id}', [AdminPerguntaController::class, 'update'])->name('perguntas.update');
-});
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Rotas de gerenciamento de funcionários
     Route::resource('funcionarios', AdminFuncionarioController::class);
 
