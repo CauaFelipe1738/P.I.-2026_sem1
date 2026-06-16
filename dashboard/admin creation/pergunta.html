@@ -41,32 +41,6 @@
                 <input type="search" placeholder="Buscar por pergunta..." aria-label="Buscar por pergunta">
             </label>
 
-            <div class="toolbar-actions" aria-label="Acoes de perguntas">
-                <a class="toolbar-button primary" href="create_pergunta.html" id="create-question-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                        <path d="M12 5v14"></path>
-                        <path d="M5 12h14"></path>
-                    </svg>
-                    Criar
-                </a>
-                <button class="toolbar-button" type="button" id="edit-selected-question" disabled>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                        <path d="m16 4 4 4L8 20H4v-4L16 4Z"></path>
-                        <path d="m14 6 4 4"></path>
-                    </svg>
-                    Editar
-                </button>
-                <button class="toolbar-button danger" type="button" id="delete-selected-question" disabled>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                        <path d="M3 6h18"></path>
-                        <path d="M8 6V4h8v2"></path>
-                        <path d="M19 6 18 20H6L5 6"></path>
-                        <path d="M10 11v5"></path>
-                        <path d="M14 11v5"></path>
-                    </svg>
-                    Deletar
-                </button>
-            </div>
         </section>
 
         <div class="theme-panel" aria-label="Filtro de tema">
@@ -82,13 +56,25 @@
                 </select>
             </label>
 
-            <button class="toolbar-button primary theme-create-button" type="button" id="open-theme-modal">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                    <path d="M12 5v14"></path>
-                    <path d="M5 12h14"></path>
-                </svg>
-                Criar tema
-            </button>
+            <div class="theme-actions">
+                <button class="toolbar-button primary theme-create-button" type="button" id="open-theme-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M12 5v14"></path>
+                        <path d="M5 12h14"></path>
+                    </svg>
+                    Criar tema
+                </button>
+                <button class="toolbar-button danger theme-delete-button" type="button" id="delete-theme" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4h8v2"></path>
+                        <path d="M19 6 18 20H6L5 6"></path>
+                        <path d="M10 11v5"></path>
+                        <path d="M14 11v5"></path>
+                    </svg>
+                    Deletar tema
+                </button>
+            </div>
         </div>
 
         <section class="users-table-wrap" aria-label="Lista de usuários">

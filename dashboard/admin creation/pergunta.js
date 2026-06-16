@@ -11,6 +11,7 @@ const deleteSelectedButton = Admin.$("#delete-selected-question");
 const createQuestionLink = Admin.$("#create-question-link");
 const themeModal = Admin.$("#theme-modal");
 const themeInput = Admin.$("#new-theme-name");
+const deleteThemeButton = Admin.$("#delete-theme");
 
 let questions = [];
 let apiEndpoint = "";
@@ -50,6 +51,11 @@ const updateCreateLink = () => {
   const theme = themeFilter?.value || "";
   createQuestionLink.href = theme ? `create_pergunta.html?theme=${encodeURIComponent(theme)}` : "create_pergunta.html";
 };
+const updateThemeActions = () => {
+  const theme = themeFilter?.value || "";
+  const isStoredTheme = storedThemes().some((item) => item.toLowerCase() === theme.toLowerCase());
+  if (deleteThemeButton) deleteThemeButton.disabled = !theme || !isStoredTheme;
+};
 
 function toggleThemeModal(open) {
   themeModal?.classList.toggle("is-visible", open);
@@ -77,6 +83,17 @@ function saveTheme() {
   toggleThemeModal(false);
   Admin.toast(existing ? "Tema selecionado." : "Tema criado com sucesso.");
 }
+function deleteTheme() {
+  const theme = themeFilter?.value || "";
+  if (!theme) return;
+  if (!confirm(`Deseja excluir o tema "${theme}"? As perguntas desse tema nao serao apagadas.`)) return;
+
+  Admin.write(THEMES_KEY, storedThemes().filter((item) => item.toLowerCase() !== theme.toLowerCase()));
+  themeFilter.value = "";
+  renderThemes();
+  render();
+  Admin.toast("Tema removido da lista de temas cadastrados.");
+}
 const updateActions = () => {
   const disabled = !selectedQuestion();
   if (editSelectedButton) editSelectedButton.disabled = disabled;
@@ -96,12 +113,13 @@ const remove = async (question) => {
   render();
 };
 
-function renderThemes() {
+function renderThemes(selectedTheme = themeFilter?.value || "") {
   if (!themeFilter) return;
-  const selected = themeFilter.value;
+  const selected = selectedTheme;
   const themes = [...new Set([...storedThemes(), ...questions.map((item) => item.area).filter(Boolean)])].sort((a, b) => a.localeCompare(b));
   themeFilter.innerHTML = '<option value="">Todos os temas</option>';
   themes.forEach((theme) => themeFilter.add(new Option(theme, theme, false, theme === selected)));
+  updateThemeActions();
 }
 
 function render() {
@@ -124,6 +142,7 @@ function render() {
   if (!filtered.some((item) => String(item.id) === String(selectedId))) selectedId = "";
   Admin.footer(footerText, questions.length, filtered.length, "perguntas");
   updateCreateLink();
+  updateThemeActions();
   updateActions();
 }
 
@@ -142,6 +161,7 @@ Admin.$("#open-theme-modal")?.addEventListener("click", () => toggleThemeModal(t
 Admin.$("#close-theme-modal")?.addEventListener("click", () => toggleThemeModal(false));
 Admin.$("#cancel-theme-modal")?.addEventListener("click", () => toggleThemeModal(false));
 Admin.$("#save-theme")?.addEventListener("click", saveTheme);
+deleteThemeButton?.addEventListener("click", deleteTheme);
 themeModal?.addEventListener("click", ({ target }) => target === themeModal && toggleThemeModal(false));
 themeInput?.addEventListener("keydown", (event) => {
   if (event.key === "Enter") event.preventDefault(), saveTheme();
