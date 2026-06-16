@@ -73,13 +73,23 @@ O sistema conta com autenticação de usuários, diferenciação entre funcioná
 
 ## ⚙️ Requisitos
 
-Antes de começar, você precisará ter instalado em sua máquina:
+Antes de começar, você precisará ter as seguintes ferramentas instaladas em sua máquina:
 
-- PHP 8+
-- Composer
-- Laragon (Recomendado para ambiente Windows)
-- MySQL (Já incluso no pacote completo do Laragon)
-- Navegador atualizado
+- **[PHP 8+](https://www.php.net/downloads)**
+- **[Composer](https://getcomposer.org/download/)**
+- **[Laragon](https://laragon.org/download/)** (Fortemente recomendado para ambiente Windows)
+- **MySQL** (Já incluso no pacote Full do Laragon)
+- Navegador web atualizado (Chrome, Edge, Firefox, etc.)
+
+---
+
+### 🛠️ Como instalar os Pré-requisitos (Windows)
+
+1. **Laragon (Ambiente Completo):** Acesse o [site do Laragon](https://laragon.org/download/) e baixe a versão **Laragon Full**. A grande vantagem é que esta versão **já inclui o PHP 8+ e o MySQL** embutidos e pré-configurados. Basta baixar o instalador `.exe` e seguir as instruções na tela.
+2. **PHP 8+ (Instalação Manual):** Se optou por baixar o Laragon Full, **pode pular este passo**. Caso contrário, baixe a versão Thread Safe para Windows no [site oficial do PHP](https://windows.php.net/download/), extraia a pasta e adicione o caminho dela às variáveis de ambiente (Path) do seu sistema.
+3. **Composer:** Acesse a [página de download do Composer](https://getcomposer.org/download/) e baixe o `Composer-Setup.exe`. Durante a instalação, ele pedirá para localizar o executável do PHP (`php.exe`). Se usou o Laragon, ele geralmente estará em `C:\laragon\bin\php\php-8.x.x\php.exe`.
+4. **MySQL:**
+   Para rodar o banco de dados, basta abrir o painel do Laragon e clicar no botão **Start All** (Iniciar Tudo). O servidor MySQL e o Apache/Nginx serão iniciados automaticamente.
 
 ### Clone o repositório
 
