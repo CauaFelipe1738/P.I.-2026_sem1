@@ -234,7 +234,15 @@ select {
     outline: 0;
 }
 
-.theme-panel .theme-create-button {
+.theme-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.theme-panel .theme-create-button,
+.theme-panel .theme-delete-button {
     flex: 0 0 auto;
     min-height: 48px;
 }
@@ -671,7 +679,13 @@ tbody tr.is-selected {
         align-items: stretch;
     }
 
-    .theme-panel .theme-create-button {
+    .theme-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .theme-panel .theme-create-button,
+    .theme-panel .theme-delete-button {
         width: 100%;
     }
 
