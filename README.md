@@ -9,8 +9,6 @@
   <img src="https://img.shields.io/badge/iOS-Supported-000000?style=for-the-badge&logo=apple&logoColor=white"/>
 </p>
 
-> Status: Developing ⚠️
-
 ## Tabela de Conteúdos
 
 - [📖 Descrição detalhada](#-descrição-detalhada)
@@ -47,7 +45,7 @@ O sistema conta com autenticação de usuários, diferenciação entre funcioná
 - Ambiente seguro e alinhado à cultura tecnológica corporativa.
 - Estrutura escalável para expansão de usuários, equipes e conteúdos.
 - Experiência focada em engajamento e aprendizagem contínua.
-- 
+
 ## 🛠 Tecnologias usadas
 <table>
   <tr>
@@ -79,17 +77,20 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 - PHP 8+
 - Composer
-- Laragon
-- MySQL
+- Laragon (Recomendado para ambiente Windows)
+- MySQL (Já incluso no pacote completo do Laragon)
 - Navegador atualizado
 
 ### Clone o repositório
 
 ```bash
-git clone https://github.com/
+git clone https://github.com/CauaFelipe1738/P.I.-2026_sem1.git
+cd website-php
 ```
 
 ### Instale as dependências
+
+Com o terminal aberto na raiz do projeto, instale as bibliotecas e dependências do PHP gerenciadas pelo Composer:
 
 ```bash
 composer install
@@ -97,11 +98,45 @@ composer install
 
 ### Configure o ambiente
 
-Configure o banco de dados e as variáveis de ambiente conforme o arquivo `.env`.
+Crie o arquivo de configuração de ambiente copiando o arquivo de exemplo fornecido pelo Laravel:
+
+```bash
+cp .env.example .env
+```
+
+Também é possível simplesmente copiar o arquivo e renomeá-lo para `.env`.
+
+Configure o banco de dados e as variáveis de ambiente conforme o arquivo `.env`. Por padrão, a seguinte configuração é colocada:
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=treinamento_gamificado
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### Gere a chave da aplicação
+
+```bash
+php artisan key:generate
+```
+
+### Execute as migrations
+
+```bash
+php artisan migrate --seed
+```
+
+`--seed` é uma flag que automaticamente popula o banco de dados com dados do `DatabaseSeeder.php`, como o usuário `admin` com senha `admin`, áreas e questões padrão.
 
 ### Execute o projeto
 
-Inicie o servidor utilizando o Laragon e acesse a aplicação pelo navegador.
+Com o terminal aberto na raiz do projeto, rode o comando de iniciar o servidor:
 
+```bash
+php artisan serve
+```
 
-
+Em seguida, abra o navegador e acesse http://localhost:8000. Utilize o usuário `admin` com senha `admin` como primeiro acesso.
