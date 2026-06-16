@@ -675,16 +675,14 @@ Nesta versão antiga do DER, a tabela funcionario apresentava a coluna idf_area 
 
 
 # Fluxograma 2 - Questionario partindo do login
-<img width="1293" height="898" alt="Diagrama sem nome drawio (12)" src="https://github.com/user-attachments/assets/11f69836-ff46-44c2-a260-a41cdab1dff7" />
-
+<img width="1295" height="898" alt="primeira" src="https://github.com/user-attachments/assets/813a6636-caea-40e9-ad3d-e7cc3ec73777" />
 
 # Fluxograma 3 - Visualização do ranking
 <img width="555" height="681" alt="Diagrama sem nome drawio (14)" src="https://github.com/user-attachments/assets/5e4a45db-5ffa-4f2c-8e62-123579441a4c" />
 
 
 # Fluxograma 4 - Criar ou editar Usuários (Admin)
-<img width="995" height="1140" alt="IMG_5904 jpg (1)" src="https://github.com/user-attachments/assets/a64904bf-878c-49d4-aeb4-9f912d88b266" />
-
+<img width="998" height="1140" alt="segunda" src="https://github.com/user-attachments/assets/eb87c0b8-9399-4369-8b1a-9b75efa3d4fb" />
 
 # Fluxograma 5 - Criar ou editar Rankings (Admin)
 <img width="992" height="1140" alt="criareeditarfunc drawio (9)" src="https://github.com/user-attachments/assets/fcb7716b-40b0-4181-9267-cec49849aeb0" />
